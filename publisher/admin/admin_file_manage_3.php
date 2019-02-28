@@ -33,6 +33,7 @@ class publisher_file_manage extends publisher_admin
 		{
 			$action = 'add';
 		}
+	
 		// Here we set the main switches to use within the ACP
 		$this->page_title = $mx_user->lang['ACP_EDIT_ITEMS'];
 		$this->tpl_name = 'pub_admin_files_list';

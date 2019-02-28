@@ -50,13 +50,13 @@ class publisher_functions
 	/** @var \phpbb\cache\cache */
 	protected $cache;
 
-	/** @var \orynider\pafiledb\core\ pafiledb */
-	protected $pafiledb;	
+	/** @var \orynider\publisher\core\ publisher */
+	protected $publisher;	
 
-	/** @var \orynider\pafiledb\core\pafiledb_cache */
-	protected $pafiledb_cache;
+	/** @var \orynider\publisher\core\publisher_cache */
+	protected $publisher_cache;
 	
-	/** @var \orynider\pafiledb\core\templates */
+	/** @var \orynider\publisher\core\templates */
 	protected $templates;	
 	
 	/** @var \phpbb\config\config */
@@ -113,38 +113,38 @@ class publisher_functions
 	*
 	* @var string
 	*/
-	protected $pa_files_table;
+	protected $pub_files_table;
 
-	protected $pa_cat_table;
+	protected $pub_cat_table;
 
-	protected $pa_config_table;
+	protected $pub_config_table;
 	
-	protected $pa_votes_table;
+	protected $pub_votes_table;
 	
-	protected $pa_comments_table;
+	protected $pub_comments_table;
 	
-	protected $pa_license_table;	
+	protected $pub_license_table;
 	
 	public function publisher_functions()
 	{
 		global $mx_cache, $publisher_cache, $mx_request_vars, $template, $mx_user, $db, $phpbb_auth;  
 		global $board_config, $phpEx, $phpbb_root_path, $mx_root_path, $module_root_path;
 		
-		$this->auth 					= $phpbb_auth;
+		$this->auth 				= $phpbb_auth;
 		$this->template 			= $template;
 		$this->user 				= $mx_user;
 		$this->db 					= $db;
 		$this->helper 				= $mx_cache;
-		$this->request 				= $mx_request_vars;
+		$this->request 			= $mx_request_vars;
 		$this->container 			= $mx_cache;
 		$this->cache 				= $mx_cache;
-		$this->publisher_cache 		= $publisher_cache;
+		$this->publisher_cache 	= $publisher_cache;
 		$this->config 				= $board_config;
-		$this->pagination 			= $mx_cache;
+		$this->pagination 		= $mx_cache;
 		$this->extension_manager	= $mx_cache;
-		$this->php_ext 				= $phpEx;
+		$this->php_ext 			= $phpEx;
 		$this->root_path 			= $mx_root_path;
-		$this->mx_root_path 		= $mx_root_path;
+		$this->mx_root_path 	= $mx_root_path;
 		$this->module_root_path 	= $module_root_path;
 		$this->phpbb_root_path 	= $phpbb_root_path;
 		
@@ -170,7 +170,7 @@ class publisher_functions
 		$cat_rowset = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
 		
-		//$auth->acl_get('u_pa_files_download');
+		//$auth->acl_get('u_pub_files_download');
 
 		for( $i = 0; $i < $cats = count($cat_rowset); $i++ )
 		{
@@ -590,7 +590,7 @@ class publisher_functions
 				'IS_AUTH_TOPLIST' => ( $publisher->modules[$publisher->module_name]->auth_global['auth_toplist'] ) ? true : false,
 
 				'IS_AUTH_UPLOAD' => $upload_auth,
-				'IS_ADMIN' => ( $userdata['user_level'] == ADMIN && $userdata['session_logged_in'] ) ? true : 0,
+				'IS_ADMIN' => ( $mx_user->data['user_level'] == ADMIN && $mx_user->data['session_logged_in'] ) ? true : 0,
 				'IS_MOD' => $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat_id']]['auth_mod'],
 				'IS_AUTH_MCP' => $mcp_auth,
 
@@ -606,26 +606,26 @@ class publisher_functions
 				'TOPLIST_IMG' => $images['pub_toplist'],
 				'UPLOAD_IMG' => $images['pub_upload'],
 				'VIEW_ALL_IMG' => $images['pub_viewall'],
-				'MCP_IMG' => $images['pub_moderator'],				
+				'MCP_IMG' => $images['pub_moderator'],
 				'MCP_LINK' => $lang['MCP_title'],
 
-				'U_TOPLIST' => mx_append_sid( $publisher->this_mxurl( "action=toplist" ) ),
-				'U_PASEARCH' => mx_append_sid( $publisher->this_mxurl( "action=search" ) ),
+				'U_TOPLIST' => mx_append_sid($publisher->this_mxurl("action=toplist")),
+				'U_PASEARCH' => mx_append_sid($publisher->this_mxurl("action=search")),
 				'U_UPLOAD' => $upload_url,
-				'U_VIEW_ALL' => mx_append_sid( $publisher->this_mxurl( "action=viewall" ) ),
-				'U_PASTATS' => mx_append_sid( $publisher->this_mxurl( "action=stats" ) ),
+				'U_VIEW_ALL' => mx_append_sid($publisher->this_mxurl("action=viewall")),
+				'U_PASTATS' => mx_append_sid($publisher->this_mxurl("action=stats" )),
 				'U_MCP' => $mcp_url,
 
 				'MX_ROOT_PATH' => $mx_root_path,
 				'BLOCK_ID' => $mx_block->block_id,
 
 				// Buttons
-				'B_SEARCH_IMG' => $mx_user->create_button('pub_search', $lang['Search'], mx_append_sid($publisher->this_mxurl("action=search"))),
-				'B_STATS_IMG' => $mx_user->create_button('pub_stats', $lang['Statistics'], mx_append_sid($publisher->this_mxurl("action=stats"))),
-				'B_TOPLIST_IMG' => $mx_user->create_button('pub_toplist', $lang['Toplist'], mx_append_sid($publisher->this_mxurl("action=toplist"))),
-				'B_UPLOAD_IMG' => $mx_user->create_button('pub_upload', $lang['User_upload'], $upload_url),
-				'B_VIEW_ALL_IMG' => $mx_user->create_button('pub_viewall', $lang['Viewall'], mx_append_sid($publisher->this_mxurl("action=viewall"))),
-				'B_MCP_LINK' => $mx_user->create_button('pub_moderator', $lang['MCP_title'], $mcp_url),
+				'B_SEARCH_IMG' => $this->create_button('pub_search', $lang['Search'], mx_append_sid($publisher->this_mxurl("action=search"))),
+				'B_STATS_IMG' => $this->create_button('pub_stats', $lang['Statistics'], mx_append_sid($publisher->this_mxurl("action=stats"))),
+				'B_TOPLIST_IMG' => $this->create_button('pub_toplist', $lang['Toplist'], mx_append_sid($publisher->this_mxurl("action=toplist"))),
+				'B_UPLOAD_IMG' => $this->create_button('pub_upload', $lang['User_upload'], $upload_url),
+				'B_VIEW_ALL_IMG' => $this->create_button('pub_viewall', $lang['Viewall'], mx_append_sid($publisher->this_mxurl("action=viewall"))),
+				'B_MCP_LINK' => $this->create_button('pub_moderator', $lang['MCP_title'], $mcp_url),
 			));
 	}
 
@@ -696,13 +696,13 @@ class publisher_functions
 			{
 				$sql_error = array(@print_r(@$this->db->sql_error($sql), true));
 				$sql_error['message'] = (isset($sql_error['message'])) ? $sql_error['message'] : '<br /><br />SQL : ' . $sql; 
-				$sql_error['code'] = (isset($sql_error['code'])) ? $sql_error['code'] : 0;			
+				$sql_error['code'] = (isset($sql_error['code'])) ? $sql_error['code'] : 0;
 			}
 			else
 			{
-				$sql_error = array(@print_r(@$this->db->sql_error_returned));				
+				$sql_error = array(@print_r(@$this->db->sql_error_returned));
 				$sql_error['message'] = $sql_error['message'] ? $sql_error['message'] : '<br /><br />SQL : ' . $sql; 
-				$sql_error['code'] = $sql_error['code'] ? $sql_error['code'] : 0;					
+				$sql_error['code'] = $sql_error['code'] ? $sql_error['code'] : 0;
 			}			
 			
 			$debug_text = '';
@@ -789,7 +789,7 @@ class publisher_functions
 	 * @param unknown_type $file_posticon
 	 * @return unknown
 	 */
-	function post_icons( $file_posticon = '' )
+	function post_icons($file_posticon = '')
 	{
 		global $lang, $phpbb_root_path;
 		global $mx_root_path, $module_root_path, $is_block, $phpEx;
@@ -830,6 +830,119 @@ class publisher_functions
 		}
 		@closedir( $handle );
 		return $posticons;
+	}
+
+	/**
+	 * Create buttons.
+	 *
+	 * You can create code for buttons:
+	 * 1) Simple textlinks (MX_BUTTON_TEXT)
+	 * 2) Standard image links (MX_BUTTON_IMAGE)
+	 * 3) Generic buttons, with spanning text on top background image (MX_BUTTON_GENERIC)
+	 *
+	 * Note: The rollover feature is done using a css shift technique, so you do not need separate images
+	 *
+	 * @param unknown_type $type
+	 * @param unknown_type $label
+	 * @param unknown_type $url
+	 * @param unknown_type $img
+	 */
+	function create_button($key, $label, $url, $img = '', $alt = '', $type = 'image')
+	{
+		switch($type)
+		{
+			case 'text':
+				$this_buttontype = MX_BUTTON_TEXT;
+			break;
+
+			case 'image':
+				$this_buttontype = MX_BUTTON_IMAGE;
+			break;
+
+			case 'generic':
+				$this_buttontype = MX_BUTTON_GENERIC;
+			break;
+
+			default:
+				$this_buttontype = $type;
+			break;
+		}
+		
+		switch($this_buttontype)
+		{
+			case MX_BUTTON_TEXT:
+				return '<a class="text button" href="'. $url .'"><span>' . $label . '</span></a>';
+			break;
+
+			case MX_BUTTON_IMAGE:
+				return '<a class="image button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $label . '" title="' . $label . '" border="0"></a>';
+			break;
+
+			case MX_BUTTON_GENERIC:
+				return '<a class="generic button" href="'. $url .'"><span>' . $label . '</span></a>';
+			break;
+
+			default:
+				return '<a class="' . $type . ' button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $label . '" title="' . $label . '" border="0"></a>';
+			break;
+		}
+		
+	}
+
+	/**
+	 * Create icons.
+	 *
+	 * You can create code for icons:
+	 * 1) Simple textlinks (MX_BUTTON_TEXT)
+	 * 2) Standard image links (MX_BUTTON_IMAGE)
+	 * 3) Generic buttons, with spanning text on top background image (MX_BUTTON_GENERIC)
+	 *
+	 * Note: The rollover feature is done using a css shift technique, so you do not need separate images
+	 *
+	 * @param unknown_type $type
+	 * @param unknown_type $label
+	 * @param unknown_type $url
+	 * @param unknown_type $img
+	 */
+	function create_icon($key, $label, $url, $img = '', $alt = '', $type = 'image')
+	{	
+		switch($type)
+		{
+			case 'text':
+				$this_buttontype = MX_BUTTON_TEXT;
+			break;
+
+			case 'image':
+				$this_buttontype = MX_BUTTON_IMAGE;
+			break;
+
+			case 'generic':
+				$this_buttontype = MX_BUTTON_GENERIC;
+			break;
+
+			default:
+				$this_buttontype = $type;
+			break;
+		}
+		
+		switch($this_buttontype)
+		{
+			case MX_BUTTON_TEXT:
+				return '<a class="text button" href="'. $url .'"><span>' . $label . '</span></a>';
+			break;
+
+			case MX_BUTTON_IMAGE:
+				return '<a class="image button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $label . '" title="' . $label . '" border="0"></a>';
+			break;
+
+			case MX_BUTTON_GENERIC:
+				return '<a class="generic button" href="'. $url .'"><span>' . $label . '</span></a>';
+			break;
+
+			default:
+				return '<a class="' . $type . ' button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $label . '" title="' . $label . '" border="0"></a>';
+			break;
+		}
 	}
 
 	/**
@@ -875,6 +988,240 @@ class publisher_functions
 	}
 
 	/**
+	* Specify/Get image
+	*
+	* phpBB2 Graphics - redefined for mxBB
+	* - Uncomment and redefine phpBB graphics
+	*
+	* If you need to redefine some phpBB graphics, look within the phpBB/templates folder for the template_name.cfg file and
+	* redefine those $image['xxx'] you want. Note: Many phpBB images are reused all over mxBB (eg see below), thus if you redefine
+	* common phpBB images, this will have immedaite effect for all mxBB pages.
+	*
+	*/
+	function img($img, $alt = '', $width = false, $suffix = '', $type = '')
+	{
+		static $imgs;
+		global $phpbb_root_path, $mx_root_path, $theme, $board_config;
+		global $mx_user, $mx_block, $images;
+		
+		/*
+		* Look at MX-Publisher-Module folder.........................................................................MX-Publisher-module
+		*/
+		if (isset($mx_block->module_root_path))
+		{
+			$module_root_path = $this->module_root_path = $this->ext_path = $mx_root_path . $mx_block->module_root_path;
+		}
+		else
+		{
+			global $module_root_path; 
+			
+			if (isset($module_root_path))
+			{
+				$this->module_root_path = $this->ext_path = $module_root_path;
+			}
+			else
+			{
+				global $mx_root_path;
+				$module_root_path = $this->module_root_path = $this->ext_path = is_dir($mx_root_path . 'modules/mx_publisher/') ? $mx_root_path . 'modules/mx_publisher/' : $mx_root_path . 'modules/mx_coreblocks/';
+			}
+		}
+		
+		$title = '';
+		$img_ext = 'gif'; 
+		if ($alt)
+		{
+			$alt = $mx_user->lang($alt);
+			$title = ' title="' . $alt . '"';
+		}
+		
+		if (strpos($img, '.') !== false)
+		{
+			// Nested img
+			$image_filename = $img;
+			$img_ext = substr(strrchr($image_filename, '.'), 1);
+			$img = basename($image_filename, '.' . $img_ext);
+			$this->img_array['image_filename'] = array(
+				''.$img => $img . '.' . $img_ext,
+			);
+			unset($img_name, $image_filename);
+		}
+		
+		if ($width !== false)
+		{
+			$this->img_array['image_width'] = array(
+				''.$img => $width,
+			);
+		}
+		
+		// Load phpBB Template configuration data
+		$current_template_path = $mx_user->current_template_path;
+		$template_name = $mx_user->template_name;
+		
+		//Replace $mx_user->template_path with $mx_user->style_path
+		$template_path = $mx_user->template_name;
+		$default_template_path = $mx_user->default_template_name;
+		
+		/* Here we overwrite phpBB images from the template configuration file with images from database  */
+		if (!is_array($this->img_array))
+		{
+			$this->img_array['image_filename'] = array(
+				'site_logo' => "logo.gif",
+				'upload_bar' => "upload_bar.gif",
+				'icon_contact_aim' => "icon_aim.gif",
+				'icon_contact_email' => "icon_email.gif",
+				'icon_contact_icq' => "icon_icq_add.gif",
+				'icon_contact_jabber' => "icon_jabber.gif",
+				'icon_contact_msnm' => "icon_msnm.gif",
+				'icon_contact_pm' => "icon_pm.gif",
+				'icon_contact_yahoo' => "icon_yim.gif",
+				'icon_contact_www' => "icon_www.gif",
+				'icon_post_delete' => "icon_delete.gif",
+				'icon_post_edit' => "icon_edit.gif",
+				'icon_post_info' => "icon_info.gif",
+				'icon_post_quote' => "icon_quote.gif",
+				'icon_post_report' => "icon_report.gif",
+				'icon_user_online' => "icon_online.gif",
+				'icon_user_offline' => "icon_offline.gif",
+				'icon_user_profile' => "icon_profile.gif",
+				'icon_user_search' => "icon_search.gif",
+				'icon_user_warn' => "icon_warn.gif",
+				'button_pm_forward' => "reply.gif",
+				'button_pm_new' => "msg_newpost.gif",
+				'button_pm_reply' => "reply.gif",
+				'button_topic_locked' => "msg_newpost.gif",
+				'button_topic_new' => "post.gif",
+				'button_topic_reply' => "reply.gif",
+				'forum_link' => "forum_link.gif",
+				'forum_read' => "forum_read.gif",
+				'forum_read_locked' => "forum_read_locked.gif",
+				'forum_read_subforum' => "forum_read_subforum.gif",
+				'forum_unread' => "forum_unread.gif",
+				'forum_unread_locked' => "forum_unread_locked.gif",
+				'forum_unread_subforum' => "forum_unread_subforum.gif",
+				'topic_moved' => "topic_moved.gif",
+				'topic_read' => "topic_read.gif",
+				'topic_read_mine' => "topic_read_mine.gif",
+				'topic_read_hot' => "topic_read_hot.gif",
+				'topic_read_hot_mine' => "topic_read_hot_mine.gif",
+				'topic_read_locked' => "topic_read_locked.gif",
+				'topic_read_locked_mine' => "topic_read_locked_mine.gif",
+				'topic_unread' => "topic_unread.gif",
+				'topic_unread_mine' => "topic_unread_mine.gif",
+				'topic_unread_hot' => "topic_unread_hot.gif",
+				'topic_unread_hot_mine' => "topic_unread_hot_mine.gif",
+				'topic_unread_locked' => "topic_unread_locked.gif",
+				'topic_unread_locked_mine' => "topic_unread_locked_mine.gif",
+				'sticky_read' => "sticky_read.gif",
+				'sticky_read_mine' => "sticky_read_mine.gif",
+				'sticky_read_locked' => "sticky_read_locked.gif",
+				'sticky_read_locked_mine' => "ticky_read_locked_mine.gif",
+				'sticky_unread' => "sticky_unread.gif",
+				'sticky_unread_mine' => "sticky_unread_mine.gif",
+				'sticky_unread_locked' => "sticky_unread_locked.gif",
+				'sticky_unread_locked_mine' => "sticky_unread_locked_mine.gif",
+				'announce_read' => "announce_read.gif",
+				'announce_read_mine' => "announce_read_mine.gif",
+				'announce_read_locked' => "announce_read_locked.gif",
+				'announce_read_locked_mine' => "announce_read_locked_mine.gif",
+				'announce_unread' => "announce_unread.gif",
+				'announce_unread_mine' => "announce_unread_mine.gif",
+				'announce_unread_locked' => "announce_unread_locked.gif",
+				'announce_unread_locked_mine' => "announce_unread_locked_mine.gif",
+				'global_read' => "announce_read.gif",
+				'global_read_mine' => "announce_read_mine.gif",
+				'global_read_locked' => "announce_read_locked.gif",
+				'global_read_locked_mine' => "announce_read_locked_mine.gif",
+				'global_unread' => "announce_unread.gif",
+				'global_unread_mine' => "announce_unread_mine.gif",
+				'global_unread_locked' => "announce_unread_locked.gif",
+				'global_unread_locked_mine' => "announce_unread_locked_mine.gif",
+				'subforum_read' => "", 
+				'subforum_unread' => "",
+				'pm_read' => "topic_read.gif",
+				'pm_unread' => "topic_unread.gif",
+				'icon_back_top' => "",
+				'icon_post_target' => "icon_post_target.gif",
+				'icon_post_target_unread' => "icon_post_target_unread.gif",
+				'icon_topic_attach' => "icon_topic_attach.gif",
+				'icon_topic_latest' => "icon_topic_latest.gif",
+				'icon_topic_newest' => "icon_topic_newest.gif",
+				'icon_topic_reported' => "icon_topic_reported.gif",
+				'icon_topic_unapproved' => "icon_topic_unapproved.gif"
+			);
+		}
+		
+		$this->img_array['image_lang'] = array(
+			'icon_post_edit' => $mx_user->img_lang,
+			'icon_post_quote' => $mx_user->img_lang,
+			'button_pm_forward' => $mx_user->img_lang,
+			'button_pm_new' => $mx_user->img_lang,
+			'button_pm_reply' => $mx_user->img_lang,
+			'button_topic_new' => $mx_user->img_lang,
+			'button_topic_reply' => $mx_user->img_lang
+		);
+
+		//Setup current style path for phpBB3 styles
+		$img_data = $imgs[$img];
+
+		if (empty($mx_user->img_array))
+		{
+			trigger_error('NO_STYLE_DATA', E_USER_ERROR);
+		}
+
+		$lang_dir = ( is_dir($module_root_path. $current_template_path . 'lang_' . $mx_user->user_language_name . '/') ) ?  'lang_' . $mx_user->user_language_name : ( is_dir($module_root_path. $current_template_path . 'lang_' . $mx_user->default_language_name . '/') ? 'lang_' . $mx_user->default_language_name : 'lang_' . $mx_user->user_language_name);
+
+		$img_data['src'] = isset($images[$img]) ? $images[$img] : is_file($module_root_path . $current_template_path . '/images/' . $lang_dir . '/' . $img . '.' . $img_ext) ? $module_root_path . $current_template_path . '/images/' . $lang_dir . '/' . $img . '.' . $img_ext : $module_root_path . $mx_user->current_template_path . '/images/' . $img . '.' . $img_ext;
+		$img_data['src'] = isset($img_data['src']) ? $img_data['src'] : is_file($module_root_path . $mx_user->default_current_template_path . '/images/' . $lang_dir . '/' . $img . '.' . $img_ext) ? $module_root_path . $mx_user->default_current_template_path . '/images/' . $lang_dir . '/' . $img . '.' . $img_ext : $module_root_path . $mx_user->default_current_template_path . '/images/' . $img . '.' . $img_ext;
+		$img_data['src'] = is_file($img_data['src']) ? $img_data['src'] : str_replace($current_template_path, $mx_user->default_current_template_path, $img_data['src']);
+
+		$alt = (!empty($mx_user->lang[$alt])) ? $mx_user->lang[$alt] : $alt;
+
+		$use_width = ($width === false) ? $img_data['width'] : $width;
+
+		/* - First try phpBB3 template theme images then template lang images */
+		switch ($type)
+		{
+			case 'src':
+				return $img_data['src'];
+			break;
+
+			case 'width':
+				return $use_width;
+			break;
+
+			case 'height':
+				return $img_data['height'];
+			break;
+
+			case 'filename':
+				return $img . '.' . $img_ext;
+			break;
+
+			case 'class':
+			case 'name':
+				return $img;
+			break;
+
+			case 'alt':
+				return $alt;
+			break;
+
+			case 'ext':
+				return $img_ext;
+			break;
+
+			case 'full_tag':
+				return '<img src="' . $img_data['src'] . '"' . (($use_width) ? ' width="' . $use_width . '"' : '') . (($img_data['height']) ? ' height="' . $img_data['height'] . '"' : '') . ' alt="' . $alt . '" title="' . $alt . '" />';
+			break;
+
+			case 'html':	
+			default:
+				return '<span class="imageset ' . $img . '"' . $title . '>' . $alt . '</span>';
+			break;
+		}
+	}
+
+	/**
 	 * Enter description here...
 	 *
 	 * @param unknown_type $file_type
@@ -885,11 +1232,11 @@ class publisher_functions
 		global $publisher_config;
 		global $mx_root_path, $module_root_path, $is_block, $phpEx;
 
-		srand( ( double )microtime() * 1000000 ); // for older than version 4.2.0 of PHP
+		srand((double)microtime() * 1000000); // for older than version 4.2.0 of PHP
 
 		do
 		{
-			$filename = md5( uniqid( rand() ) ) . $file_type;
+			$filename = md5(uniqid(rand())) . $file_type;
 		}
 		while ( file_exists( $publisher_config['upload_dir'] . '/' . $filename ) );
 
@@ -902,10 +1249,10 @@ class publisher_functions
 	 * @param unknown_type $filename
 	 * @return unknown
 	 */
-	function get_extension( $filename )
+	function get_extension($filename)
 	{
 		//return strtolower( array_pop( explode( '.', $filename ) ) );
-		return strtolower( array_pop( $array = (explode( '.', $filename ))) );
+		return strtolower(array_pop($array = (explode('.', $filename))));
 	}
 
 	/**
@@ -923,7 +1270,7 @@ class publisher_functions
 		global $phpbb_root_path, $lang, $phpEx, $board_config, $publisher_config, $userdata;
 		global $publisher, $cat_id, $mx_root_path, $module_root_path, $is_block, $phpEx;
 
-		@set_time_limit( 0 );
+		@set_time_limit(0);
 		$file_info = array();
 
 		$file_info['error'] = false;
@@ -1221,15 +1568,15 @@ class mx_user_info
 	 */
 	function mx_user_info( $user_agent = '' )
 	{
-		global $_SERVER, $HTTP_USER_AGENT, $HTTP_SERVER_VARS;
+		global $_SERVER, $HTTP_USER_AGENT, $_SERVER;
 
 		if ( !empty( $_SERVER['HTTP_USER_AGENT'] ) )
 		{
 			$HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
 		}
-		else if ( !empty( $HTTP_SERVER_VARS['HTTP_USER_AGENT'] ) )
+		else if ( !empty( $_SERVER['HTTP_USER_AGENT'] ) )
 		{
-			$HTTP_USER_AGENT = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
+			$HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
 		}
 		else if ( !isset( $HTTP_USER_AGENT ) )
 		{
@@ -1738,628 +2085,6 @@ class mx_pub_notification extends mx_notification
 	}
 }
 
-/**
- * This is a generic class for custom fields.
- *
- * Note: This class doesn't differ from the core mx_custom_fields class, besides the templating.
- *
- */
-class custom_field
-{
-	var $field_rowset = array();
-	var $field_data_rowset = array();
-
-	var $custom_table = PUB_CUSTOM_TABLE;
-	var $custom_data_table = PUB_CUSTOM_DATA_TABLE;
-
-	/**
-	 * prepare data
-	 *
-	 */
-	function init()
-	{
-		global $db;
-
-		$sql = "SELECT *
-			FROM " . $this->custom_table . "
-			ORDER BY field_order ASC";
-
-		if ( !( $result = $db->sql_query( $sql ) ) )
-		{
-			mx_message_die( GENERAL_ERROR, 'Couldnt Query Custom field', '', __LINE__, __FILE__, $sql );
-		}
-
-		while ( $row = $db->sql_fetchrow( $result ) )
-		{
-			$this->field_rowset[$row['custom_id']] = $row;
-		}
-		unset( $row );
-		$db->sql_freeresult( $result );
-
-		$sql = "SELECT *
-			FROM " . $this->custom_data_table;
-
-		if ( !( $result = $db->sql_query( $sql ) ) )
-		{
-			mx_message_die( GENERAL_ERROR, 'Couldnt Query Custom field', '', __LINE__, __FILE__, $sql );
-		}
-
-		while ( $row = $db->sql_fetchrow( $result ) )
-		{
-			$this->field_data_rowset[$row['customdata_file']][$row['customdata_custom']] = $row;
-		}
-
-		unset( $row );
-
-		$db->sql_freeresult( $result );
-	}
-
-	/**
-	 * check if there is a data in the database.
-	 *
-	 * @return unknown
-	 */
-	function field_data_exist()
-	{
-		if ( !empty( $this->field_data_rowset ) )
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @return unknown
-	 */
-	function field_exist()
-	{
-		if ( !empty( $this->field_rowset ) )
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * display data in the comment.
-	 *
-	 * @param unknown_type $file_id
-	 * @return unknown
-	 */
-	function add_comment( $file_id )
-	{
-		global $template;
-		if ( $this->field_data_exist() )
-		{
-			if ( isset( $this->field_data_rowset[$file_id] ) )
-			{
-				$message = '';
-				foreach( $this->field_data_rowset[$file_id] as $field_id => $data )
-				{
-					if ( !empty( $data['data'] ) )
-					{
-						switch ( $this->field_rowset[$field_id]['field_type'] )
-						{
-							case INPUT:
-							case TEXTAREA:
-							case RADIO:
-							case SELECT:
-								$field_data = $data['data'];
-								break;
-							case SELECT_MULTIPLE:
-							case CHECKBOX:
-								$field_data = @implode( ', ', unserialize( $data['data'] ) );
-								break;
-						}
-						$message .= "\n" . "[b]" . $this->field_rowset[$field_id]['custom_name'] . ":[/b] " . $field_data . "\n";
-					}
-					else
-					{
-						global $db;
-
-						$sql = "DELETE FROM " . $this->custom_data_table . "
-							WHERE customdata_file = '$file_id'
-							AND customdata_custom = '$field_id'";
-
-						if ( !( $db->sql_query( $sql ) ) )
-						{
-							mx_message_die( GENERAL_ERROR, 'Could not delete custom data', '', __LINE__, __FILE__, $sql );
-						}
-					}
-				}
-				return $message;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	/**
-	 * display data in the file page.
-	 *
-	 * @param unknown_type $file_id
-	 * @return unknown
-	 */
-	function display_data( $file_id )
-	{
-		global $template;
-		if ( $this->field_data_exist() )
-		{
-			if ( isset( $this->field_data_rowset[$file_id] ) )
-			{
-				foreach( $this->field_data_rowset[$file_id] as $field_id => $data )
-				{
-					if ( !empty( $data['data'] ) )
-					{
-						switch ( $this->field_rowset[$field_id]['field_type'] )
-						{
-							case INPUT:
-							case TEXTAREA:
-							case RADIO:
-							case SELECT:
-								$field_data = $data['data'];
-								break;
-							case SELECT_MULTIPLE:
-							case CHECKBOX:
-								$field_data = @implode( ', ', unserialize( $data['data'] ) );
-								break;
-						}
-
-						$template->assign_block_vars( 'custom_field', array(
-							'CUSTOM_NAME' => $this->field_rowset[$field_id]['custom_name'],
-							'DATA' => $field_data )
-						);
-					}
-					else
-					{
-						global $db;
-
-						$sql = "DELETE FROM " . $this->custom_data_table . "
-							WHERE customdata_file = '$file_id'
-							AND customdata_custom = '$field_id'";
-
-						if ( !( $db->sql_query( $sql ) ) )
-						{
-							mx_message_die( GENERAL_ERROR, 'Could not delete custom data', '', __LINE__, __FILE__, $sql );
-						}
-					}
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	/**
-	 * display custom field and data in the add/edit page.
-	 *
-	 * @param unknown_type $file_id
-	 * @return unknown
-	 */
-	function display_edit( $file_id = false )
-	{
-		$return = false;
-		if ( $this->field_exist() )
-		{
-			foreach( $this->field_rowset as $field_id => $field_data )
-			{
-				switch ( $field_data['field_type'] )
-				{
-					case INPUT:
-						$this->display_edit_input( $file_id, $field_id, $field_data );
-						break;
-					case TEXTAREA:
-						$this->display_edit_textarea( $file_id, $field_id, $field_data );
-						break;
-					case RADIO:
-						$this->display_edit_radio( $file_id, $field_id, $field_data );
-						break;
-					case SELECT:
-						$this->display_edit_select( $file_id, $field_id, $field_data );
-						break;
-					case SELECT_MULTIPLE:
-						$this->display_edit_select_multiple( $file_id, $field_id, $field_data );
-						break;
-					case CHECKBOX:
-						$this->display_edit_checkbox( $file_id, $field_id, $field_data );
-						break;
-				}
-
-				$return = true;
-			}
-		}
-		return $return;
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $file_id
-	 * @param unknown_type $field_id
-	 * @param unknown_type $field_data
-	 */
-	function display_edit_input( $file_id, $field_id, $field_data )
-	{
-		global $template;
-		$field_value_temp =  (!empty( $this->field_data_rowset[$file_id][$field_id]['data'] )) ? $this->field_data_rowset[$file_id][$field_id]['data'] : '';
-		$field_value = !empty( $_POST['field'][$field_data['custom_id']] ) ? $_POST['field'][$field_data['custom_id']] : $field_value_temp ;
-		$template->assign_block_vars( 'input', array(
-			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_ID' => $field_data['custom_id'],
-			'FIELD_DESCRIPTION' => $field_data['custom_description'],
-			'FIELD_VALUE' =>  $field_value )
-		);
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $file_id
-	 * @param unknown_type $field_id
-	 * @param unknown_type $field_data
-	 */
-	function display_edit_textarea( $file_id, $field_id, $field_data )
-	{
-		global $template;
-		$field_value_temp = ( !empty( $this->field_data_rowset[$file_id][$field_id]['data'] ) ) ? $this->field_data_rowset[$file_id][$field_id]['data'] : '';
-		$field_value = !empty( $_POST['field'][$field_data['custom_id']] ) ? $_POST['field'][$field_data['custom_id']] : $field_value_temp ;
-		$template->assign_block_vars( 'textarea', array(
-			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_ID' => $field_data['custom_id'],
-			'FIELD_DESCRIPTION' => $field_data['custom_description'],
-			'FIELD_VALUE' => $field_value )
-		);
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $file_id
-	 * @param unknown_type $field_id
-	 * @param unknown_type $field_data
-	 */
-	function display_edit_radio( $file_id, $field_id, $field_data )
-	{
-		global $template;
-		$template->assign_block_vars( 'radio', array(
-			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_ID' => $field_data['custom_id'],
-			'FIELD_DESCRIPTION' => $field_data['custom_description'] )
-		);
-
-		$data_temp = ( !empty( $this->field_data_rowset[$file_id][$field_id]['data'] ) ) ? $this->field_data_rowset[$file_id][$field_id]['data'] : array();
-		$data = !empty( $_POST['field'][$field_data['custom_id']] ) ? $_POST['field'][$field_data['custom_id']] : $data_temp ;
-		$field_datas = ( !empty( $field_data['data'] ) ) ? unserialize( stripslashes( $field_data['data'] ) ) : array();
-
-		if ( !empty( $field_datas ) )
-		{
-			foreach( $field_datas as $key => $value )
-			{
-				$template->assign_block_vars( 'radio.row', array(
-					'FIELD_VALUE' => $value,
-					'FIELD_SELECTED' => ( $data == $value ) ? ' checked="checked"' : '' )
-				);
-			}
-		}
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $file_id
-	 * @param unknown_type $field_id
-	 * @param unknown_type $field_data
-	 */
-	function display_edit_select( $file_id, $field_id, $field_data )
-	{
-		global $template;
-		$template->assign_block_vars( 'select', array(
-			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_ID' => $field_data['custom_id'],
-			'FIELD_DESCRIPTION' => $field_data['custom_description'] )
-		);
-
-		$data_temp = ( !empty( $this->field_data_rowset[$file_id][$field_id]['data'] ) ) ? $this->field_data_rowset[$file_id][$field_id]['data'] : '';
-		$data = !empty( $_POST['field'][$field_data['custom_id']] ) ? $_POST['field'][$field_data['custom_id']] : $data_temp ;
-		$field_datas = ( !empty( $field_data['data'] ) ) ? unserialize( stripslashes( $field_data['data'] ) ) : array();
-
-		if ( !empty( $field_datas ) )
-		{
-			foreach( $field_datas as $key => $value )
-			{
-				$template->assign_block_vars( 'select.row', array(
-					'FIELD_VALUE' => $value,
-					'FIELD_SELECTED' => ( $data == $value ) ? ' selected="selected"' : '' )
-				);
-			}
-		}
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $file_id
-	 * @param unknown_type $field_id
-	 * @param unknown_type $field_data
-	 */
-	function display_edit_select_multiple( $file_id, $field_id, $field_data )
-	{
-		global $template;
-		$template->assign_block_vars( 'select_multiple', array(
-			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_ID' => $field_data['custom_id'],
-			'FIELD_DESCRIPTION' => $field_data['custom_description'] )
-		);
-
-		$data_temp = ( !empty( $this->field_data_rowset[$file_id][$field_id]['data'] ) ) ? unserialize( $this->field_data_rowset[$file_id][$field_id]['data'] ) : array();
-		$data = !empty( $_POST['field'][$field_data['custom_id']] ) ? $_POST['field'][$field_data['custom_id']] : $data_temp ;
-		$field_datas = ( !empty( $field_data['data'] ) ) ? unserialize( stripslashes( $field_data['data'] ) ) : array();
-
-		if ( !empty( $field_datas ) )
-		{
-			foreach( $field_datas as $key => $value )
-			{
-				$selected = '';
-				foreach( $data as $field_value )
-				{
-					if ( $field_value == $value )
-					{
-						$selected = '  selected="selected"';
-						break;
-					}
-				}
-				$template->assign_block_vars( 'select_multiple.row', array(
-					'FIELD_VALUE' => $value,
-					'FIELD_SELECTED' => $selected )
-				);
-			}
-		}
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $file_id
-	 * @param unknown_type $field_id
-	 * @param unknown_type $field_data
-	 */
-	function display_edit_checkbox( $file_id, $field_id, $field_data )
-	{
-		global $template;
-		$template->assign_block_vars( 'checkbox', array(
-			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_ID' => $field_data['custom_id'],
-			'FIELD_DESCRIPTION' => $field_data['custom_description'] )
-		);
-
-		$data_temp = ( !empty( $this->field_data_rowset[$file_id][$field_id]['data'] ) ) ? unserialize( $this->field_data_rowset[$file_id][$field_id]['data'] ) : array();
-		$data = !empty( $_POST['field'][$field_data['custom_id']] ) ? $_POST['field'][$field_data['custom_id']] : $data_temp ;
-		$field_datas = ( !empty( $field_data['data'] ) ) ? unserialize( stripslashes( $field_data['data'] ) ) : array();
-
-		if ( !empty( $field_datas ) )
-		{
-			foreach( $field_datas as $key => $value )
-			{
-				$checked = '';
-				foreach( $data as $field_value )
-				{
-					if ( $field_value == $value )
-					{
-						$checked = ' checked';
-						break;
-					}
-				}
-				$template->assign_block_vars( 'checkbox.row', array(
-					'FIELD_VALUE' => $value,
-					'FIELD_CHECKED' => $checked )
-				);
-			}
-		}
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $field_type
-	 * @param unknown_type $field_id
-	 */
-	function update_add_field( $field_type, $field_id = false )
-	{
-		global $db, $db, $_POST, $lang;
-
-		$field_name = ( isset( $_POST['field_name'] ) ) ? htmlspecialchars( $_POST['field_name'] ) : '';
-		$field_desc = ( isset( $_POST['field_desc'] ) ) ? htmlspecialchars( $_POST['field_desc'] ) : '';
-		$regex = ( isset( $_POST['regex'] ) ) ? $_POST['regex'] : '';
-		$data = ( isset( $_POST['data'] ) ) ? $_POST['data'] : '';
-		$field_order = ( isset( $_POST['field_order'] ) ) ? $_POST['field_order'] : '';
-
-		if ( $field_id )
-		{
-			$field_order = ( isset( $_POST['field_order'] ) ) ? intval( $_POST['field_order'] ) : '';
-		}
-
-		if ( !empty( $data ) )
-		{
-			$data = explode( "\n", htmlspecialchars( trim( $data ) ) );
-
-			foreach( $data as $key => $value )
-			{
-				$data[$key] = trim( $value );
-			}
-			$data = addslashes( serialize( $data ) );
-		}
-
-		if ( empty( $field_name ) )
-		{
-			mx_message_die( GENERAL_ERROR, $lang['Missing_field'] );
-		}
-
-		if ( ( ( $field_type != INPUT && $field_type != TEXTAREA ) && empty( $data ) ) )
-		{
-			mx_message_die( GENERAL_ERROR, $lang['Missing_field'] );
-		}
-
-		if ( !$field_id )
-		{
-			$sql_array = array(
-				'custom_name' => utf8_normalize_nfc($field_name),
-				'custom_description' => utf8_normalize_nfc($field_desc), 
-				'data' => $data, 
-				'regex' => $regex, 
-				'field_type' => $field_type,
-			);							
-							
-			$sql = "INSERT INTO " . $this->custom_table . $db->sql_build_array('INSERT', $sql_array);
-			
-			if ( !( $db->sql_query( $sql ) ) )
-			{
-				mx_message_die( GENERAL_ERROR, 'Could not add the new fields', '', __LINE__, __FILE__, $sql );
-			}
-
-			$field_id = $db->sql_nextid();
-			
-			$sql = "UPDATE " . $this->custom_table . "
-				SET field_order = '$field_id'
-				WHERE custom_id = $field_id";
-
-			if ( !( $db->sql_query( $sql ) ) )
-			{
-				mx_message_die( GENERAL_ERROR, 'Could not set the order for the giving field', '', __LINE__, __FILE__, $sql );
-			}
-		}
-		else
-		{
-		
-			$sql_array = array(
-				'custom_name' => utf8_normalize_nfc($field_name),
-				'custom_description' => utf8_normalize_nfc($field_desc),
-				'data' => $data,
-				'regex' => $regex,
-				'field_order' => (int) $field_order,				
-			);
-
-			$sql = "UPDATE " . $this->custom_table . "SET " . $db->sql_build_array('UPDATE', $sql_array) . "
-						WHERE custom_id = '" . $db->sql_escape($field_id) . "'";
-
-			if ( !( $db->sql_query( $sql ) ) )
-			{
-				mx_message_die( GENERAL_ERROR, 'Could not update information for the giving field', '', __LINE__, __FILE__, $sql );
-			}
-		}
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $field_id
-	 */
-	function delete_field( $field_id )
-	{
-		global $db;
-
-		$sql = "DELETE FROM " . $this->custom_data_table . "
-			WHERE customdata_custom = '$field_id'";
-
-		if ( !( $db->sql_query( $sql ) ) )
-		{
-			mx_message_die( GENERAL_ERROR, 'Could not delete custom data', '', __LINE__, __FILE__, $sql );
-		}
-
-		$sql = "DELETE FROM " . $this->custom_table . "
-			WHERE custom_id = '$field_id'";
-
-		if ( !( $db->sql_query( $sql ) ) )
-		{
-			mx_message_die( GENERAL_ERROR, 'Could not delete the selected field', '', __LINE__, __FILE__, $sql );
-		}
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $field_id
-	 * @return unknown
-	 */
-	function get_field_data( $field_id )
-	{
-		$return_array = $this->field_rowset[$field_id];
-		$return_array['data'] = !empty( $return_array['data'] ) ? implode( "\n", unserialize( stripslashes( $return_array['data'] ) ) ) : '';
-		return $return_array;
-	}
-
-	/**
-	 * file data in custom field operations.
-	 *
-	 * @param unknown_type $file_id
-	 */
-	function file_update_data( $file_id )
-	{
-		global $_POST, $db;
-		$field = ( isset( $_POST['field'] ) ) ? $_POST['field'] : '';
-		if ( !empty( $field ) )
-		{
-			foreach( $field as $field_id => $field_data )
-			{
-				if ( !empty( $this->field_rowset[$field_id]['regex'] ) )
-				{
-					if ( !preg_match( '#' . $this->field_rowset[$field_id]['regex'] . '#siU', $field_data ) )
-					{
-						$field_data = '';
-					}
-				}
-
-				switch ( $this->field_rowset[$field_id]['field_type'] )
-				{
-					case INPUT:
-					case TEXTAREA:
-					case RADIO:
-					case SELECT:
-						$data = htmlspecialchars( $field_data );
-						break;
-					case SELECT_MULTIPLE:
-					case CHECKBOX:
-						$data = addslashes( serialize( $field_data ) );
-						break;
-				}
-
-				$sql = "DELETE FROM " . $this->custom_data_table . "
-					WHERE customdata_file = '$file_id'
-					AND customdata_custom = '$field_id'";
-
-				if ( !$db->sql_query( $sql ) )
-				{
-					mx_message_die( GENERAL_ERROR, 'Could not delete data from custom data table', '', __LINE__, __FILE__, $sql );
-				}
-
-				if ( !empty( $data ) )
-				{
-					$sql = "INSERT INTO " . $this->custom_data_table . " (customdata_file, customdata_custom, data)
-						VALUES('$file_id', '$field_id', '$data')";
-
-					if ( !$db->sql_query( $sql ) )
-					{
-						mx_message_die( GENERAL_ERROR, 'Could not add additional data', '', __LINE__, __FILE__, $sql );
-					}
-				}
-			}
-		}
-	}
-}
-
 // ------------------------------------
 // Functions
 // ------------------------------------
@@ -2405,7 +2130,7 @@ function paImageRating( $rating )
 // =========================================================================
 function send_file_to_browser($real_filename, $physical_filename, $upload_dir)
 {
-	global $_SERVER, $HTTP_USER_AGENT, $HTTP_SERVER_VARS, $lang, $db, $publisher_functions;
+	global $_SERVER, $HTTP_USER_AGENT, $_SERVER, $lang, $db, $publisher_functions;
 
 	if ( $upload_dir == '' )
 	{
@@ -2674,7 +2399,7 @@ function pub_redirect( $file_url )
 		exit;
 	}
 	// Behave as per HTTP/1.1 spec for others
-	Header( "Location: $file_url" );
+	header( "Location: $file_url" );
 	exit();
 }
 ?>

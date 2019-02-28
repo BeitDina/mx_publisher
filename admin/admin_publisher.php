@@ -55,14 +55,15 @@ else
 if ( !empty( $setmodules ) )
 {
 	$filename = basename( __FILE__ );
-	$module['MXPub_Download']['0_Configuration'] 	= $setmodules_admin_path . $filename . "?action=settings";
-	$module['MXPub_Download']['1_Cat_manage'] 		= $setmodules_admin_path . $filename . "?action=cat_manage";
-	$module['MXPub_Download']['2_File_manage'] 		= $setmodules_admin_path . $filename . "?action=file_manage";
-	$module['MXPub_Download']['3_Permissions'] 		= $setmodules_admin_path . $filename . "?action=catauth_manage";
-	$module['MXPub_Download']['4_License'] 			= $setmodules_admin_path . $filename . "?action=license_manage";
-	$module['MXPub_Download']['5_Custom_manage'] 	= $setmodules_admin_path . $filename . "?action=custom_manage";
-	$module['MXPub_Download']['6_Fchecker'] 			= $setmodules_admin_path . $filename . "?action=fchecker_manage";
-	$module['MXPub_Download']['6_lang_user'] 			= $setmodules_admin_path . $filename . "?action=lang_user_created";
+	$module['Pub_title']['0_Configuration'] 	= $setmodules_admin_path . $filename . "?action=settings";
+	$module['Pub_title']['1_Cat_manage'] 		= $setmodules_admin_path . $filename . "?action=cat_manage";
+	$module['Pub_title']['2_File_manage'] 		= $setmodules_admin_path . $filename . "?action=file_manage";
+	$module['Pub_title']['3_Art_man'] 		= $setmodules_admin_path . $filename . "?action=article_manage";
+	$module['Pub_title']['4_Permissions'] 		= $setmodules_admin_path . $filename . "?action=catauth_manage";
+	$module['Pub_title']['6_Custom_manage'] 	= $setmodules_admin_path . $filename . "?action=custom_manage";
+	$module['Pub_title']['7_Fchecker'] 			= $setmodules_admin_path . $filename . "?action=fchecker_manage";
+	$module['Pub_title']['8_License'] 			= $setmodules_admin_path . $filename . "?action=license_manage";
+	$module['Pub_title']['9_lang_user'] 			= $setmodules_admin_path . $filename . "?action=lang_user_created";
 	return;
 }
 @define('IN_PORTAL', 1);
@@ -108,6 +109,7 @@ $action = ( isset( $_REQUEST['action'] ) ) ? htmlspecialchars( $_REQUEST['action
 //
 @define( 'settings', 'settings' );
 @define( 'cat_manage', 'cat_manage' );
+@define( 'article_manage', 'article_manage' );
 @define( 'file_manage', 'file_manage' );
 @define( 'catauth_manage', 'catauth_manage' );
 @define( 'ug_auth_manage', 'ug_auth_manage' );
@@ -115,12 +117,14 @@ $action = ( isset( $_REQUEST['action'] ) ) ? htmlspecialchars( $_REQUEST['action
 @define( 'custom_manage', 'custom_manage' );
 @define( 'fchecker_manage', 'fchecker_manage' );
 @define( 'lang_user_created', 'lang_user_created' );
+
 //
 // an array of all expected actions
 //
 $actions = array(
 	'settings' => 'settings',
 	'cat_manage' => 'cat_manage',
+	'article_manage' => 'article_manage',
 	'file_manage' => 'file_manage',
 	'catauth_manage' => 'catauth_manage',
 	'ug_auth_manage' => 'ug_auth_manage',
@@ -128,11 +132,12 @@ $actions = array(
 	'custom_manage' => 'custom_manage',
 	'fchecker_manage' => 'fchecker_manage',
 	'lang_user_created' => 'lang_user_created' );
+
 //
 // Lets Build the page
 //
-$publisher->adminmodule( $actions[$action] );
-$publisher->modules[$actions[$action]]->main( $action );
+$publisher->adminmodule($actions[$action]);
+$publisher->modules[$actions[$action]]->main($action);
 
 $publisher->modules[$actions[$action]]->_publisher();
 

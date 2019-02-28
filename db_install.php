@@ -46,7 +46,7 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 	$message = "<b>This is a fresh install!</b><br/><br/>";
 
 	$sql = array(
-		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_articles ",		
+		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_articles ",
 		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_cat ",
 		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_auth ",
 		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_comments ",
@@ -62,7 +62,6 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_votes ",
 		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_mirrors ",
 		"DROP TABLE IF EXISTS " . $mx_table_prefix . "pub_files ",
-
 
 		// --------------------------------------------------------
 		// Table structure for table `pub_categories`
@@ -140,6 +139,7 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 			  file_name text,
 			  file_desc text,
 			  file_longdesc text,
+			  file_artid int(10) default NULL,
 			  file_catid int(10) default NULL,
 			  file_approved TINYINT(1) NOT NULL default '1',
 
@@ -174,43 +174,58 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_articles`
 		"CREATE TABLE " . $mx_table_prefix . "pub_articles (
-						article_id mediumint(8) unsigned NOT NULL auto_increment,
-  						article_title varchar(255) binary NOT NULL default '',
-  						article_description varchar(255) binary NOT NULL default '',
-  						article_category_id mediumint(8) unsigned NOT NULL default '0',
-  						approved tinyint(1) unsigned NOT NULL default '0',
-			  			
- 						article_body longtext NOT NULL,
-   						bbcode_uid varchar(10) binary NOT NULL default '',
- 						article_type mediumint(8) unsigned NOT NULL default '0',
+			`article_id` mediumint(8) unsigned NOT NULL auto_increment,
+  			`article_title` varchar(255) binary NOT NULL default '',
+  			`article_description` varchar(255) binary NOT NULL default '',
+  			`article_category_id` mediumint(8) unsigned NOT NULL default '0',
+			`article_approved` tinyint(1) NOT NULL default '1',
+  			`approved` tinyint(1) unsigned NOT NULL default '0',
 
-  						article_date int(50) default NULL,
-  						article_author_id mediumint(8) NOT NULL,
-						username VARCHAR(255),
-  						topic_id mediumint(8) unsigned NOT NULL default '0',
-  						views BIGINT(8) NOT NULL DEFAULT '0',
+ 			`article_body` longtext NOT NULL,
+   			`bbcode_uid` varchar(10) binary NOT NULL default '',
+ 			`article_type` mediumint(8) unsigned NOT NULL default '0',
 
-  						PRIMARY KEY (article_id)
+  			`article_date` int(50) default NULL,
+  			`article_author_id` mediumint(8) NOT NULL,
+			`username` VARCHAR(255),
+
+			`article_update_time` int(50) NOT NULL default '0',
+			`article_last` int(50) default NULL,
+			`article_pin` int(2) default '0',
+			`article_disable` int(2) default '0',
+			`disable_msg` text,
+			`article_broken` TINYINT(1) DEFAULT '0' NOT NULL,
+  
+			`topic_id` mediumint(8) unsigned NOT NULL default '0',
+  			`views` BIGINT(8) NOT NULL DEFAULT '0',
+
+			`article_allow_file` tinyint(2) NOT NULL default '1',
+			`article_files` mediumint(8) NOT NULL default '-1',
+			`article_last_file_id` mediumint(8) unsigned NOT NULL default '0',
+			`article_last_file_name` varchar(255) DEFAULT '' NOT NULL,
+			`article_last_file_time` int(50) unsigned NOT NULL default '0',
+			  
+			`auth_view_file` tinyint(2) NOT NULL default '0',
+			`auth_edit_file` tinyint(2) NOT NULL default '0',
+			  
+  			PRIMARY KEY (`article_id`)
 		)",
 
-
-
-		
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_config`
 		"CREATE TABLE " . $mx_table_prefix . "pub_config (
-		  `config_name` varchar(155) NOT NULL DEFAULT '',
-		  `config_value` varchar(155) NOT NULL DEFAULT '',
-		  `is_dynamic` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-		  PRIMARY KEY (`config_name`),
-		  KEY `is_dynamic` (`is_dynamic`)
+		`config_name` varchar(155) NOT NULL DEFAULT '',
+		`config_value` varchar(155) NOT NULL DEFAULT '',
+		`is_dynamic` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+		PRIMARY KEY (`config_name`),
+		KEY `is_dynamic` (`is_dynamic`)
 		)",
 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_comments`
 		"CREATE TABLE " . $mx_table_prefix . "pub_comments (
 			  `comments_id` int(10) NOT NULL auto_increment,
-			  `file_id` int(10) NOT NULL default '0',
+			  `article_id` int(10) NOT NULL default '0',
 			  `comments_text` mediumtext,
 			  `comments_title` mediumtext,
 			  `comments_time` int(50) NOT NULL default '0',
@@ -237,46 +252,58 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_customdata`
 		"CREATE TABLE " . $mx_table_prefix . "pub_customdata (
+			  customdata_article int(50) NOT NULL default '0',
 			  customdata_file int(50) NOT NULL default '0',
 			  customdata_custom int(50) NOT NULL default '0',
 			  data text NOT NULL
 		)",
 
 		// --------------------------------------------------------
+		// Table structure for table `phpbb_pub_articlesacces_info`
+		"CREATE TABLE " . $mx_table_prefix . "pub_articlesacces_info (
+			article_id mediumint(8) NOT NULL default '0',
+			user_id mediumint(8) NOT NULL default '0',
+			downloader_ip varchar(8) NOT NULL default '',
+			downloader_os varchar(255) NOT NULL default '',
+			downloader_browser varchar(255) NOT NULL default '',
+			browser_version varchar(255) NOT NULL default ''
+		)",
+
+		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_filesacces_info`
 		"CREATE TABLE " . $mx_table_prefix . "pub_filesacces_info (
-			  file_id mediumint(8) NOT NULL default '0',
-			  user_id mediumint(8) NOT NULL default '0',
-			  downloader_ip varchar(8) NOT NULL default '',
-			  downloader_os varchar(255) NOT NULL default '',
-			  downloader_browser varchar(255) NOT NULL default '',
-			  browser_version varchar(255) NOT NULL default ''
+			file_id mediumint(8) NOT NULL default '0',
+			user_id mediumint(8) NOT NULL default '0',
+			downloader_ip varchar(8) NOT NULL default '',
+			downloader_os varchar(255) NOT NULL default '',
+			downloader_browser varchar(255) NOT NULL default '',
+			browser_version varchar(255) NOT NULL default ''
 		)",
 
 		// --------------------------------------------------------
 		"CREATE TABLE " . $mx_table_prefix . "pub_mirrors (
-			  mirror_id mediumint(8) NOT NULL auto_increment,
-			  file_id int(10) NOT NULL,
-			  unique_name varchar(255) NOT NULL default '',
-			  file_dir VARCHAR(255) NOT NULL,
-			  file_dlurl varchar(255) NOT NULL default '',
-			  mirror_location VARCHAR(255) NOT NULL default '',
-			  PRIMARY KEY  (mirror_id),
-			  KEY file_id (file_id)
+			mirror_id mediumint(8) NOT NULL auto_increment,
+			file_id int(10) NOT NULL,
+			unique_name varchar(255) NOT NULL default '',
+			file_dir VARCHAR(255) NOT NULL,
+			file_dlurl varchar(255) NOT NULL default '',
+			mirror_location VARCHAR(255) NOT NULL default '',
+			PRIMARY KEY (mirror_id),
+			KEY file_id (file_id)
 		)",
 
 		// Table structure for table `phpbb_pub_license`
 		"CREATE TABLE " . $mx_table_prefix . "pub_license (
-			  license_id int(10) NOT NULL auto_increment,
-			  license_name text,
-			  license_text text,
-			  PRIMARY KEY  (license_id)
+			license_id int(10) NOT NULL auto_increment,
+			license_name text,
+			license_text text,
+			PRIMARY KEY  (license_id)
 		)",
-		
+
 		"CREATE TABLE " . $mx_table_prefix . "pub_types (
-  				 	       id mediumint(8) unsigned NOT NULL auto_increment,
-  						   type varchar(255) binary DEFAULT '' NOT NULL,
-  						   KEY id (id)
+  			id mediumint(8) unsigned NOT NULL auto_increment,
+  			type varchar(255) binary DEFAULT '' NOT NULL,
+  			KEY id (id)
 		)",
 
 		"INSERT INTO " . $mx_table_prefix . "pub_types VALUES (1, 'Test Type 1')",
@@ -284,20 +311,21 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_votes`
 		"CREATE TABLE " . $mx_table_prefix . "pub_votes (
-			  user_id mediumint(8) NOT NULL default '0',
-			  votes_ip varchar(50) NOT NULL default '0',
-			  votes_article int(50) NOT NULL default '0',
-			  rate_point tinyint(3) unsigned NOT NULL default '0',
-			  voter_os varchar(255) NOT NULL default '',
-			  voter_browser varchar(255) NOT NULL default '',
-			  browser_version varchar(8) NOT NULL default '',
-			  KEY user_id (user_id),
-			  KEY votes_article (votes_article),
-			  KEY votes_ip (votes_ip),
-			  KEY voter_os (voter_os),
-			  KEY voter_browser (voter_browser),
-			  KEY browser_version (browser_version),
-			  KEY rate_point (rate_point)
+			user_id mediumint(8) NOT NULL default '0',
+			votes_ip varchar(50) NOT NULL default '0',
+			votes_article int(50) NOT NULL default '0',
+			votes_file int(50) NOT NULL default '0',
+			rate_point tinyint(3) unsigned NOT NULL default '0',
+			voter_os varchar(255) NOT NULL default '',
+			voter_browser varchar(255) NOT NULL default '',
+			browser_version varchar(8) NOT NULL default '',
+			KEY user_id (user_id),
+			KEY votes_article (votes_article),
+			KEY votes_ip (votes_ip),
+			KEY voter_os (voter_os),
+			KEY voter_browser (voter_browser),
+			KEY browser_version (browser_version),
+			KEY rate_point (rate_point)
 		)",
 
 		// Table structure for table `pub_auth`
@@ -433,7 +461,7 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 				    WHERE module_id = '" . $mx_module_id . "'";
 	}
 
-	$message .= mx_do_install_upgrade( $sql );
+	$message .= mx_do_install_upgrade($sql);
 }
 else
 {

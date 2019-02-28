@@ -120,11 +120,11 @@ class custom_field
 							case RADIO:
 							case SELECT:
 								$field_data = $data['data'];
-								break;
+							break;
 							case SELECT_MULTIPLE:
 							case CHECKBOX:
 								$field_data = @implode( ', ', unserialize( $data['data'] ) );
-								break;
+							break;
 						}
 						$message .= "\n" . "[b]" . $this->field_rowset[$field_id]['custom_name'] . ":[/b] " . $field_data . "\n";
 					}
@@ -179,11 +179,11 @@ class custom_field
 							case RADIO:
 							case SELECT:
 								$field_data = $data['data'];
-								break;
+							break;
 							case SELECT_MULTIPLE:
 							case CHECKBOX:
 								$field_data = @implode( ', ', unserialize( $data['data'] ) );
-								break;
+							break;
 						}
 
 						$template->assign_block_vars( 'custom_field', array(
@@ -234,22 +234,22 @@ class custom_field
 				{
 					case INPUT:
 						$this->display_edit_input( $file_id, $field_id, $field_data );
-						break;
+					break;
 					case TEXTAREA:
 						$this->display_edit_textarea( $file_id, $field_id, $field_data );
-						break;
+					break;
 					case RADIO:
 						$this->display_edit_radio( $file_id, $field_id, $field_data );
-						break;
+					break;
 					case SELECT:
 						$this->display_edit_select( $file_id, $field_id, $field_data );
-						break;
+					break;
 					case SELECT_MULTIPLE:
 						$this->display_edit_select_multiple( $file_id, $field_id, $field_data );
-						break;
+					break;
 					case CHECKBOX:
 						$this->display_edit_checkbox( $file_id, $field_id, $field_data );
-						break;
+					break;
 				}
 
 				$return = true;
@@ -488,9 +488,16 @@ class custom_field
 
 		if ( !$field_id )
 		{
-			$sql = "INSERT INTO " . $this->custom_table . " (custom_name, custom_description, data, regex, field_type)
-				VALUES('" . $field_name . "', '" . $field_desc . "', '" . $data . "', '" . $regex . "', '" . $field_type . "')";
-
+			$sql_array = array(
+				'custom_name' => utf8_normalize_nfc($field_name),
+				'custom_description' => utf8_normalize_nfc($field_desc), 
+				'data' => $data, 
+				'regex' => $regex, 
+				'field_type' => $field_type,
+			);							
+							
+			$sql = "INSERT INTO " . $this->custom_table . $db->sql_build_array('INSERT', $sql_array);
+			
 			if ( !( $db->sql_query( $sql ) ) )
 			{
 				mx_message_die( GENERAL_ERROR, 'Could not add the new fields', '', __LINE__, __FILE__, $sql );
@@ -509,9 +516,17 @@ class custom_field
 		}
 		else
 		{
-			$sql = "UPDATE " . $this->custom_table . "
-				SET custom_name = '$field_name', custom_description = '$field_desc', data = '$data', regex = '$regex', field_order='$field_order'
-				WHERE custom_id = $field_id";
+		
+			$sql_array = array(
+				'custom_name' => utf8_normalize_nfc($field_name),
+				'custom_description' => utf8_normalize_nfc($field_desc),
+				'data' => $data,
+				'regex' => $regex,
+				'field_order' => (int) $field_order,				
+			);
+
+			$sql = "UPDATE " . $this->custom_table . "SET " . $db->sql_build_array('UPDATE', $sql_array) . "
+						WHERE custom_id = '" . $db->sql_escape($field_id) . "'";
 
 			if ( !( $db->sql_query( $sql ) ) )
 			{
@@ -587,11 +602,11 @@ class custom_field
 					case RADIO:
 					case SELECT:
 						$data = htmlspecialchars( $field_data );
-						break;
+					break;
 					case SELECT_MULTIPLE:
 					case CHECKBOX:
 						$data = addslashes( serialize( $field_data ) );
-						break;
+					break;
 				}
 
 				$sql = "DELETE FROM " . $this->custom_data_table . "

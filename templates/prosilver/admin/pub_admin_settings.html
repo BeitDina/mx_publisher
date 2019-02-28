@@ -34,18 +34,29 @@
 	</dl>
 	<dl>
 		<dt>{L_MODULE_NAME}<br /><span class="gensmall">{L_MODULE_NAME_EXPLAIN}</span></dt>
-		<dd><input text="text" name="module_name" value="{MODULE_NAME}" size="20" maxlength="50" /></dd>
+		<dd>
+		<input text="text" name="module_name" value="{MODULE_NAME}" size="20" maxlength="50" />
+		</dd>
 	</dl>
 	<dl>
-		<dt>{L_ENABLE_MODULE}<br /><span class="gensmall">{L_ENABLE_MODULE_EXPLAIN}</span></dt>
-		<dd><input type="radio" name="enable_module" value="1" {S_ENABLE_MODULE_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="enable_module" value="0" {S_ENABLE_MODULE_NO} /> {L_NO}</dd>
+		<dt>{L_ENABLE_MODULE}<br />
+		<span class="gensmall">{L_ENABLE_MODULE_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="radio" name="enable_module" value="1" {S_ENABLE_MODULE_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="enable_module" value="0" {S_ENABLE_MODULE_NO} /> {L_NO}
+		</dd>
 	</dl>
 	<dl>
-		<dt>{L_WYSIWYG_PATH}<br /><span class="gensmall">{L_WYSIWYG_PATH_EXPLAIN}</span></dt>
+		<dt>{L_WYSIWYG_PATH}<br />
+		<span class="gensmall">{L_WYSIWYG_PATH_EXPLAIN}</span>
+		</dt>
 		<dd><input text="text" name="wysiwyg_path" value="{WYSIWYG_PATH}" size="20" maxlength="50" /></dd>
 	</dl>
 	<dl>
-		<dt>{L_UPLOAD_DIR}<br /><span class="gensmall">{L_UPLOAD_DIR_EXPLAIN}</span></dt>
+		<dt>{L_UPLOAD_DIR}<br />
+		<span class="gensmall">{L_UPLOAD_DIR_EXPLAIN}</span>
+		</dt>
 		<dd><input type="text" size="25" maxlength="100" name="upload_dir" class="post" value="{UPLOAD_DIR}" /></dd>
 	</dl>
 	<dl>
@@ -53,7 +64,11 @@
 		<dd><input type="text" size="25" maxlength="100" name="screenshots_dir" class="post" value="{SCREENSHOT_DIR}" /></dd>
 	</dl>
 	<dl>
-		<dd class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></dt>
+		<dd class="cat" colspan="2" align="center">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
+		<input type="reset" value="{L_RESET}" class="liteoption" />
+		</dd>
 	</dl>
 </div>
 </fieldset>
@@ -96,41 +111,64 @@
 		<td class="row2" width="50%"><input type="radio" name="allow_links" value="1" {S_ALLOW_LINKS_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_links" value="0" {S_ALLOW_LINKS_NO} /> {L_NO}</td>
 	</tr>
   	<tr>
-		<td class="row1">{L_LINKS_MESSAGE}<br><span class="gensmall">{L_LINKS_MESSAGE_EXPLAIN}</span></td>
-		<td class="row2"><input type="text" class="post" size="50" name="no_link_message" value="{MESSAGE_LINK}" /></td>
+		<td class="row1">{L_LINKS_MESSAGE}<br />
+		<span class="gensmall">{L_LINKS_MESSAGE_EXPLAIN}</span>
+		</td>
+		<td class="row2">
+		<input type="text" class="post" size="50" name="no_link_message" value="{MESSAGE_LINK}" />
+		</td>
   	</tr>
 	<tr>
-		<td class="row1" width="50%">{L_FORMAT_WORDWRAP}<br /><span class="gensmall">{L_FORMAT_WORDWRAP_EXPLAIN}</span></td>
-		<td class="row2" width="50%"><input type="radio" name="formatting_wordwrap" value="1" {S_FORMAT_WORDWRAP_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="formatting_wordwrap" value="0" {S_FORMAT_WORDWRAP_NO} /> {L_NO}</td>
+		<td class="row1" width="50%">{L_FORMAT_WORDWRAP}<br />
+		<span class="gensmall">{L_FORMAT_WORDWRAP_EXPLAIN}</span>
+		</td>
+		<td class="row2" width="50%">
+		<input type="radio" name="formatting_wordwrap" value="1" {S_FORMAT_WORDWRAP_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="formatting_wordwrap" value="0" {S_FORMAT_WORDWRAP_NO} /> {L_NO}
+		</td>
 	</tr>
   	<tr>
-		<td class="row1">{L_FORMAT_IMAGE_RESIZE}<br><span class="gensmall">{L_FORMAT_IMAGE_RESIZE_EXPLAIN}</span></td>
-		<td class="row2"><input type="text" class="post" size="50" name="formatting_image_resize" value="{FORMAT_IMAGE_RESIZE}" /></td>
+		<td class="row1">{L_FORMAT_IMAGE_RESIZE}<br />
+		<span class="gensmall">{L_FORMAT_IMAGE_RESIZE_EXPLAIN}</span>
+		</td>
+		<td class="row2">
+		<input type="number" class="post" size="3" name="formatting_image_resize" value="{FORMAT_IMAGE_RESIZE}" />
+		</td>
   	</tr>
 	<tr>
 		<td class="row1" width="50%">{L_FORMAT_TRUNCATE_LINKS}<br /><span class="gensmall">{L_FORMAT_TRUNCATE_LINKS_EXPLAIN}</span></td>
 		<td class="row2" width="50%"><input type="radio" name="formatting_truncate_links" value="1" {S_FORMAT_TRUNCATE_LINKS_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="formatting_truncate_links" value="0" {S_FORMAT_TRUNCATE_LINKS_NO} /> {L_NO}</td>
 	</tr>
   	<tr>
-		<td class="row1">{L_MAX_SUBJECT_CHAR}<br><span class="gensmall">{L_MAX_SUBJECT_CHAR_EXPLAIN}</span></td>
+		<td class="row1">{L_MAX_SUBJECT_CHAR}<br />
+		<span class="gensmall">{L_MAX_SUBJECT_CHAR_EXPLAIN}</span>
+		</td>
 		<td class="row2">
-			<input type="number" class="post" id="max_comment_chars" name="max_comment_chars" value="{MAX_SUBJECT_CHAR}" size="3" maxlength="3" min="0" max="255" />
+			<input type="number" class="post" id="max_subject_chars" name="max_subject_chars" value="{MAX_SUBJECT_CHAR}" size="3" maxlength="3" min="0" max="255" />
 		</td>
   	</tr>
   	<tr>
-		<td class="row1">{L_MAX_DESC_CHAR}<br><span class="gensmall">{L_MAX_DESC_CHAR_EXPLAIN}</span></td>
+		<td class="row1">{L_MAX_DESC_CHAR}<br />
+		<span class="gensmall">{L_MAX_DESC_CHAR_EXPLAIN}</span>
+		</td>
 		<td class="row2">
-			<input type="number" class="post" id="max_comment_chars" name="max_comment_chars" value="{MAX_DESC_CHAR}" size="3" maxlength="3" min="0" max="255" />
+			<input type="number" class="post" id="max_desc_chars" name="max_desc_chars" value="{MAX_DESC_CHAR}" size="3" maxlength="3" min="0" max="255" />
 		</td>
   	</tr>
   	<tr>
-		<td class="row1">{L_MAX_CHAR}<br><span class="gensmall">{L_MAX_CHAR_EXPLAIN}</span></td>
+		<td class="row1">{L_MAX_CHAR}<br />
+		<span class="gensmall">{L_MAX_CHAR_EXPLAIN}</span>
+		</td>
 		<td class="row2">
 			<input type="number" class="post"  id="max_chars" name="max_chars" value="{MAX_CHAR}" size="3" maxlength="3" min="0" max="255" />
 		</td>
   	</tr>
 	<tr>
-		<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
+		<td class="cat" colspan="2" align="center">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
+		<input type="reset" value="{L_RESET}" class="liteoption" />
+		</td>
 	</tr>
 </table>
 </fieldset>
@@ -141,27 +179,46 @@
 	  	<ul class="thHead" colspan="2">&nbsp;{L_FILE_TITLE}</ul>
 	</dl>
   	<dl>
-		<dt>{L_HOTLINK}<br><span class="gensmall">{L_HOTLINK_INFO}</span></dt>
-		<dd><input type="radio" name="hotlink_prevent" value="1" {S_HOTLINK_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="hotlink_prevent" value="0" {S_HOTLINK_NO} /> {L_NO}</dd>
+		<dt>{L_HOTLINK}<br /><span class="gensmall">{L_HOTLINK_INFO}</span></dt>
+		<dd>
+		<input type="radio" name="hotlink_prevent" value="1" {S_HOTLINK_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="hotlink_prevent" value="0" {S_HOTLINK_NO} /> {L_NO}
+		</dd>
   	</dl>
 	<dl>
-	  	<dt>{L_HOTLINK_ALLOWED}<br><span class="gensmall">{L_HOTLINK_ALLOWED_INFO}</span></dd>
-	  	<dd><input class="post" type="text" size="40" name="hotlink_allowed" value="{HOTLINK_ALLOWED}" /></dt>
+	  	<dt>{L_HOTLINK_ALLOWED}<br />
+		<span class="gensmall">{L_HOTLINK_ALLOWED_INFO}</span>
+		</dt>
+	  	<dd><input class="post" type="text" size="40" name="hotlink_allowed" value="{HOTLINK_ALLOWED}" /></dd>
 	</dl>
   	<dl>
-		<dt>{L_PHP_TPL}<br><span class="gensmall">{L_PHP_TPL_INFO}</span></dt>
-		<dd><input type="radio" name="settings_tpl_php" value="1" {S_PHP_TPL_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="settings_tpl_php" value="0" {S_PHP_TPL_NO} /> {L_NO}</dd>
+		<dt>{L_PHP_TPL}<br /><span class="gensmall">{L_PHP_TPL_INFO}</span></dt>
+		<dd>
+		<input type="radio" name="settings_tpl_php" value="1" {S_PHP_TPL_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="settings_tpl_php" value="0" {S_PHP_TPL_NO} /> {L_NO}
+		</dd>
   	</dl>
   	<dl>
 		<dt>{L_MAX_FILE_SIZE}<br><span class="gensmall">{L_MAX_FILE_SIZE_INFO}</span></dt>
-		<dd><input type="text" class="post" size="8" maxlength="15" name="max_file_size" value="{MAX_FILE_SIZE}" /> {S_FILESIZE}</dd>
+		<dd>
+		<input type="number" class="post" size="3" maxlength="15" name="max_file_size" value="{MAX_FILE_SIZE}" /> 
+		{S_FILESIZE}
+		</dd>
   	</dl>
 	<dl>
-		<dt>{L_FORBIDDEN_EXTENSIONS}<br /><span class="gensmall">{L_FORBIDDEN_EXTENSIONS_EXPLAIN}</span></dt>
-		<dd><input type="text" size="25" maxlength="100" name="forbidden_extensions" class="post" value="{FORBIDDEN_EXTENSIONS}" /></dd>
+		<dt>{L_FORBIDDEN_EXTENSIONS}<br />
+		<span class="gensmall">{L_FORBIDDEN_EXTENSIONS_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="text" size="25" maxlength="100" name="forbidden_extensions" class="post" value="{FORBIDDEN_EXTENSIONS}" />
+		</dd>
 	</dl>
 	<dl>
-		<dd class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></dd>
+		<dd class="cat" colspan="2" align="center">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
+		<input type="reset" value="{L_RESET}" class="liteoption" />
+		</dd>
 	</dl>
 </div>
 </fieldset>
@@ -173,7 +230,7 @@
 	</dl>
 	<dl>
 		<dt>{L_PAGINATION}<br /><span class="gensmall">{L_PAGINATION_EXPLAIN}</span></dt>
-		<dd><input class="post" type="text" name="pagination" value="{PAGINATION}" size="5" maxlength="4" /></dd>
+		<dd><input class="post" type="number" name="pagination" value="{PAGINATION}" size="4" maxlength="4" /></dd>
 	</dl>
 	<dl>
 		<dt>{L_SORT_METHOD}<br /><span class="gensmall">{L_SORT_METHOD_EXPLAIN}</span></dt>
@@ -184,8 +241,8 @@
 		<dd>{SORT_ORDER} </dd>
 	</dl>
   	<dl>
-		<dt>{L_TOPNUM}<br><span class="gensmall">{L_TOPNUMINFO}</span></dt>
-		<dd><input type="text" class="post" size="5" maxlength="5" name="settings_topnumber" value="{SETTINGS_TOPNUMBER}" /></dd>
+		<dt>{L_TOPNUM}<br /><span class="gensmall">{L_TOPNUMINFO}</span></dt>
+		<dd><input id="settings_topnumber" type="number" class="post" size="3" maxlength="3" name="settings_topnumber" value="{SETTINGS_TOPNUMBER}" /></dd>
   	</dl>
  	 <dl>
 		<dt>{L_USE_SIMPLE_NAVIGATION}<br /><span class="gensmall">{L_USE_SIMPLE_NAVIGATION_EXPLAIN}</span></dt>
@@ -193,18 +250,22 @@
   	</dl>
  	 <dl>
 		<dt>{L_CAT_COL}</dt>
-		<dd><input class="post" type="text" maxlength="2" size="5" name="cat_col" value="{CAT_COL}" /></dd>
+		<dd><input class="post" type="number" maxlength="2" size="2" name="cat_col" value="{CAT_COL}" /></dd>
   	</dl>
   	<dl>
 		<dt>{L_NFDAYS}<br><span class="gensmall">{L_NFDAYSINFO}</span></dt>
-		<dd><input type="text" class="post" size="5" maxlength="5" name="settings_newdays" value="{SETTINGS_NEWDAYS}" /></dd>
+		<dd><input id="settings_newdays" type="number" class="post" size="5" maxlength="5" name="settings_newdays" value="{SETTINGS_NEWDAYS}" /></dd>
   	</dl>
   	<dl>
 		<dt>{L_SHOW_VIEWALL}<br><span class="gensmall">{L_VIEWALL_INFO}</span></dt>
 		<dd><input type="radio" name="settings_viewall" value="1" {S_VIEW_ALL_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="settings_viewall" value="0" {S_VIEW_ALL_NO} /> {L_NO}</dd>
   	</dl>
 	<dl>
-		<dd class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></dd>
+		<dd class="cat" colspan="2" align="center">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
+		<input type="reset" value="{L_RESET}" class="liteoption" />
+		</dd>
 	</dl>
 </div>
 </fieldset>
@@ -212,87 +273,141 @@
 <div width="100%" cellpadding="3" cellspacing="1" border="0" align="center" class="forumline">
 	<dl>
 		<!-- TITLE ------------------------------------------------------------------------------------------- -->
-	  	<ul class="thHead" colspan="2">&nbsp;{L_COMMENTS_TITLE}<br /><span class="gensmall">{L_COMMENTS_TITLE_EXPLAIN}</span></ul>
+	  	<ul class="thHead" colspan="2">&nbsp;{L_COMMENTS_TITLE}<br />
+		<span class="gensmall">{L_COMMENTS_TITLE_EXPLAIN}</span>
+		</ul>
 	</dl>
 	<dl>
-		<dt>{L_USE_COMMENTS}<br /><span class="gensmall">{L_USE_COMMENTS_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="use_comments" value="1" {S_USE_COMMENTS_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="use_comments" value="0" {S_USE_COMMENTS_NO} /> {L_NO}</dt>
+		<dt>{L_USE_COMMENTS}<br /><span class="gensmall">{L_USE_COMMENTS_EXPLAIN}</span></dt>
+		<dd>
+		<input type="radio" name="use_comments" value="1" {S_USE_COMMENTS_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="use_comments" value="0" {S_USE_COMMENTS_NO} /> {L_NO}
+		</dd>
 	</dl>
 	<dl>
-		<dt>{L_INTERNAL_COMMENTS}<br /><span class="gensmall">{L_INTERNAL_COMMENTS_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="internal_comments" value="1" {S_INTERNAL_COMMENTS_INTERNAL} {S_READONLY} /> {L_INTERNAL_COMMENTS_INTERNAL}&nbsp;&nbsp;<input type="radio" name="internal_comments" value="0" {S_INTERNAL_COMMENTS_PHPBB} {S_READONLY} /> {L_INTERNAL_COMMENTS_PHPBB}</dt>
+		<dt>{L_INTERNAL_COMMENTS}<br /><span class="gensmall">{L_INTERNAL_COMMENTS_EXPLAIN}</span></dt>
+		<dd>
+		<input type="radio" name="internal_comments" value="1" {S_INTERNAL_COMMENTS_INTERNAL} {S_READONLY} /> {L_INTERNAL_COMMENTS_INTERNAL}&nbsp;&nbsp;
+		<input type="radio" name="internal_comments" value="0" {S_INTERNAL_COMMENTS_PHPBB} {S_READONLY} /> {L_INTERNAL_COMMENTS_PHPBB}
+		</dd>
 	</dl>
     <dl>
-		<dt>{L_FORUM_ID}<br /><span class="gensmall">{L_FORUM_ID_EXPLAIN}</span></dd>
-		<dd>{FORUM_LIST}</dt>
+		<dt>{L_FORUM_ID}<br />
+		<span class="gensmall">{L_FORUM_ID_EXPLAIN}</span>
+		</dt>
+		<dd>{FORUM_LIST}</dd>
 	</dl>
 	<dl>
-		<dt>{L_COMMENTS_PAG}<br /><span class="gensmall">{L_COMMENTS_PAG_EXPLAIN}</span></dd>
-		<dd><input class="post" type="text" name="comments_pagination" value="{COMMENTS_PAG}" size="5" maxlength="4" /></dt>
+		<dt>{L_COMMENTS_PAG}<br /><span class="gensmall">{L_COMMENTS_PAG_EXPLAIN}</span></dt>
+		<dd>
+		<input class="post" type="number" id="comments_pagination" name="comments_pagination" value="{COMMENTS_PAG}" size="3" maxlength="3" min="0" max="255" />
+		</dd>
 	</dl>
 	<dl>
-        <dt>{L_AUTOGENERATE_COMMENTS}<br /><span class="gensmall">{L_AUTOGENERATE_COMMENTS_EXPLAIN}</span></dd>
-        <dd><input type="radio" name="autogenerate_comments" value="1" {S_AUTOGENERATE_COMMENTS_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="autogenerate_comments" value="0" {S_AUTOGENERATE_COMMENTS_NO} /> {L_NO}</dt>
+        <dt>{L_AUTOGENERATE_COMMENTS}<br /><span class="gensmall">{L_AUTOGENERATE_COMMENTS_EXPLAIN}</span></dt>
+        <dd>
+		<input type="radio" name="autogenerate_comments" value="1" {S_AUTOGENERATE_COMMENTS_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="autogenerate_comments" value="0" {S_AUTOGENERATE_COMMENTS_NO} /> {L_NO}
+		</dd>
     </dl>
 	<dl>
-		<dt>{L_DEL_TOPIC}<br /><span class="gensmall">{L_DEL_TOPIC_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="del_topic" value="1" {S_DEL_TOPIC_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="del_topic" value="0" {S_DEL_TOPIC_NO} /> {L_NO}</dd>
+		<dt>{L_DEL_TOPIC}<br /><span class="gensmall">{L_DEL_TOPIC_EXPLAIN}</span></dt>
+		<dd>
+		<input type="radio" name="del_topic" value="1" {S_DEL_TOPIC_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="del_topic" value="0" {S_DEL_TOPIC_NO} /> {L_NO}
+		</dd>
 	</dl>
 	<dl>
-		<dt>{L_ALLOW_COMMENT_WYSIWYG}<br /><span class="gensmall">{L_ALLOW_COMMENT_WYSIWYG_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="allow_comment_wysiwyg" value="1" {S_ALLOW_COMMENT_WYSIWYG_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_comment_wysiwyg" value="0" {S_ALLOW_COMMENT_WYSIWYG_NO} /> {L_NO}</dd>
+		<dt>{L_ALLOW_COMMENT_WYSIWYG}<br /><span class="gensmall">{L_ALLOW_COMMENT_WYSIWYG_EXPLAIN}</span></dt>
+		<dd>
+		<input type="radio" name="allow_comment_wysiwyg" value="1" {S_ALLOW_COMMENT_WYSIWYG_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="allow_comment_wysiwyg" value="0" {S_ALLOW_COMMENT_WYSIWYG_NO} /> {L_NO}
+		</dd>
 	</dl>
 	<dl>
-		<dt>{L_ALLOW_COMMENT_HTML}<br /><span class="gensmall">{L_ALLOW_COMMENT_HTML_EXPLAIN}</span></dd>
-		<dd><input class="radio" type="radio" name="allow_comment_html" value="1" {S_ALLOW_COMMENT_HTML_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_comment_html" value="0" {S_ALLOW_COMMENT_HTML_NO} /> {L_NO}</dd>
+		<dt>{L_ALLOW_COMMENT_HTML}<br /><span class="gensmall">{L_ALLOW_COMMENT_HTML_EXPLAIN}</span></dt>
+		<dd>
+		<input class="radio" type="radio" name="allow_comment_html" value="1" {S_ALLOW_COMMENT_HTML_YES} /> {L_YES}&nbsp;&nbsp;
+		<input class="radio" type="radio" name="allow_comment_html" value="0" {S_ALLOW_COMMENT_HTML_NO} /> {L_NO}
+		</dd>
 	</dl>
 	<dl>
-		<dt>{L_ALLOWED_COMMENT_HTML_TAGS}<br /><span class="gensmall">{L_ALLOWED_HTML_TAGS_EXPLAIN}</span></dd>
+		<dt>{L_ALLOWED_COMMENT_HTML_TAGS}<br /><span class="gensmall">{L_ALLOWED_HTML_TAGS_EXPLAIN}</span></dt>
 		<dd><input text="text" name="allowed_comment_html_tags" value="{ALLOWED_COMMENT_HTML_TAGS}" size="15" maxlength="50" /></dd>
 	</dl>
 	<dl>
-		<dt>{L_ALLOW_COMMENT_BBCODE}<br /><span class="gensmall">{L_ALLOW_BBCODE_EXPLAIN}</span></dd>
+		<dt>{L_ALLOW_COMMENT_BBCODE}<br /><span class="gensmall">{L_ALLOW_BBCODE_EXPLAIN}</span></dt>
 		<dd><input type="radio" name="allow_comment_bbcode" value="1" {S_ALLOW_COMMENT_BBCODE_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_comment_bbcode" value="0" {S_ALLOW_COMMENT_BBCODE_NO} /> {L_NO}</dd>
 	</dl>
 	<dl>
-		<dt>{L_ALLOW_COMMENT_SMILIES}<br /><span class="gensmall">{L_ALLOW_SMILIES_EXPLAIN}</span></dd>
+		<dt>{L_ALLOW_COMMENT_SMILIES}<br /><span class="gensmall">{L_ALLOW_SMILIES_EXPLAIN}</span></dt>
 		<dd><input type="radio" name="allow_comment_smilies" value="1" {S_ALLOW_COMMENT_SMILIES_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_comment_smilies" value="0" {S_ALLOW_COMMENT_SMILIES_NO} /> {L_NO}</dd>
 	</dl>
 	<dl>
-		<dt>{L_ALLOW_COMMENT_IMAGES}<br /><span class="gensmall">{L_ALLOW_IMAGES_EXPLAIN}</span></dd>
+		<dt>{L_ALLOW_COMMENT_IMAGES}<br /><span class="gensmall">{L_ALLOW_IMAGES_EXPLAIN}</span></dt>
 		<dd><input type="radio" name="allow_comment_images" value="1" {S_ALLOW_COMMENT_IMAGES_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_comment_images" value="0" {S_ALLOW_COMMENT_IMAGES_NO} /> {L_NO}</dd>
 	</dl>
   	<dl>
-		<dt>{L_COMMENT_IMAGES_MESSAGE}<br><span class="gensmall">{L_COMMENT_IMAGES_MESSAGE_EXPLAIN}</span></dd>
+		<dt>{L_COMMENT_IMAGES_MESSAGE}<br />
+		<span class="gensmall">{L_COMMENT_IMAGES_MESSAGE_EXPLAIN}</span>
+		</dt>
 		<dd><input type="text" class="post" size="50" name="no_comment_image_message" value="{COMMENT_MESSAGE_IMAGE}" /></dd>
   	</dl>
 	<dl>
-		<dt>{L_ALLOW_COMMENT_LINKS}<br /><span class="gensmall">{L_ALLOW_COMMENT_LINKS_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="allow_comment_links" value="1" {S_ALLOW_COMMENT_LINKS_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="allow_comment_links" value="0" {S_ALLOW_COMMENT_LINKS_NO} /> {L_NO}</dd>
+		<dt>{L_ALLOW_COMMENT_LINKS}<br />
+		<span class="gensmall">{L_ALLOW_COMMENT_LINKS_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="radio" name="allow_comment_links" value="1" {S_ALLOW_COMMENT_LINKS_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="allow_comment_links" value="0" {S_ALLOW_COMMENT_LINKS_NO} /> {L_NO}
+		</dd>
 	</dl>
   	<dl>
-		<dt>{L_COMMENT_LINKS_MESSAGE}<br><span class="gensmall">{L_COMMENT_LINKS_MESSAGE_EXPLAIN}</span></dd>
-		<dd><input type="text" class="post" size="50" name="no_comment_link_message" value="{COMMENT_MESSAGE_LINK}" /></dd>
+		<dt>{L_COMMENT_LINKS_MESSAGE}<br />
+		<span class="gensmall">{L_COMMENT_LINKS_MESSAGE_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="text" class="post" size="50" name="no_comment_link_message" value="{COMMENT_MESSAGE_LINK}" />
+		</dd>
   	</dl>
 	<dl>
-		<dt>{L_COMMENT_FORMAT_WORDWRAP}<br /><span class="gensmall">{L_COMMENT_FORMAT_WORDWRAP_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="formatting_comment_wordwrap" value="1" {S_COMMENT_FORMAT_WORDWRAP_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="formatting_comment_wordwrap" value="0" {S_COMMENT_FORMAT_WORDWRAP_NO} /> {L_NO}</dd>
+		<dt>{L_COMMENT_FORMAT_WORDWRAP}<br />
+		<span class="gensmall">{L_COMMENT_FORMAT_WORDWRAP_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="radio" name="formatting_comment_wordwrap" value="1" {S_COMMENT_FORMAT_WORDWRAP_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" name="formatting_comment_wordwrap" value="0" {S_COMMENT_FORMAT_WORDWRAP_NO} /> {L_NO}
+		</dd>
 	</dl>
   	<dl>
-		<dt>{L_COMMENT_FORMAT_IMAGE_RESIZE}<br><span class="gensmall">{L_COMMENT_FORMAT_IMAGE_RESIZE_EXPLAIN}</span></dd>
-		<dd><input type="text" class="post" size="50" name="formatting_comment_image_resize" value="{COMMENT_FORMAT_IMAGE_RESIZE}" /></dd>
+		<dt>{L_COMMENT_FORMAT_IMAGE_RESIZE}<br />
+		<span class="gensmall">{L_COMMENT_FORMAT_IMAGE_RESIZE_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="number" class="post" id="formatting_comment_image_resize" name="formatting_comment_image_resize" value="{COMMENT_FORMAT_IMAGE_RESIZE}" size="3" maxlength="3" min="0" max="640" />
+		</dd>
   	</dl>
 	<dl>
-		<dt>{L_COMMENT_FORMAT_TRUNCATE_LINKS}<br /><span class="gensmall">{L_COMMENT_FORMAT_TRUNCATE_LINKS_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="formatting_comment_truncate_links" value="1" {S_COMMENT_FORMAT_TRUNCATE_LINKS_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="formatting_comment_truncate_links" value="0" {S_COMMENT_FORMAT_TRUNCATE_LINKS_NO} /> {L_NO}</dd>
+		<dt>{L_COMMENT_FORMAT_TRUNCATE_LINKS}<br />
+		<span class="gensmall">{L_COMMENT_FORMAT_TRUNCATE_LINKS_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="radio" class="radio"  id="formatting_comment_truncate_links" name="formatting_comment_truncate_links" value="1" {S_COMMENT_FORMAT_TRUNCATE_LINKS_YES} /> {L_YES}&nbsp;&nbsp;
+		<input type="radio" class="radio"  id="formatting_comment_truncate_links" name="formatting_comment_truncate_links" value="0" {S_COMMENT_FORMAT_TRUNCATE_LINKS_NO} /> {L_NO}
+		</dd>
 	</dl>
   	<dl>
-		<dt>{L_COMMENT_MAX_SUBJECT_CHAR}<br><span class="gensmall">{L_COMMENT_MAX_SUBJECT_CHAR_EXPLAIN}</span></dd>
-		<dd><input type="text" class="post" size="50" name="max_comment_subject_chars" value="{COMMENT_MAX_SUBJECT_CHAR}" /></dd>
+		<dt>{L_COMMENT_MAX_SUBJECT_CHAR}<br /><span class="gensmall">{L_COMMENT_MAX_SUBJECT_CHAR_EXPLAIN}</span>
+		</dt>
+		<dd>
+			<input type="number" class="post"  id="max_comment_subject_chars" name="max_comment_subject_chars" value="{COMMENT_MAX_SUBJECT_CHAR}" size="3" maxlength="3" min="0" max="255" />
+		</dd>
   	</dl>
   	<dl>
-		<dt>{L_COMMENT_MAX_CHAR}<br><span class="gensmall">{L_COMMENT_MAX_CHAR_EXPLAIN}</span></dd>
-		<dd><input type="text" class="post" size="50" name="max_comment_chars" value="{COMMENT_MAX_CHAR}" /></dd>
+		<dt>{L_COMMENT_MAX_CHAR}<br /><span class="gensmall">{L_COMMENT_MAX_CHAR_EXPLAIN}</span></dd>
+		<dd>
+			<input type="number" class="post"  id="max_comment_chars" name="max_comment_chars" value="{COMMENT_MAX_CHAR}" size="3" maxlength="3" min="0" max="5000" />
+		</dd>
   	</dl>
 	<dl>
 		<dd class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></dd>
@@ -353,8 +468,14 @@
 	</dl>
 
 	<dl>
-		<dt>{L_NOTIFY}<br /><span class="gensmall">{L_NOTIFY_EXPLAIN}</span></dd>
-		<dd><input type="radio" name="notify" value="0" {S_NOTIFY_NONE} />{L_NONE}&nbsp; &nbsp;<input type="radio" name="notify" value="2" {S_NOTIFY_EMAIL} />{L_EMAIL}&nbsp; &nbsp;<input type="radio" name="notify" value="1" {S_NOTIFY_PM} />{L_PM}</dd>
+		<dt>{L_NOTIFY}<br />
+		<span class="gensmall">{L_NOTIFY_EXPLAIN}</span>
+		</dt>
+		<dd>
+		<input type="radio" name="notify" value="0" {S_NOTIFY_NONE} />{L_NONE}&nbsp; &nbsp;
+		<input type="radio" name="notify" value="2" {S_NOTIFY_EMAIL} />{L_EMAIL}&nbsp; &nbsp;
+		<input type="radio" name="notify" value="1" {S_NOTIFY_PM} />{L_PM}
+		</dd>
 	</dl>
 	<dl>
 		<dt>{L_NOTIFY_GROUP}<br /><span class="gensmall">{L_NOTIFY_GROUP_EXPLAIN}</span></dd>
@@ -372,19 +493,19 @@
 		<ul colspan="2" class="thHead">&nbsp;{L_PERMISSION_SETTINGS}</ul>
   	</dl>
   	<dl>
-		<dt>{L_ATUH_SEARCH}<br><span class="gensmall">{L_ATUH_SEARCH_INFO}</span></dd>
+		<dt>{L_ATUH_SEARCH}<br /><span class="gensmall">{L_ATUH_SEARCH_INFO}</span></dt>
 		<dd>{S_ATUH_SEARCH}</dd>
   	</dl>
  	 <dl>
-		<dt>{L_ATUH_STATS}<br><span class="gensmall">{L_ATUH_STATS_INFO}</span></dd>
+		<dt>{L_ATUH_STATS}<br /><span class="gensmall">{L_ATUH_STATS_INFO}</span></dt>
 		<dd>{S_ATUH_STATS}</dd>
  	 </dl>
   	<dl>
-		<dt>{L_ATUH_TOPLIST}<br><span class="gensmall">{L_ATUH_TOPLIST_INFO}</span></dd>
+		<dt>{L_ATUH_TOPLIST}<br /><span class="gensmall">{L_ATUH_TOPLIST_INFO}</span></dt>
 		<dd>{S_ATUH_TOPLIST}</dd>
   	</dl>
   	<dl>
-		<dt>{L_ATUH_VIEWALL}<br><span class="gensmall">{L_ATUH_VIEWALL_INFO}</span></dd>
+		<dt>{L_ATUH_VIEWALL}<br /><span class="gensmall">{L_ATUH_VIEWALL_INFO}</span></dt>
 		<dd>{S_ATUH_VIEWALL}</dd>
   	</dl>
 	<dl>

@@ -11,13 +11,18 @@
 //
 // General
 //
+$lang['publisher_disable'] = 'Projects Database is disabled';
+
+$lang['Article'] = 'Article';
+$lang['Articles'] = 'Articles';
 $lang['Category'] = 'Category';
+$lang['Sub_categories'] = 'Subcategories';
+
 $lang['Error_no_download'] = 'The selected File does not exist anymore';
 $lang['Options'] = 'Options';
 $lang['Click_return'] = 'Click %sHere%s to return to the previous page';
 $lang['Click_here'] = 'Click Here';
 $lang['never'] = 'None';
-$lang['publisher_disable'] = 'Projects Database is disabled';
 $lang['jump'] = 'Select a category';
 $lang['viewall_disabled'] = 'This feature is disabled by the admin.';
 $lang['New_file'] = 'New file';
@@ -25,6 +30,20 @@ $lang['No_new_file'] = 'No new file';
 $lang['None'] = 'None';
 $lang['No_file'] = 'No Files';
 $lang['View_latest_file'] = 'View Latest File';
+
+$lang['Article_description'] = 'Description';
+$lang['Article_type'] = 'Type';
+$lang['Article_keywords'] = 'Keywords';
+$lang['Add_article_explain'] = 'Add Article';
+$lang['Pub_Home'] = 'Publisher Home';
+$lang['No_articles'] = 'No Articles';
+$lang['Article_title'] = 'Article Name';
+$lang['Article_text'] = 'Article text';
+$lang['Add_article'] = 'Submit Article';
+$lang['Read_article'] = 'Reading Article';
+$lang['Article_not_exsist'] = 'Article doesn\'t exist';
+$lang['Category_not_exsist'] = 'Category doesn\'t exist';
+$lang['Last_article'] = 'Last article';
 
 //
 // Return

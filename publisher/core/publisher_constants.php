@@ -42,15 +42,21 @@ define('PAGE_PROJ_DEFAULT', -503);
 define('ICONS_DIR', 'publisher/images/icons/');
 
 // Tables
+define( 'PUB_ARTICLES_TABLE', $mx_table_prefix . 'pub_articles' );
 define( 'PUB_CAT_TABLE', $mx_table_prefix . 'pub_cat' );
 define( 'PUB_CATEGORY_TABLE', $mx_table_prefix . 'pub_cat' );
 define( 'PUB_COMMENTS_TABLE', $mx_table_prefix . 'pub_comments' );
 define( 'PUB_CUSTOM_TABLE', $mx_table_prefix . 'pub_custom' );
 define( 'PUB_CUSTOM_DATA_TABLE', $mx_table_prefix . 'pub_customdata' );
+define( 'PUB_FILES_INFO_TABLE', $mx_table_prefix . 'pub_articlesacces_info' );
 define( 'PUB_FILES_INFO_TABLE', $mx_table_prefix . 'pub_filesacces_info' );
 define( 'PUB_FILES_TABLE', $mx_table_prefix . 'pub_files' );
 define( 'PUB_LICENSE_TABLE', $mx_table_prefix . 'pub_license' );
 define( 'PUB_CONFIG_TABLE', $mx_table_prefix . 'pub_config' );
+define( 'PUB_TYPES_TABLE', $mx_table_prefix . 'pub_types' );
+define( 'PUB_WORD_TABLE', $mx_table_prefix . 'pub_wordlist' );
+define( 'PUB_SEARCH_TABLE', $mx_table_prefix . 'pub_results' );
+define( 'PUB_MATCH_TABLE', $mx_table_prefix . 'pub_wordmatch' );
 define( 'PUB_VOTES_TABLE', $mx_table_prefix . 'pub_votes' );
 define( 'PUB_AUTH_ACCESS_TABLE', $mx_table_prefix . 'pub_auth' );
 define( 'PUB_MIRRORS_TABLE', $mx_table_prefix . 'pub_mirrors' );

@@ -113,9 +113,9 @@ class publisher_file extends publisher_public
 		// ===================================================
 		// Prepare file info to display them
 		// ===================================================
-		$file_time = phpBB2::create_date( $board_config['default_dateformat'], $file_data['file_time'], $board_config['board_timezone'] );
-		$file_last_download = ( $file_data['file_last'] ) ? phpBB2::create_date( $board_config['default_dateformat'], $file_data['file_last'], $board_config['board_timezone'] ) : $lang['never'];
-		$file_update_time = ( $file_data['file_update_time'] ) ? phpBB2::create_date( $board_config['default_dateformat'], $file_data['file_update_time'], $board_config['board_timezone'] ) : $lang['never'];
+		$file_time = mx_create_date( $board_config['default_dateformat'], $file_data['file_time'], $board_config['board_timezone'] );
+		$file_last_download = ( $file_data['file_last'] ) ? mx_create_date( $board_config['default_dateformat'], $file_data['file_last'], $board_config['board_timezone'] ) : $lang['never'];
+		$file_update_time = ( $file_data['file_update_time'] ) ? mx_create_date( $board_config['default_dateformat'], $file_data['file_update_time'], $board_config['board_timezone'] ) : $lang['never'];
 		$file_author = trim( $file_data['file_creator'] );
 		$file_version = trim( $file_data['file_version'] );
 		$file_screenshot_url = trim( $file_data['file_ssurl'] );

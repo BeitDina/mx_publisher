@@ -116,6 +116,44 @@ class publisher_settings extends publisher_admin
 		//
 		$hotlink_prevent_yes = ( $new['hotlink_prevent'] ) ? "checked=\"checked\"" : "";
 		$hotlink_prevent_no = ( !$new['hotlink_prevent'] ) ? "checked=\"checked\"" : "";
+		
+		//
+		// Article
+		//
+		$allow_wysiwyg_yes = ( $new['allow_wysiwyg'] ) ? "checked=\"checked\"" : "";
+		$allow_wysiwyg_no = ( !$new['allow_wysiwyg'] ) ? "checked=\"checked\"" : "";
+
+		$allow_html_yes = ( $new['allow_html'] ) ? "checked=\"checked\"" : "";
+		$allow_html_no = ( !$new['allow_html'] ) ? "checked=\"checked\"" : "";
+
+		$allowed_html_tags = $new['allowed_html_tags'];
+
+		$allow_bbcode_yes = ( $new['allow_bbcode'] ) ? "checked=\"checked\"" : "";
+		$allow_bbcode_no = ( !$new['allow_bbcode'] ) ? "checked=\"checked\"" : "";
+
+		$allow_smilies_yes = ( $new['allow_smilies'] ) ? "checked=\"checked\"" : "";
+		$allow_smilies_no = ( !$new['allow_smilies'] ) ? "checked=\"checked\"" : "";
+
+		$allow_images_yes = ( $new['allow_images'] ) ? "checked=\"checked\"" : "";
+		$allow_images_no = ( !$new['allow_images'] ) ? "checked=\"checked\"" : "";
+
+		$allow_links_yes = ( $new['allow_links'] ) ? "checked=\"checked\"" : "";
+		$allow_links_no = ( !$new['allow_links'] ) ? "checked=\"checked\"" : "";
+
+		$no_image_message = $new['no_image_message'];
+		$no_link_message = $new['no_link_message'];
+
+		$max_chars = $new['max_chars'];
+		$max_subject_chars = $new['max_subject_chars'];
+		$max_desc_chars = $new['max_desc_chars'];
+
+		$format_truncate_links_yes = ( $new['formatting_truncate_links'] ) ? "checked=\"checked\"" : "";
+		$format_truncate_links_no = ( !$new['formatting_truncate_links'] ) ? "checked=\"checked\"" : "";
+
+		$format_image_resize = $new['formatting_image_resize'];
+
+		$format_wordwrap_yes = ( $new['formatting_wordwrap'] ) ? "checked=\"checked\"" : "";
+		$format_wordwrap_no = ( !$new['formatting_wordwrap'] ) ? "checked=\"checked\"" : "";
 
 		$hotlink_allowed = $new['hotlink_allowed'];
 
@@ -167,6 +205,12 @@ class publisher_settings extends publisher_admin
 			$sort_order_list .= '<option value="' . $sort_order_options[$j] . '" ' . $status . '>' . $sort_order_options[$j] . '</option>';
 		}
 		$sort_order_list .= '</select>';
+		
+		$header_banner_yes = ( $new['header_banner'] ) ? "checked=\"checked\"" : "";
+		$header_banner_no = ( !$new['header_banner'] ) ? "checked=\"checked\"" : "";
+
+		$stats_list_yes = ( $new['stats_list'] ) ? "checked=\"checked\"" : "";
+		$stats_list_no = ( !$new['stats_list'] ) ? "checked=\"checked\"" : "";
 
 		$settings_topnumber = $new['settings_topnumber'];
 
@@ -328,6 +372,11 @@ class publisher_settings extends publisher_admin
 			// FILE
 			//
 			'L_FILE_TITLE' => $lang['File_title'],
+			
+			//
+			// Article
+			//
+			'L_ARTICLE_TITLE' => $lang['Article_title'],
 
 			'L_HOTLINK' => $lang['Hotlink_prevent'],
 			'L_HOTLINK_INFO' => $lang['Hotlinl_prevent_info'],
@@ -352,14 +401,81 @@ class publisher_settings extends publisher_admin
 			'L_FORBIDDEN_EXTENSIONS_EXPLAIN' => $lang['Forbidden_extensions_explain'],
 			'FORBIDDEN_EXTENSIONS' => $forbidden_extensions,
 
+			'L_ALLOW_WYSIWYG' => $lang['Allow_Wysiwyg'],
+			'L_ALLOW_WYSIWYG_EXPLAIN' => $lang['Allow_Wysiwyg_explain'],
+			'S_ALLOW_WYSIWYG_YES' => $allow_wysiwyg_yes,
+			'S_ALLOW_WYSIWYG_NO' => $allow_wysiwyg_no,
+
+			'L_ALLOW_HTML' => $lang['Allow_HTML'],
+			'L_ALLOW_HTML_EXPLAIN' => $lang['Allow_html_explain'],
+			'S_ALLOW_HTML_YES' => $allow_html_yes,
+			'S_ALLOW_HTML_NO' => $allow_html_no,
+
+			'L_ALLOW_BBCODE' => $lang['Allow_BBCode'],
+			'L_ALLOW_BBCODE_EXPLAIN' => $lang['Allow_bbcode_explain'],
+			'S_ALLOW_BBCODE_YES' => $allow_bbcode_yes,
+			'S_ALLOW_BBCODE_NO' => $allow_bbcode_no,
+
+			'L_ALLOW_SMILIES' => $lang['Allow_smilies'],
+			'L_ALLOW_SMILIES_EXPLAIN' => $lang['Allow_smilies_explain'],
+			'S_ALLOW_SMILIES_YES' => $allow_smilies_yes,
+			'S_ALLOW_SMILIES_NO' => $allow_smilies_no,
+
+			'L_ALLOWED_HTML_TAGS' => $lang['Allowed_tags'],
+			'L_ALLOWED_HTML_TAGS_EXPLAIN' => $lang['Allowed_tags_explain'],
+			'ALLOWED_HTML_TAGS' => $allowed_html_tags,
+
+			'L_ALLOW_IMAGES' => $lang['Allow_images'],
+			'L_ALLOW_IMAGES_EXPLAIN' => $lang['Allow_images_explain'],
+			'S_ALLOW_IMAGES_YES' => $allow_images_yes,
+			'S_ALLOW_IMAGES_NO' => $allow_images_no,
+
+			'L_ALLOW_LINKS' => $lang['Allow_links'],
+			'L_ALLOW_LINKS_EXPLAIN' => $lang['Allow_links_explain'],
+			'S_ALLOW_LINKS_YES' => $allow_links_yes,
+			'S_ALLOW_LINKS_NO' => $allow_links_no,
+
+			'L_LINKS_MESSAGE' => $lang['Allow_links_message'],
+			'L_LINKS_MESSAGE_EXPLAIN' => $lang['Allow_links_message_explain'],
+			'MESSAGE_LINK' => $no_link_message,
+
+			'L_IMAGES_MESSAGE' => $lang['Allow_images_message'],
+			'L_IMAGES_MESSAGE_EXPLAIN' => $lang['Allow_images_message_explain'],
+			'MESSAGE_IMAGE' => $no_image_message,
+
+			'L_MAX_SUBJECT_CHAR' => $lang['Max_subject_char'],
+			'L_MAX_SUBJECT_CHAR_EXPLAIN' => $lang['Max_subject_char_explain'],
+			'MAX_SUBJECT_CHAR' => $max_subject_chars,
+
+			'L_MAX_DESC_CHAR' => $lang['Max_desc_char'],
+			'L_MAX_DESC_CHAR_EXPLAIN' => $lang['Max_desc_char_explain'],
+			'MAX_DESC_CHAR' => $max_desc_chars,
+
+			'L_MAX_CHAR' => $lang['Max_char'],
+			'L_MAX_CHAR_EXPLAIN' => $lang['Max_char_explain'],
+			'MAX_CHAR' => $max_chars,
+
+			'L_FORMAT_WORDWRAP' => $lang['Format_wordwrap'],
+			'L_FORMAT_WORDWRAP_EXPLAIN' => $lang['Format_wordwrap_explain'],
+			'S_FORMAT_WORDWRAP_YES' => $format_wordwrap_yes,
+			'S_FORMAT_WORDWRAP_NO' => $format_wordwrap_no,
+
+			'L_FORMAT_IMAGE_RESIZE' => $lang['Format_image_resize'],
+			'L_FORMAT_IMAGE_RESIZE_EXPLAIN' => $lang['Format_image_resize_explain'],
+			'FORMAT_IMAGE_RESIZE' => $format_image_resize,
+
+			'L_FORMAT_TRUNCATE_LINKS' => $lang['Format_truncate_links'],
+			'L_FORMAT_TRUNCATE_LINKS_EXPLAIN' => $lang['Format_truncate_links_explain'],
+			'S_FORMAT_TRUNCATE_LINKS_YES' => $format_truncate_links_yes,
+			'S_FORMAT_TRUNCATE_LINKS_NO' => $format_truncate_links_no,
 
 			//
 			// Appearance
 			//
 			'L_APPEARANCE_TITLE' => $lang['Appearance_title'],
 
-			'L_PAGINATION' => $lang['File_pagination'],
-			'L_PAGINATION_EXPLAIN' => $lang['File_pagination_explain'],
+			'L_PAGINATION' => $lang['Article_pag'],
+			'L_PAGINATION_EXPLAIN' => $lang['Article_pag_explain'],
 			'PAGINATION' => $pagination,
 
 			'L_SORT_METHOD' => $lang['Sort_method'],
@@ -373,6 +489,16 @@ class publisher_settings extends publisher_admin
 			'L_TOPNUM' => $lang['Topnum'],
 			'L_TOPNUMINFO' => $lang['Topnuminfo'],
 			'SETTINGS_TOPNUMBER' => $settings_topnumber,
+			
+			'L_STATS_LIST' => $lang['Stats_list'],
+			'L_STATS_LIST_EXPLAIN' => $lang['Stats_list_explain'],
+			'S_STATS_LIST_YES' => $stats_list_yes,
+			'S_STATS_LIST_NO' => $stats_list_no,
+
+			'L_HEADER_BANNER' => $lang['Header_banner'],
+			'L_HEADER_BANNER_EXPLAIN' => $lang['Header_banner_explain'],
+			'S_HEADER_BANNER_YES' => $header_banner_yes,
+			'S_HEADER_BANNER_NO' => $header_banner_no,
 
 			'CAT_COL' => $cat_col,
 			'L_CAT_COL' => $lang['Cat_col'],
@@ -526,7 +652,15 @@ class publisher_settings extends publisher_admin
 			'L_PRE_TEXT_EXPLAIN' => $lang['Pre_text_explain'],
 			'S_SHOW_PRETEXT' => $pretext_show,
 			'S_HIDE_PRETEXT' => $pretext_hide,
+			'S_DEFAULT_PRETEXT' => $pretext_default,
+
+			'L_SHOW' => $lang['Show'],
+			'L_HIDE' => $lang['Hide'],
+
+			'L_PRE_TEXT_HEADER' => $lang['Pre_text_header'],
 			'L_PT_HEADER' => $pt_header,
+
+			'L_PRE_TEXT_BODY' => $lang['Pre_text_body'],
 			'L_PT_BODY' => $pt_body,
 
 			//

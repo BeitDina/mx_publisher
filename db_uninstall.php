@@ -45,6 +45,7 @@ $sql = array(
 		"DROP TABLE " . $mx_table_prefix . "pub_config ",
 		"DROP TABLE " . $mx_table_prefix . "pub_custom ",
 		"DROP TABLE " . $mx_table_prefix . "pub_customdata ",
+		"DROP TABLE " . $mx_table_prefix . "pub_articlesacces_info ",
 		"DROP TABLE " . $mx_table_prefix . "pub_filesacces_info ",
 		"DROP TABLE " . $mx_table_prefix . "pub_license ",
 		"DROP TABLE " . $mx_table_prefix . "pub_types ",

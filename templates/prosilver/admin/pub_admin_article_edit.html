@@ -1,0 +1,232 @@
+<script language="JavaScript" type="text/javascript">
+<!--
+	var win = null;
+	var error_msg = "";
+	var mirror_mode = false;
+	
+	function set_mirror_mode(status)
+	{
+		mirror_mode = status;
+	}
+
+	function new_window(mypage, myname, w, h, pos, infocus)
+	{
+		if(pos == "random")
+		{
+			myleft = (screen.width) ? Math.floor(Math.random()*(screen.width-w)) : 100;
+			mytop = (screen.height) ? Math.floor(Math.random()*((screen.height-h)-75)) : 100;
+		}
+		if(pos == "center")
+		{
+			myleft = (screen.width) ? (screen.width-w) / 2 : 100;
+			mytop = (screen.height) ? (screen.height-h) / 2 : 100;
+		}
+		else if((pos != 'center' && pos != "random") || pos == null)
+		{
+			myleft = 0;
+			mytop = 20
+		}
+		settings = "width=" + w + ",height=" + h + ",top=" + mytop + ",left=" + myleft + ",scrollbars=yes,location=no,directories=no,status=yes,menubar=no,toolbar=no,resizable=no";
+		win = window.open(mypage, myname, settings);
+		win.focus();
+	}
+	
+	if({ADD_MIRRORS})
+	{
+		new_window('{U_MIRRORS_PAGE}', 'fileupload', '600','450', 'center', 'front');
+	}
+
+	function checkAddForm() 
+	{
+		if(mirror_mode)
+		{
+			new_window('{U_MIRRORS_PAGE}', 'fileupload', '600','450', 'center', 'front');
+			return false;
+		}
+		
+		error_msg = "";
+		if (document.form.cat_id.value == -1)
+		{
+			error_msg = "You can't add file to category that does not allow files on it";
+		}
+
+		if(document.form.name.value == "")
+		{
+			if(error_msg != "")
+			{
+				error_msg += "\n";
+			}
+			error_msg += "Please fill the file name field";
+		}
+		
+		if(document.form.long_desc.value == "")
+		{
+			if(error_msg != "")
+			{
+				error_msg += "\n";
+			}
+			error_msg += "Please fill the file long descritpion field";
+		}
+		<!-- IF MODE eq 'add' -->
+		if(document.form.userfile.value == "" && document.form.download_url.value == "")
+		{
+			if(error_msg != "")
+			{
+				error_msg += "\n";
+			}
+			error_msg += "Please fill the file url field or click browse to upload file from your machine";
+		}
+		<!-- ENDIF -->
+		
+		if(error_msg != "")
+		{
+			alert(error_msg);
+			error_msg = "";
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+// -->
+</script>
+<h1>{L_ARTICLE_TITLE}</h1>
+
+<p>{L_ARTICLE_EXPLAIN}</p>
+<form action="{S_ARTICLE_ACTION}" method="post" name="form" enctype="multipart/form-data" onsubmit="return checkAddForm();">
+<!-- IF ERROR neq '' -->
+<table width="100%" cellpadding="3" cellspacing="1" class="forumline">
+  <tr>
+	<td class="row2" align="center">{ERROR}</td>
+  </tr>
+</table>
+<br />
+<!-- ENDIF -->
+<table width="100%" cellpadding="3" cellspacing="1" class="forumline">
+  <tr>
+	<th colspan="2" class="thHead">{L_ARTICLE_TITLE}</th>
+  </tr>
+  <tr>
+	<td width="50%" class="row1">{L_ARTICLE_NAME}<br><span class="gensmall">{L_ARTICLE_NAME_INFO}</span></td>
+	<td class="row2"><input type="text" class="post" size="50" name="name" value="{ARTICLE_NAME}" /></td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_SHORT_DESC}<br><span class="gensmall">{L_ARTICLE_SHORT_DESC_INFO}</span></td>
+	<td class="row2"><input type="text" class="post" size="50" name="short_desc" value="{ARTICLE_DESC}" /></td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_LONG_DESC}<br><span class="gensmall">{L_ARTICLE_LONG_DESC_INFO}</span></td>
+	<td class="row2"><textarea rows="6" name="long_desc" cols="32" class="post">{ARTICLE_LONG_DESC}</textarea></td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_AUTHOR}<br><span class="gensmall">{L_ARTICLE_AUTHOR_INFO}</span></td>
+	<td class="row2"><input type="text" class="post" size="50" name="author" value="{ARTICLE_AUTHOR}" /></td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_VERSION}<br><span class="gensmall">{L_ARTICLE_VERSION_INFO}</span></td>
+	<td class="row2"><input type="text" class="post" size="50" name="version" value="{ARTICLE_VERSION}" /></td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_WEBSITE}<br><span class="gensmall">{L_ARTICLE_WEBSITE_INFO}</span></td>
+	<td class="row2"><input type="text" class="post" size="50" name="website" value="{ARTICLE_WEBSITE}" /></td>
+  </tr>
+
+  <tr>
+	<td class="row1">{L_ARTICLE_POSTICONS}<br><span class="gensmall">{L_ARTICLE_POSTICONS_INFO}</span></td>
+	<td class="row2">{S_POSTICONS}</td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_CAT}<br><span class="gensmall">{L_ARTICLE_CAT_INFO}</span></td>
+	<td class="row2">
+		<select name="cat_id" class="post">
+		{S_CAT_LIST}
+		</select>
+	</td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_LICENSE}<br><span class="gensmall">{L_ARTICLE_LICENSE_INFO}</span></td>
+	<td class="row2">
+		<select name="license" class="post">
+		{S_LICENSE_LIST}
+		</select>
+	</td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_PINNED}<br><span class="gensmall">{L_ARTICLE_PINNED_INFO}</span></td>
+	<td class="row2">
+		<input type="radio" name="pin" value="1"{PIN_CHECKED_YES} />{L_YES}&nbsp;
+		<input type="radio" name="pin" value="0"{PIN_CHECKED_NO} />{L_NO}&nbsp;
+	</td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_DOWNLOAD}</td>
+	<td class="row2"><input type="text" class="post" size="10" name="ARTICLE_download" value="{ARTICLE_DOWNLOAD}" /></td>
+  </tr>
+  <tr>
+	<td class="row1">{L_ARTICLE_APPROVED}<br><span class="gensmall">{L_ARTICLE_APPROVED_INFO}</span></td>
+	<td class="row2">
+	<input type="radio" name="approved" value="1" {APPROVED_CHECKED_YES}>{L_YES}&nbsp;
+	<input type="radio" name="approved" value="0" {APPROVED_CHECKED_NO}>{L_NO}&nbsp;
+	</td>
+  </tr>
+  <tr>
+	<td class="cat" colspan="2" align="center"><span class="cattitle">{L_SCREENSHOT}</span></td>
+  </tr>  
+  <tr>
+	<td class="row1"><span class="genmed">{L_ARTICLESS_UPLOAD}</span><br><span class="gensmall">{L_ARTICLESSINFO_UPLOAD}</span></td>
+	<td class="row2">
+		<input type="ARTICLE" size="50" name="screen_shot" maxlength="{ARTICLESIZE}" class="post" />
+	</td>
+  </tr>  
+  <tr>
+	<td class="row1"><span class="genmed">{L_ARTICLESS}</span><br><span class="gensmall">{L_ARTICLESSINFO}</span></td>
+	<td class="row2">
+		<input type="text" class="post" size="50" name="screen_shot_url" value="{ARTICLE_SSURL}">
+	</td>
+  </tr>
+  <tr>
+	<td class="row1"><span class="genmed">{L_ARTICLE_SSLINK}</span><br><span class="gensmall">{L_ARTICLE_SSLINK_INFO}</span></td>
+	<td class="row2">
+	<input type="radio" name="sshot_link" value="1" {SS_CHECKED_YES}>{L_YES}&nbsp;
+	<input type="radio" name="sshot_link" value="0" {SS_CHECKED_NO}>{L_NO}&nbsp;
+	</td>
+  </tr>  
+  <tr>
+	<td class="cat" colspan="2" align="center"><span class="cattitle">{L_ARTICLES}</span></td>
+  </tr>  
+  <tr>
+	<td class="row1"><span class="genmed">{L_ARTICLE_UPLOAD}</span><br><span class="gensmall">{L_ARTICLEINFO_UPLOAD}</span></td>
+	<td class="row2">
+		<input type="ARTICLE" size="50" name="userarticle" maxlength="{ARTICLESIZE}" class="post" />
+	</td>
+  </tr>  
+  <tr>
+	<td class="row1"><span class="genmed">{L_ARTICLE_URL}</span><br><span class="gensmall">{L_ARTICLE_URL_INFO}</span></td>
+	<td class="row2">
+		<input type="text" class="post" size="50" name="download_url" value="{ARTICLE_DLURL}">
+	</td>
+  </tr>
+<!-- IF MIRROR_ARTICLE -->  
+  <tr>
+	<td class="row1"><span class="genmed">{L_UPLOADED_ARTICLE}</span></td>
+	<td class="row2"><a href="{U_UPLOADED_MIRROR}">{MIRROR_ARTICLE}</a></td>
+  </tr>
+<!-- ENDIF -->  
+  <tr>
+	<td class="row1"><span class="genmed">{L_MIRRORS}</span><br><span class="gensmall">{L_MIRRORS_INFO}</span></td>
+	<td class="row2"><input class="mainoption" type="submit" value="{L_CLICK_HERE_MIRRORS}" name="mirrors"<!-- IF MODE_EDIT --> onClick="set_mirror_mode(true);"<!-- ENDIF --> />
+	</td>
+  </tr>
+<!-- IF CUSTOM_EXIST -->
+  <tr>
+	<td class="cat" colspan="2" align="center"><span class="cattitle">{L_ADDTIONAL_FIELD}</span></td>
+  </tr>
+<!-- ENDIF -->
+
+<!-- INCLUDE pub_custom_field.html -->
+  <tr>
+	<td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_ARTICLE_TITLE}" name="submit" onClick="set_mirror_mode(false);" /></td>
+  </tr>
+</table>
+</form>

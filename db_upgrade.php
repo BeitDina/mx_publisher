@@ -47,23 +47,23 @@ if($result = $db->field_exists('config_name', $mx_table_prefix . "pub_config"))
 //if ( $result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . "pub_config" ) )
 {
 	// Upgrade checks
-	$upgrade_100 = 0; // mxp 2.8 branch ->
+	$upgrade_010 = 0; // mxp 2.8 branch ->
 	
 	$message = "<b>Upgrading!</b><br/><br/>";
 	
-	// validate before 1.0.0
+	// validate before 0.1.0
 	if(!$result = $db->field_exists('is_dynamic', $mx_table_prefix . "pub_config"))
 	//if ( !$result = $db->sql_query( "SELECT is_dynamic from " . $mx_table_prefix . "pub_config" ) )
 	{
-		$upgrade_100= 1;
-		$message .= "<b>Upgrading v. 1.0.0...ok</b><br/><br/>";
+		$upgrade_010= 1;
+		$message .= "<b>Upgrading v. 0.1.0...ok</b><br/><br/>";
 	}
 	else
 	{
-		$message .= "<b>Validating v. 1.0.0...ok</b><br/><br/>";
+		$message .= "<b>Validating v. 0.1.0...ok</b><br/><br/>";
 	}
 	
-	if ( $upgrade_100 == 1 )
+	if ( $upgrade_010 == 1 )
 	{
 		// Upgrade the config table to avoid duplicate entries
 		$sql[] = "ALTER TABLE " . $mx_table_prefix . "pub_config ADD `is_dynamic` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'";
@@ -82,7 +82,7 @@ if($result = $db->field_exists('config_name', $mx_table_prefix . "pub_config"))
 				    WHERE module_id = '" . $mx_module_id . "'";
 	}
 
-	$message .= mx_do_install_upgrade( $sql );
+	$message .= mx_do_install_upgrade($sql);
 	$message .= "<b>...Now upgraded to v. $mx_module_version :-)</b><br/><br/>";
 
 	//

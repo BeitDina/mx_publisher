@@ -2,7 +2,7 @@
 /**
 *
 * @package MX-Publisher Module - mx_publisher
-* @version $Id: dload.php,v 1.36 2011/03/14 20:22:31 orynider Exp $
+* @version $Id: app.php,v 1.36 2011/03/14 20:22:31 orynider Exp $
 * @copyright (c) 2002-2006 [Jon Ohlsson, Mohd Basri, wGEric, PHP Arena, FlorinCB, CRLin] MX-Publisher Project Team
 * @license http://opensource.org/licenses/gpl-license.php GNU General Public License v2
 *
@@ -197,34 +197,19 @@ if (!($publisher_config['enable_module'] || $mx_user->is_admin))
 	//mx_message_die( GENERAL_MESSAGE, $lang['publisher_disable'] );
 }
 
-//
-// expected actions
-//
-@define( 'download', 'download' );
-@define( 'category', 'category' );
-@define( 'file', 'file' );
-@define( 'viewall', 'viewall' );
-@define( 'search', 'search' );
-@define( 'license', 'license' );
-@define( 'rate', 'rate');
-@define( 'email', 'email');
-@define( 'stats', 'stats');
-@define( 'toplist', 'toplist',
-@define( 'user_upload', 'user_upload');
-@define( 'post_comment', 'post_comment');
-@define( 'mcp', 'mcp');
-@define( 'ucp', 'ucp');
-@define( 'main', 'main' );
-
 // ===================================================
 // an array of all expected actions
 // ===================================================
 $actions = array(
+	'article' => 'article',
 	'download' => 'download',
 	'category' => 'category',
+	'cat' => 'category',
+	'add' => 'post',
 	'file' => 'file',
 	'viewall' => 'viewall',
 	'search' => 'search',
+	'edit' => 'post',
 	'license' => 'license',
 	'rate' => 'rate',
 	'email' => 'email',

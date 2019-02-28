@@ -1,3 +1,4 @@
+<link href="{U_PORTAL_ROOT_PATH}modules/mx_navmenu/templates/prosilver/mx_publisher.css" rel="stylesheet" type="text/css" media="screen" />
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 	function mpFoto(img)

@@ -2,7 +2,7 @@
 /**
 *
 * @package MX-Publisher Module - mx_publisher
-* @version $Id: admin_pa_file.php,v 1.9 2008/07/15 22:07:04 jonohlsson Exp $
+* @version $Id: admin_file_manage.php,v 1.9 2008/07/15 22:07:04 orynider Exp $
 * @copyright (c) 2002-2006 [Jon Ohlsson, Mohd Basri, wGEric, PHP Arena, FlorinCB, CRLin] MX-Publisher Project Team
 * @license http://opensource.org/licenses/gpl-license.php GNU General Public License v2
 *
@@ -26,17 +26,36 @@ class publisher_file_manage extends publisher_admin
 	function main( $module_id = false )
 	{
 		$action = $module_id;
-		global $mx_user, $db, $images, $template, $template, $lang, $phpEx, $publisher_functions, $publisher_cache, $publisher_config, $phpbb_root_path, $module_root_path, $mx_root_path, $mx_request_vars, $portal_config;
+		global $mx_user, $db, $images, $template, $lang, $phpEx, $publisher_functions, $publisher_cache, $publisher_config, $phpbb_root_path, $module_root_path, $mx_root_path, $mx_request_vars, $portal_config;
 
-		include( $module_root_path . 'pafiledb/includes/functions_field.' . $phpEx );
+		include_once($module_root_path . 'publisher/core/functions_field.' . $phpEx);
 
 		$custom_field = new custom_field();
 		$custom_field->init();
-
-		$pafiledb->init();
+		include_once( $module_root_path . 'publisher/core/functions_admin.' . $phpEx );
+		$publisher = new publisher_admin();
+		$publisher->init();
+		
+		$mode = ( isset( $_REQUEST['mode'] ) ) ? htmlspecialchars( $_REQUEST['mode'] ) : '';
 
 		$cat_id = ( isset( $_REQUEST['cat_id'] ) ) ? intval( $_REQUEST['cat_id'] ) : 0;
-		$file_id = ( isset( $_REQUEST['file_id'] ) ) ? intval( $_REQUEST['file_id'] ) : 0;
+		$cat_id_other = ( isset( $_REQUEST['cat_id_other'] ) ) ? intval( $_REQUEST['cat_id_other'] ) : 0;
+		
+		// Requests
+		$action = $mx_request_vars->variable('action', '');
+		$cat_id = $mx_request_vars->variable('cat_id', 0);
+		$art_id = $mx_request_vars->variable('art_id', 0);
+		$file_id = $mx_request_vars->variable('file_id', 0);
+		
+		if ($mx_request_vars->is_set_post('add'))
+		{
+			$action = 'add';
+		}
+	
+		// Here we set the main switches to use within the ACP
+		$this->page_title = $mx_user->lang['ACP_EDIT_ITEMS'];
+		$this->tpl_name = 'pub_admin_files_list';
+	
 		$file_ids = ( isset( $_POST['file_ids'] ) ) ? array_map( 'intval', $_POST['file_ids'] ) : array();
 		$start = ( isset( $_REQUEST['start'] ) ) ? intval( $_REQUEST['start'] ) : 0;
 
@@ -56,26 +75,26 @@ class publisher_file_manage extends publisher_admin
 			{
 				case 'file_name':
 					$sort_method = 'file_name';
-					break;
+				break;
 				case 'file_time':
 					$sort_method = 'file_time';
-					break;
+				break;
 				case 'file_dls':
 					$sort_method = 'file_dls';
-					break;
+				break;
 				case 'file_rating':
 					$sort_method = 'rating';
-					break;
+				break;
 				case 'file_update_time':
 					$sort_method = 'file_update_time';
-					break;
+				break;
 				default:
-					$sort_method = $pafiledb_config['sort_method'];
+					$sort_method = $publisher_config['sort_method'];
 			}
 		}
 		else
 		{
-			$sort_method = $pafiledb_config['sort_method'];
+			$sort_method = $publisher_config['sort_method'];
 		}
 
 		if ( isset( $_REQUEST['sort_order'] ) )
@@ -84,22 +103,23 @@ class publisher_file_manage extends publisher_admin
 			{
 				case 'ASC':
 					$sort_order = 'ASC';
-					break;
+				break;
 				case 'DESC':
 					$sort_order = 'DESC';
-					break;
+				break;
 				default:
-					$sort_order = $pafiledb_config['sort_order'];
+					$sort_order = $publisher_config['sort_order'];
 			}
 		}
 		else
 		{
-			$sort_order = $pafiledb_config['sort_order'];
+			$sort_order = $publisher_config['sort_order'];
 		}
 
 		$s_file_actions = array( 'approved' => $lang['Approved_files'],
 			'broken' => $lang['Broken_files'],
 			'file_cat' => $lang['File_cat'],
+			'file_art' => $lang['File_art'],
 			'all_file' => $lang['All_files'],
 			'maintenance' => $lang['Maintenance'] );
 
@@ -111,83 +131,86 @@ class publisher_file_manage extends publisher_admin
 			case 'do_approve':
 			case 'do_unapprove':
 			case 'delete':
+			case 'file_art':
 			case 'file_cat':
 			case 'all_file':
 			default:
-				$template_file = 'admin/pa_admin_file.tpl';
+				$template_file = 'admin/pub_admin_file.tpl';
 				$l_title = $lang['File_manage_title'];
 				$l_explain = $lang['Fileexplain']; 
 				// $s_hidden_fields = '<input type="hidden" name="mode" value="add">';
-				break;
+			break;
 			case 'add':
-				$template_file = 'admin/pa_admin_file_edit.tpl';
+				$template_file = 'admin/pub_admin_file_edit.tpl';
 				$l_title = $lang['Afiletitle'];
 				$l_explain = $lang['Fileexplain'];
 				$s_hidden_fields = '<input type="hidden" name="mode" value="do_add">';
-				break;
+			break;
 			case 'edit':
 			case 'do_add':
-				$template_file = 'admin/pa_admin_file_edit.tpl';
+				$template_file = 'admin/pub_admin_file_edit.tpl';
 				$l_title = $lang['Efiletitle'];
 				$l_explain = $lang['Fileexplain'];
 				$s_hidden_fields = '<input type="hidden" name="mode" value="do_add">';
 				$s_hidden_fields .= '<input type="hidden" name="file_id" value="' . $file_id . '">';
-				break;
+			break;
 			case 'maintenance':
-				$template_file = 'admin/pa_admin_file_checker.tpl';
+				$template_file = 'admin/pub_admin_file_checker.tpl';
 				$l_title = $lang['File_checker'];
 				$l_explain = $lang['File_checker_explain'];
 				$s_hidden_fields = '<input type="hidden" name="mode" value="do_maintenace">';
-				break;
+			break;
 			case 'mirrors':
-				$template_file = 'admin/pa_admin_file_mirrors.tpl';
+				$template_file = 'admin/pub_admin_file_mirrors.tpl';
 				$l_title = $lang['Mirrors'];
 				$l_explain = $lang['Mirrors_explain'];
 				$s_hidden_fields = '<input type="hidden" name="mode" value="mirrors">';
 				$s_hidden_fields .= '<input type="hidden" name="file_id" value="' . $file_id . '">';
-				break;
+			break;
 		}
 
 		if ( $mode == 'do_add' && !$file_id )
 		{
-			$file_id = $pafiledb->update_add_file();
+			$file_id = $publisher->update_add_file();
 			$custom_field->file_update_data( $file_id );
-			$pafiledb->_pafiledb();
+			$publisher->_publisher();
 			$mode = 'edit';
 			if ( !$mirrors )
 			{
-				$message = $lang['Fileadded'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( "admin_pa_file.php" ) . '">', '</a>' );
+				$message = $lang['Fileadded'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( "admin_publisher.$phpEx?action=file_manage" ) . '">', '</a>' );
 				mx_message_die( GENERAL_MESSAGE, $message );
 			}
-		}elseif ( $mode == 'do_add' && $file_id )
+		}
+		elseif ( $mode == 'do_add' && $file_id )
 		{
-			$file_id = $pafiledb->update_add_file( $file_id );
+			$file_id = $publisher->update_add_file( $file_id );
 			$custom_field->file_update_data( $file_id );
-			$pafiledb->_pafiledb();
+			$publisher->_publisher();
 			$mode = 'edit';
 			if ( !$mirrors )
 			{
-				$message = $lang['Fileedited'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( "admin_pa_file.$phpEx" ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . mx_append_sid( "index.$phpEx?pane=right" ) . '">', '</a>' );
+				$message = $lang['Fileedited'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( "admin_publisher.$phpEx?action=file_manage" ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . mx_append_sid( "index.$phpEx?pane=right" ) . '">', '</a>' );
 				mx_message_die( GENERAL_MESSAGE, $message );
 			}
-		}elseif ( $mode == 'delete' )
+		}
+		elseif ( $mode == 'delete' )
 		{
 			if ( is_array( $file_ids ) && !empty( $file_ids ) )
 			{
 				foreach( $file_ids as $temp_file_id )
 				{
-					$pafiledb->delete_files( $temp_file_id );
+					$publisher->delete_files( $temp_file_id );
 				}
 			}
 			else
 			{
-				$pafiledb->delete_files( $file_id );
+				$publisher->delete_files( $file_id );
 			}
-			$pafiledb->_pafiledb();
+			$publisher->_publisher();
 		}
 		elseif ( $mode == 'do_maintenace' )
 		{
-			$pafiledb->file_mainenance();
+			$publisher->file_mainenance();
 		}
 		elseif ( $mode == 'do_approve' || $mode == 'do_unapprove' )
 		{
@@ -195,43 +218,44 @@ class publisher_file_manage extends publisher_admin
 			{
 				foreach( $file_ids as $temp_file_id )
 				{
-					$pafiledb->file_approve( $mode, $temp_file_id );
+					$publisher->file_approve( $mode, $temp_file_id );
 				}
 			}
 			else
 			{
-				$pafiledb->file_approve( $mode, $file_id );
+				$publisher->file_approve( $mode, $file_id );
 			}
-			$pafiledb->_pafiledb();
+			$publisher->_publisher();
 		}
 
-		$pafiledb_template->set_filenames( array( 'admin' => $template_file ) 
+		$template->set_filenames( array( 'admin' => $template_file ) 
 			);
 
-		$pafiledb_template->assign_vars( array( 'L_FILE_TITLE' => $l_title,
+		$template->assign_vars( array( 
+				'L_FILE_TITLE' => $l_title,
 				'L_FILE_EXPLAIN' => $l_explain,
 				'L_ADD_FILE' => $lang['Afiletitle'],
 
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
-				'S_FILE_ACTION' => mx_append_sid( "admin_pa_file.$phpEx" ) ) 
+				'S_FILE_ACTION' => mx_append_sid( "admin_publisher.$phpEx?action=file_manage" ) ) 
 			);
 
-		if ( in_array( $mode, array( '', 'approved', 'broken', 'do_approve', 'do_unapprove', 'delete', 'file_cat', 'all_file' ) ) )
+		if ( in_array( $mode, array( '', 'approved', 'broken', 'do_approve', 'do_unapprove', 'delete', 'file_art', 'file_cat', 'all_file' ) ) )
 		{
 			$mode = ( in_array( $mode, array( 'do_approve', 'do_unapprove', 'delete' ) ) ) ? '' : $mode;
 
 			if ( $mode != 'approved' && $mode != 'broken' )
 			{
-				$where_sql = ( $mode == 'file_cat' ) ? "AND file_catid = '$cat_id'" : '';
-				$sql = "SELECT file_name, file_approved, file_id, file_broken
-					FROM " . PA_FILES_TABLE . " as f1
-					WHERE file_approved = '1'
+				$where_sql = ( $mode == 'file_art' ) ? "AND f1.file_artid = '$art_id'" : (( $mode == 'file_cat' ) ? "AND f1.file_catid = '$cat_id'" : '');
+				$sql = "SELECT f1.*
+					FROM " . PUB_FILES_TABLE . " as f1
+					WHERE f1.file_approved = 1
 					$where_sql
 					ORDER BY file_time DESC";
 
-				if ( $mode == '' || $mode == 'file_cat' || $mode == 'all_file' )
+				if ( $mode == '' || $mode == 'file_cat'  || $mode == 'file_art' || $mode == 'all_file' )
 				{
-					if ( ( !$result = $db->sql_query( $sql ) ) )
+					if ((!$result = $db->sql_query($sql)))
 					{
 						mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql );
 					}
@@ -239,7 +263,7 @@ class publisher_file_manage extends publisher_admin
 					$total_files = $db->sql_numrows( $result );
 				}
 
-				if ( !( $result = $pafiledb_functions->sql_query_limit( $sql, $pafiledb_config['settings_file_page'], $start ) ) )
+				if ( !( $result = $db->sql_query_limit( $sql, $publisher_config['pagination'], $start ) ) )
 				{
 					mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql );
 				}
@@ -248,8 +272,8 @@ class publisher_file_manage extends publisher_admin
 					$all_file_rowset[] = $row;
 				}
 			}
-
-			if ( $mode == '' || $mode == 'approved' || $mode == 'broken' || $mode == 'file_cat' || $mode == 'all_file' )
+			
+			if ( $mode == '' || $mode == 'approved' || $mode == 'broken' || $mode == 'file_art' || $mode == 'file_cat' || $mode == 'all_file' )
 			{
 				if ( $mode == '' )
 				{
@@ -258,14 +282,14 @@ class publisher_file_manage extends publisher_admin
 				}
 				else
 				{
-					$limit = $pafiledb_config['settings_file_page'];
+					$limit = $publisher_config['pagination'];
 					$temp_start = $start;
 				}
 
 				if ( $mode == '' || $mode == 'approved' )
 				{
 					$sql = "SELECT file_name, file_approved, file_id, file_broken
-						FROM " . PA_FILES_TABLE . "
+						FROM " . PUB_FILES_TABLE . "
 						WHERE file_approved = '0'
 						ORDER BY file_time DESC";
 
@@ -279,7 +303,7 @@ class publisher_file_manage extends publisher_admin
 						$total_files = $db->sql_numrows( $result );
 					}
 
-					if ( !( $result = $pafiledb_functions->sql_query_limit( $sql, $limit, $temp_start ) ) )
+					if ( !( $result = $publisher_functions->sql_query_limit( $sql, $limit, $temp_start ) ) )
 					{
 						mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql );
 					}
@@ -293,7 +317,7 @@ class publisher_file_manage extends publisher_admin
 				if ( $mode == '' || $mode == 'broken' )
 				{
 					$sql = "SELECT file_name, file_approved, file_id, file_broken
-						FROM " . PA_FILES_TABLE . "
+						FROM " . PUB_FILES_TABLE . "
 						WHERE file_broken = '1'
 						ORDER BY file_time DESC";
 
@@ -307,7 +331,7 @@ class publisher_file_manage extends publisher_admin
 						$total_files = $db->sql_numrows( $result );
 					}
 
-					if ( !( $result = $pafiledb_functions->sql_query_limit( $sql, $limit, $temp_start ) ) )
+					if ( !( $result = $publisher_functions->sql_query_limit( $sql, $limit, $temp_start ) ) )
 					{
 						mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql );
 					}
@@ -320,7 +344,9 @@ class publisher_file_manage extends publisher_admin
 
 				if ( $mode == '' )
 				{
-					$global_array = array( 0 => array( 'lang_var' => $lang['Approved_files'],
+					$global_array = array( 
+						0 => array( 
+							'lang_var' => $lang['Approved_files'],
 							'row_set' => $approved_file_rowset,
 							'approval' => 'approve' ),
 						1 => array( 'lang_var' => $lang['Broken_files'],
@@ -330,7 +356,13 @@ class publisher_file_manage extends publisher_admin
 							'row_set' => $all_file_rowset,
 							'approval' => 'unapprove' ) );
 				}
-				elseif ( $mode == 'all_file' || $mode == 'file_cat' )
+				elseif ( $mode == 'all_file' || $mode == 'file_art' )
+				{
+					$global_array = array( 0 => array( 'lang_var' => $lang['All_files'],
+							'row_set' => $all_file_rowset,
+							'approval' => 'unapprove' ) );
+				}
+				elseif ( $mode == 'all_file' || $mode == 'file_art'  || $mode == 'file_cat' )
 				{
 					$global_array = array( 0 => array( 'lang_var' => $lang['All_files'],
 							'row_set' => $all_file_rowset,
@@ -362,7 +394,7 @@ class publisher_file_manage extends publisher_admin
 			}
 
 			$cat_list = '<select name="cat_id">';
-			if ( !$pafiledb->cat_rowset[$cat_id]['cat_parent'] )
+			if ( !$publisher->cat_rowset[$cat_id]['cat_parent'] )
 			{
 				$cat_list .= '<option value="0" selected>' . $lang['None'] . '</option>\n';
 			}
@@ -370,10 +402,11 @@ class publisher_file_manage extends publisher_admin
 			{
 				$cat_list .= '<option value="0">' . $lang['None'] . '</option>\n';
 			}
-			$cat_list .= $pafiledb->jumpmenu_option( 0, 0, array( $cat_id => 1 ), true );
+			$cat_list .= $publisher->generate_jumpbox(0, 0, array($cat_id => 1), true);
 			$cat_list .= '</select>';
 
-			$pafiledb_template->assign_vars( array( 'L_EDIT' => $lang['Edit'],
+			$template->assign_vars(array( 
+					'L_EDIT' => $lang['Edit'],
 					'L_DELETE' => $lang['Delete'],
 					'L_CATEGORY' => $lang['Category'],
 					'L_MODE' => $lang['View'],
@@ -385,8 +418,8 @@ class publisher_file_manage extends publisher_admin
 					'L_UNAPPROVE_FILE' => $lang['Unapprove_selected'],
 					'L_NO_FILES' => $lang['No_file'],
 
-					'PAGINATION' => generate_pagination( mx_append_sid( "admin_pa_file.$phpEx?mode=$mode&amp;sort_method=$sort_method&amp;sort_order=$sort_order&cat_id=$cat_id" ), $total_files, $pafiledb_config['settings_file_page'], $start ),
-					'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_files / $pafiledb_config['settings_file_page'] ) ),
+					'PAGINATION' => mx_generate_pagination(mx_append_sid("admin_publisher.$phpEx?action=file_manage&amp;mode=$mode&amp;sort_method=$sort_method&amp;sort_order=$sort_order&cat_id=$cat_id" ), $total_files, $publisher_config['pagination'], $start),
+					'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $publisher_config['pagination'] ) + 1 ), ceil( $total_files / $publisher_config['pagination'] ) ),
 
 					'S_CAT_LIST' => $cat_list,
 					'S_MODE_SELECT' => $s_file_list ) 
@@ -399,7 +432,8 @@ class publisher_file_manage extends publisher_admin
 				if ( $files_data['approval'] == 'both' )
 				{
 					$approve = $unapprove = true;
-				}elseif ( $files_data['approval'] == 'approve' )
+				}
+				elseif ( $files_data['approval'] == 'approve' )
 				{
 					$approve = true;
 				}
@@ -408,7 +442,8 @@ class publisher_file_manage extends publisher_admin
 					$unapprove = true;
 				}
 
-				$pafiledb_template->assign_block_vars( 'file_mode', array( 'L_FILE_MODE' => $files_data['lang_var'],
+				$template->assign_block_vars( 'file_mode', array( 
+						'L_FILE_MODE' => $files_data['lang_var'],
 						'DATA' => ( isset( $files_data['row_set'] ) ) ? true : false,
 						'APPROVE' => $approve,
 						'UNAPPROVE' => $unapprove ) 
@@ -420,12 +455,12 @@ class publisher_file_manage extends publisher_admin
 					foreach( $files_data['row_set'] as $file_data )
 					{
 						$approve_mode = ( $file_data['file_approved'] ) ? 'do_unapprove' : 'do_approve';
-						$pafiledb_template->assign_block_vars( 'file_mode.file_row', array( 'FILE_NAME' => $file_data['file_name'],
+						$template->assign_block_vars( 'file_mode.file_row', array( 'FILE_NAME' => $file_data['file_name'],
 								'FILE_NUMBER' => $i++,
 								'FILE_ID' => $file_data['file_id'],
-								'U_FILE_EDIT' => mx_append_sid( "admin_pa_file.$phpEx?mode=edit&file_id={$file_data['file_id']}" ),
-								'U_FILE_DELETE' => mx_append_sid( "admin_pa_file.$phpEx?mode=delete&file_id={$file_data['file_id']}" ),
-								'U_FILE_APPROVE' => mx_append_sid( "admin_pa_file.$phpEx?mode=$approve_mode&file_id={$file_data['file_id']}" ),
+								'U_FILE_EDIT' => mx_append_sid( "admin_publisher.$phpEx?action=file_manage&mode=edit&file_id={$file_data['file_id']}" ),
+								'U_FILE_DELETE' => mx_append_sid( "admin_publisher.$phpEx?action=file_manage&mode=delete&file_id={$file_data['file_id']}" ),
+								'U_FILE_APPROVE' => mx_append_sid( "admin_publisher.$phpEx?action=file_manage&mode=$approve_mode&file_id={$file_data['file_id']}" ),
 								'L_APPROVE' => ( $file_data['file_approved'] ) ? $lang['Unapprove'] : $lang['Approve'] ) 
 							);
 					}
@@ -442,9 +477,9 @@ class publisher_file_manage extends publisher_admin
 				$file_author = '';
 				$file_version = '';
 				$file_website = '';
-				$file_posticons = $pafiledb_functions->post_icons();
-				$file_cat_list = $pafiledb->jumpmenu_option( 0, 0, '', true );
-				$file_license = $pafiledb_functions->license_list();
+				$file_posticons = $publisher_functions->post_icons();
+				$file_cat_list = $publisher->generate_jumpbox( 0, 0, '', true );
+				$file_license = $publisher_functions->license_list();
 				$pin_checked_yes = '';
 				$pin_checked_no = ' checked';
 				$file_download = 0;
@@ -459,7 +494,7 @@ class publisher_file_manage extends publisher_admin
 			else
 			{
 				$sql = 'SELECT *
-					FROM ' . PA_FILES_TABLE . "
+					FROM ' . PUB_FILES_TABLE . "
 					WHERE file_id = $file_id";
 				if ( !( $result = $db->sql_query( $sql ) ) )
 				{
@@ -473,9 +508,9 @@ class publisher_file_manage extends publisher_admin
 				$file_author = $file_info['file_creator'];
 				$file_version = $file_info['file_version'];
 				$file_website = $file_info['file_docsurl'];
-				$file_posticons = $pafiledb_functions->post_icons( $file_info['file_posticon'] );
-				$file_cat_list = $pafiledb->jumpmenu_option( 0, 0, array( $file_info['file_catid'] => 1 ), true );
-				$file_license = $pafiledb_functions->license_list( $file_info['file_license'] );
+				$file_posticons = $publisher_functions->post_icons( $file_info['file_posticon'] );
+				$file_cat_list = $publisher->generate_jumpbox( 0, 0, array( $file_info['file_catid'] => 1 ), true );
+				$file_license = $publisher_functions->license_list( $file_info['file_license'] );
 				$pin_checked_yes = ( $file_info['file_pin'] ) ? ' checked' : '';
 				$pin_checked_no = ( !$file_info['file_pin'] ) ? ' checked' : '';
 				$file_download = intval( $file_info['file_dls'] );
@@ -490,12 +525,12 @@ class publisher_file_manage extends publisher_admin
 				$custom_exist = $custom_field->display_edit( $file_id );
 			}
 
-			$pafiledb_template->assign_vars( array( 'U_MIRRORS_PAGE' => mx_append_sid( "admin_pa_file.$phpEx?mode=mirrors&file_id=$file_id" ),
-
+			$template->assign_vars(array(
+					'U_MIRRORS_PAGE' => mx_append_sid("admin_publisher.$phpEx?action=file_manage&mode=mirrors&file_id=$file_id"),
 					'ADD_MIRRORS' => $mirrors,
 					'MODE_EDIT' => ( $mode == 'edit' ) ? true : false,
 					'MODE' => $mode,
-					'FILESIZE' => intval( $pafiledb_config['max_file_size'] ),
+					'FILESIZE' => intval($publisher_config['max_file_size']),
 					'FILE_NAME' => $file_name,
 					'FILE_DESC' => $file_desc,
 					'FILE_LONG_DESC' => $file_long_desc,
@@ -573,7 +608,7 @@ class publisher_file_manage extends publisher_admin
 
 				if ( !empty( $mirror_ids ) )
 				{
-					$pafiledb->delete_mirror( $mirror_ids );
+					$publisher->delete_mirror( $mirror_ids );
 				}
 			}
 			if ( isset( $_POST['add_new'] ) )
@@ -586,7 +621,7 @@ class publisher_file_manage extends publisher_admin
 				$file_type = ( !empty( $_FILES['new_userfile']['type'] ) ) ? $_FILES['new_userfile']['type'] : '';
 				$mirror_location = ( !empty( $_POST['new_location'] ) ) ? $_POST['new_location'] : '';
 
-				$pafiledb->mirror_add_update( $file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location );
+				$publisher->mirror_add_update( $file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location );
 			}
 
 			if ( isset( $_POST['modify'] ) )
@@ -630,14 +665,14 @@ class publisher_file_manage extends publisher_admin
 
 					$mirror_location = ( !empty( $mirror_data['location'] ) ) ? $mirror_data['location'] : '';
 
-					$pafiledb->mirror_add_update( $file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location, $mirror_id );
+					$publisher->mirror_add_update( $file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location, $mirror_id );
 				}
 
 				unset( $data );
 			}
 
 			$sql = 'SELECT f.*
-				FROM ' . PA_MIRRORS_TABLE . " AS f
+				FROM ' . PUB_MIRRORS_TABLE . " AS f
 				WHERE f.file_id = '" . $file_id . "'
 				ORDER BY mirror_id";
 
@@ -652,8 +687,8 @@ class publisher_file_manage extends publisher_admin
 				$mirrors_data[$row['mirror_id']] = $row;
 			}
 
-			$pafiledb_template->assign_vars( array( 'ROW_NOT_EMPTY' => ( empty( $mirrors_data ) ) ? false : true,
-					'FILESIZE' => intval( $pafiledb_config['max_file_size'] ),
+			$template->assign_vars( array( 'ROW_NOT_EMPTY' => ( empty( $mirrors_data ) ) ? false : true,
+					'FILESIZE' => intval( $publisher_config['max_file_size'] ),
 
 					'L_MIRROR_LOCATION' => $lang['Mirror_location'],
 					'L_FILE_UPLOAD' => $lang['File_upload'],
@@ -670,7 +705,7 @@ class publisher_file_manage extends publisher_admin
 
 			foreach( $mirrors_data as $mirror_id => $mirror_data )
 			{
-				$pafiledb_template->assign_block_vars( 'row', array( 'LOCATION' => $mirror_data['mirror_location'],
+				$template->assign_block_vars( 'row', array( 'LOCATION' => $mirror_data['mirror_location'],
 						'MIRROR_ID' => $mirror_id,
 						'MIRROR_URL' => $mirror_data['file_dlurl'],
 						'MIRROR_FILE' => $mirror_data['unique_name'],
@@ -679,13 +714,13 @@ class publisher_file_manage extends publisher_admin
 			}
 		}
 
-		$pafiledb_template->assign_vars( array( 'ERROR' => ( sizeof( $pafiledb->error ) ) ? implode( '<br />', $pafiledb->error ) : '' ) 
+		$template->assign_vars( array( 'ERROR' => ( sizeof( $db->error ) ) ? implode( '<br />', $db->error ) : '' ) 
 			);
 
-		$pafiledb_template->display( 'admin' );
+		$template->pparse( 'admin' );
 
-		$pafiledb->_pafiledb();
-		$cache->unload();
+		$this->_publisher();
+		$publisher_cache->unload();
 
 	}
 }

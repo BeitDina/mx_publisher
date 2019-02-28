@@ -23,8 +23,13 @@ class publisher_custom_manage extends publisher_admin
 		//
 		// Init
 		//
+
+		include_once($module_root_path . 'publisher/core/functions_field.' . $phpEx);
+
 		$custom_field = new custom_field();
 		$custom_field->init();
+		//include_once( $module_root_path . 'publisher/core/functions_admin.' . $phpEx );
+		//$publisher = new publisher_admin();
 
 		$mode = ( isset( $_REQUEST['mode'] ) ) ? htmlspecialchars( $_REQUEST['mode'] ) : 'select';
 		$field_id = ( isset( $_REQUEST['field_id'] ) ) ? intval( $_REQUEST['field_id'] ) : 0;

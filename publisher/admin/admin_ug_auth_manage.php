@@ -18,7 +18,7 @@ class publisher_ug_auth_manage extends publisher_admin
 	function main( $module_id = false )
 	{
 		$action = $module_id;
-		global $db, $images, $template, $template, $lang, $phpEx, $publisher_functions, $publisher_cache, $publisher_config, $phpbb_root_path, $module_root_path, $mx_root_path, $mx_request_vars;
+		global $db, $images, $template, $lang, $phpEx, $publisher_functions, $publisher_cache, $publisher_config, $phpbb_root_path, $module_root_path, $mx_root_path, $mx_request_vars;
 		global $cat_auth_fields, $cat_auth_const, $cat_auth_levels, $global_auth_fields;
 		global $optionlist_mod, $optionlist_acl_adv;
 
@@ -288,17 +288,17 @@ class publisher_ug_auth_manage extends publisher_admin
 							FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
 							WHERE ug.user_id = $user_id
 								AND g.group_id = ug.group_id
-								AND g.group_single_user = '1'";						
-							
+								AND g.group_single_user = '1'
+							ORDER BY g.group_id DESC";
 					break;
 
 					case 'phpbb3':
-					
+					default:
 						$sql = "SELECT g.group_id
 							FROM " . GROUPS_TABLE . " g
 								LEFT JOIN " . USER_GROUP_TABLE . " ug ON (ug.group_id = g.group_id)
 							WHERE ug.user_id = " . $user_id . "
-							ORDER BY g.group_type DESC, g.group_id DESC";						
+							ORDER BY g.group_type DESC, g.group_id DESC";
 							
 					break;
 				}								
@@ -453,7 +453,7 @@ class publisher_ug_auth_manage extends publisher_admin
 				break;
 
 				case 'phpbb3':
-				
+				default:
 					$sql = 'SELECT u.user_id, u.username, u.username_clean, u.user_regdate, u.user_posts, u.group_id, ug.group_leader, ug.user_pending
 						FROM ' . USERS_TABLE . ' u, ' . USER_GROUP_TABLE . " ug
 						WHERE ";
@@ -529,24 +529,24 @@ class publisher_ug_auth_manage extends publisher_admin
 						case AUTH_ALL:
 						case AUTH_REG:
 							$auth_ug[$cat_id][$key] = 1;
-							break;
+						break;
 
 						case AUTH_ACL:
 							$auth_ug[$cat_id][$key] = ( !empty( $auth_access_count[$cat_id] ) ) ? $this->auth_check_user( AUTH_ACL, $key, $auth_access[$cat_id], $is_admin ) : 0;
 							$auth_field_acl[$cat_id][$key] = $auth_ug[$cat_id][$key];
-							break;
+						break;
 
 						case AUTH_MOD:
 							$auth_ug[$cat_id][$key] = ( !empty( $auth_access_count[$cat_id] ) ) ? $this->auth_check_user( AUTH_MOD, $key, $auth_access[$cat_id], $is_admin ) : 0;
-							break;
+						break;
 
 						case AUTH_ADMIN:
 							$auth_ug[$cat_id][$key] = $is_admin;
-							break;
+						break;
 
 						default:
 							$auth_ug[$cat_id][$key] = 0;
-							break;
+						break;
 					}
 				}
 
@@ -647,7 +647,7 @@ class publisher_ug_auth_manage extends publisher_admin
 			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 			$s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
-			$template->set_filenames( array( 'body' => 'admin/pub_auth_ug_body.tpl' ) );
+			$template->set_filenames( array( 'body' => 'admin/PUB_auth_ug_body.tpl' ) );
 
 			if ( $mode == 'user' )
 			{
@@ -705,24 +705,23 @@ class publisher_ug_auth_manage extends publisher_admin
 				switch (PORTAL_BACKEND)
 				{
 					case 'internal':
-
 					case 'phpbb2':
 						$sql = "SELECT g.group_id
 							FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
 							WHERE ug.user_id = $user_id
 								AND g.group_id = ug.group_id
-								AND g.group_single_user = '1'";						
+								AND g.group_single_user = '1'";
 					break;
 
 					case 'phpbb3':
-					
+					default:
 						$sql = "SELECT g.group_id
 							FROM " . GROUPS_TABLE . " g
 								LEFT JOIN " . USER_GROUP_TABLE . " ug ON (ug.group_id = g.group_id)
 							WHERE ug.user_id = " . $user_id . "
-							ORDER BY g.group_type DESC, g.group_id DESC";						
+							ORDER BY g.group_type DESC, g.group_id DESC";
 					break;
-				}								
+				}
 					
 				if ( !( $result = $db->sql_query( $sql ) ) )
 				{
@@ -736,22 +735,36 @@ class publisher_ug_auth_manage extends publisher_admin
 			switch (PORTAL_BACKEND)
 			{
 				case 'internal':
-
+					$sql_user = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user 
+						FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug 
+						WHERE u.user_id = $user_id 
+							AND ug.user_id = u.user_id 
+							AND g.group_id = ug.group_id
+						ORDER BY g.group_id DESC";
+					$sql_group = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user 
+						FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug 
+						WHERE g.group_id = $group_id 
+							AND ug.group_id = g.group_id 
+							AND u.user_id = ug.user_id
+						ORDER BY g.group_id DESC";
+				break;
 				case 'phpbb2':
 					$sql_user = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user 
 						FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug 
 						WHERE u.user_id = $user_id 
 							AND ug.user_id = u.user_id 
-							AND g.group_id = ug.group_id"
+							AND g.group_id = ug.group_id
+						ORDER BY g.group_type DESC, g.group_id DESC";
 					$sql_group = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user 
 						FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug 
 						WHERE g.group_id = $group_id 
 							AND ug.group_id = g.group_id 
-							AND u.user_id = ug.user_id"; 							
-
+							AND u.user_id = ug.user_id
+						ORDER BY g.group_type DESC, g.group_id DESC";
 				break;
 
 				case 'phpbb3':
+				default:
 					$sql_user = 'SELECT u.*, g.group_name, g.group_id, g.group_type
 						FROM ' . USERS_TABLE . ' u, ' . GROUPS_TABLE . ' g
 							LEFT JOIN ' . USER_GROUP_TABLE . ' ug ON (ug.group_id = g.group_id)
@@ -766,7 +779,7 @@ class publisher_ug_auth_manage extends publisher_admin
 							AND ug.user_id = u.user_id 
 						ORDER BY g.group_type DESC, g.group_id DESC';
 				break;
-			}				
+			}
 
 			$sql = ( $mode == 'global_user' ) ? $sql_user : $sql_group;				
 			
@@ -784,7 +797,15 @@ class publisher_ug_auth_manage extends publisher_admin
 			switch (PORTAL_BACKEND)
 			{
 				case 'internal':
-
+					$sql_user = "SELECT aa.*, g.group_single_user 
+						FROM " . PUB_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g 
+						WHERE ug.user_id = $user_id 
+							AND g.group_id = ug.group_id 
+							AND aa.group_id = ug.group_id 
+							AND g.group_single_user = 1 
+							AND aa.cat_id = '0'
+						ORDER BY g.group_id DESC";
+				break;
 				case 'phpbb2':
 					$sql_user = "SELECT aa.*, g.group_single_user 
 						FROM " . PUB_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g 
@@ -792,11 +813,12 @@ class publisher_ug_auth_manage extends publisher_admin
 							AND g.group_id = ug.group_id 
 							AND aa.group_id = ug.group_id 
 							AND g.group_single_user = 1 
-							AND aa.cat_id = '0'" 		
-
+							AND aa.cat_id = '0' 
+						ORDER BY g.group_type DESC, g.group_id DESC";
 				break;
-
+				
 				case 'phpbb3':
+				default:
 					$sql_user = "SELECT aa.*, g.group_id 
 						FROM " . PUB_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u 
 						WHERE ug.user_id = $user_id 
@@ -841,24 +863,24 @@ class publisher_ug_auth_manage extends publisher_admin
 					case AUTH_ALL:
 					case AUTH_REG:
 						$auth_ug[$key] = 1;
-						break;
+					break;
 
 					case AUTH_ACL:
 						$auth_ug[$key] = ( !empty( $auth_access_count ) ) ? $this->global_auth_check_user( AUTH_ACL, $key, $auth_access, $is_admin ) : 0;
 						$auth_field_acl[$key] = $auth_ug[$key];
-						break;
+					break;
 
 					case AUTH_MOD:
 						$auth_ug[$key] = ( !empty( $auth_access_count ) ) ? $this->global_auth_check_user( AUTH_MOD, $key, $auth_access, $is_admin ) : 0;
-						break;
+					break;
 
 					case AUTH_ADMIN:
 						$auth_ug[$key] = $is_admin;
-						break;
+					break;
 
 					default:
 						$auth_ug[$key] = 0;
-						break;
+					break;
 				}
 			}
 
@@ -956,7 +978,7 @@ class publisher_ug_auth_manage extends publisher_admin
 			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 			$s_hidden_fields .= ( $mode == 'global_user' ) ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
-			$template->set_filenames( array( 'body' => 'admin/pub_auth_ug_body.tpl' ) );
+			$template->set_filenames( array( 'body' => 'admin/PUB_auth_ug_body.tpl' ) );
 
 			if ( $mode == 'global_user' )
 			{

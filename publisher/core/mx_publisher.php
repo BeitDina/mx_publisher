@@ -42,6 +42,31 @@ class mx_publisher extends mx_publisher_auth
 	var $debug = false; // Toggle debug output on/off
 	var $debug_msg = array();
 
+	//
+	// mx_kb specific
+	//
+	var $sort_method = '';
+	var $sort_method_extra = '';
+	var $sort_order = '';
+
+	var $reader_mode = false;
+	/**
+	 * Prepare data.
+	 *
+	 */
+	function __construct()
+	{
+		global $db, $userdata, $mx_request_vars, $debug, $publisher_config, $mx_root_path, $module_root_path, $phpEx;
+
+		$this->debug('mx_pub->__construct', basename( __FILE__ ));
+		$this->db = $db;
+		$this->request = $mx_request_vars;
+		$this->mx_root_path = $mx_root_path;
+		$this->module_root_path = $module_root_path;
+		$this->php_ext = $phpEx;
+		
+	}
+	
 	/**
 	 * Prepare data.
 	 *
@@ -91,18 +116,25 @@ class mx_publisher extends mx_publisher_auth
 						$this->comments[$cat_rowset[$i]['cat_id']]['internal_comments'] = true; // phpBB or internal comments
 						$this->comments[$cat_rowset[$i]['cat_id']]['autogenerate_comments'] = false; // autocreate comments when updated
 						$this->comments[$cat_rowset[$i]['cat_id']]['comments_forum_id'] = 0; // phpBB target forum (only used for phpBB comments)
-						break;
+					break;
 
 					default:
 						$this->comments[$cat_rowset[$i]['cat_id']]['internal_comments'] = $cat_rowset[$i]['internal_comments'] == -1 ? ($publisher_config['internal_comments'] == 1 ? true : false ) : ( $cat_rowset[$i]['internal_comments'] == 1 ? true : false ); // phpBB or internal comments
 						$this->comments[$cat_rowset[$i]['cat_id']]['autogenerate_comments'] = $cat_rowset[$i]['autogenerate_comments'] == -1 ? ($publisher_config['autogenerate_comments'] == 1 ? true : false ) : ( $cat_rowset[$i]['autogenerate_comments'] == 1 ? true : false ); // autocreate comments when updated
 						$this->comments[$cat_rowset[$i]['cat_id']]['comments_forum_id'] = $cat_rowset[$i]['comments_forum_id'] < 1 ? ( intval($publisher_config['comments_forum_id']) ) : ( intval($cat_rowset[$i]['comments_forum_id']) ); // phpBB target forum (only used for phpBB comments)
-						break;
+					break;
 				}
 
 				if ($this->comments[$cat_rowset[$i]['cat_id']]['activated'] && !$this->comments[$cat_rowset[$i]['cat_id']]['internal_comments'] && intval($this->comments[$cat_rowset[$i]['cat_id']]['comments_forum_id']) < 1)
 				{
-					mx_message_die(GENERAL_ERROR, 'Init Failure, phpBB comments with no target forum_id :( <br> Category: ' . $cat_rowset[$i]['cat_name'] . ' Forum_id: ' . $this->comments[$cat_rowset[$i]['cat_id']]['comments_forum_id']);
+					if ( !defined( 'IN_ADMIN' ) )
+					{
+						mx_message_die(GENERAL_ERROR, 'Init Failure, phpBB comments with no target forum_id :( <br> Category: ' . $cat_rowset[$i]['cat_name'] . ' Forum_id: ' . $this->comments[$cat_rowset[$i]['cat_id']]['comments_forum_id']);
+					}
+					else
+					{
+						print('Init Failure, phpBB comments with no target forum_id :( <br> Category: ' . $cat_rowset[$i]['cat_name'] . ' Forum_id: ' . $this->comments[$cat_rowset[$i]['cat_id']]['comments_forum_id']);
+					}
 				}
 
 				//
@@ -239,7 +271,109 @@ class mx_publisher extends mx_publisher_auth
 		}
 		return;
 	}
+	
+	/**
+	 * Dummy function
+	 */
+	function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
+	{		
+		//
+		// Get SQL error if we are debugging. Do this as soon as possible to prevent
+		// subsequent queries from overwriting the status of sql_error()
+		//
+		if (DEBUG && ($msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR))
+		{
+				
+			if ( isset($sql) )
+			{
+				//$sql_error = array(@print_r(@$this->db->sql_error($sql)));				
+				$sql_error['message'] = $sql_error['message'] ? $sql_error['message'] : '<br /><br />SQL : ' . $sql; 
+				$sql_error['code'] = $sql_error['code'] ? $sql_error['code'] : 0;			
+			}
+			else
+			{
+				$sql_error = array(@print_r(@$this->db->sql_error_returned));				
+				$sql_error['message'] = $sql_error['message'] ? $sql_error['message'] : '<br /><br />SQL : ' . $sql; 
+				$sql_error['code'] = $sql_error['code'] ? $sql_error['code'] : 0;					
+			}			
+			
+			$debug_text = '';
 
+			if ( isset($sql_error['message']) )
+			{
+				$debug_text .= '<br /><br />SQL Error : ' . $sql_error['code'] . ' ' . $sql_error['message'];
+			}
+
+			if ( isset($sql_store) )
+			{
+				$debug_text .= "<br /><br />$sql_store";
+			}
+
+			if ( isset($err_line) && isset($err_file) )
+			{
+				$debug_text .= '</br /><br />Line : ' . $err_line . '<br />File : ' . $err_file;
+			}
+		}		
+		
+		switch($msg_code)
+		{
+			case GENERAL_MESSAGE:
+				if ( $msg_title == '' )
+				{
+					$msg_title = $this->user->lang('Information');
+				}
+			break;
+
+			case CRITICAL_MESSAGE:
+				if ( $msg_title == '' )
+				{
+					$msg_title = $this->user->lang('Critical_Information');
+				}
+			break;
+
+			case GENERAL_ERROR:
+				if ( $msg_text == '' )
+				{
+					$msg_text = $this->user->lang('An_error_occured');
+				}
+
+				if ( $msg_title == '' )
+				{
+					$msg_title = $this->user->lang('General_Error');
+				}
+			break;
+
+			case CRITICAL_ERROR:
+
+				if ($msg_text == '')
+				{
+					$msg_text = $this->user->lang('A_critical_error');
+				}
+
+				if ($msg_title == '')
+				{
+					$msg_title = 'phpBB : <b>' . $this->user->lang('Critical_Error') . '</b>';
+				}
+			break;
+		}
+		
+		//
+		// Add on DEBUG info if we've enabled debug mode and this is an error. This
+		// prevents debug info being output for general messages should DEBUG be
+		// set TRUE by accident (preventing confusion for the end user!)
+		//
+		if ( DEBUG && ( $msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR ) )
+		{
+			if ( $debug_text != '' )
+			{
+				$msg_text = $msg_text . '<br /><br /><b><u>DEBUG MODE</u></b> ' . $debug_text;
+			}
+		}		
+		
+		trigger_error($msg_title . ': ' . $msg_text);
+	}  
+	
+	
 	/**
 	 * Enter description here...
 	 *
@@ -881,16 +1015,16 @@ class mx_publisher extends mx_publisher_auth
 		//
 		if (!$cat_id)
 		{
-			$cat_where = "AND f1.file_catid IN (" . $this->gen_cat_ids( '0' ) . ")";
+			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids('0') . ")";
 		}
 		else if (is_array($cat_id))
 		{
-			$cat_where = "AND f1.file_catid IN (" . $this->gen_cat_ids( $cat_id['parent'] ) . ")";
+			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids( $cat_id['parent'] ) . ")";
 			$cat_id = false;
 		}
 		else
 		{
-			$cat_where = "AND f1.file_catid = $cat_id";
+			$cat_where = "AND t.article_category_id = $cat_id";
 		}
 
 		//
@@ -899,9 +1033,9 @@ class mx_publisher extends mx_publisher_auth
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.file_id) AS total_comments
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.file_id) AS total_comments
 					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c, " . PUB_CATEGORY_TABLE . " AS cat
-					WHERE f1.file_id = r.votes_file(+)
+					WHERE f1.file_id = r.votes_article(+)
 					AND f1.user_id = u.user_id(+)
 					AND f1.file_id = c.file_id(+)
 					AND f1.file_pin = " . FILE_PINNED . "
@@ -914,17 +1048,19 @@ class mx_publisher extends mx_publisher_auth
 				break;
 
 			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, IF(COUNT(r.rate_point)>0,AVG(r.rate_point),0) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.file_id) AS total_comments
-					FROM " . PUB_FILES_TABLE . " AS f1
-						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
-						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
-						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
-						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON f1.file_catid = cat.cat_id
-					WHERE f1.file_pin = " . FILE_PINNED . "
-					AND f1.file_approved = 1
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.article_id) AS total_comments, typ.type
+					FROM " . PUB_ARTICLES_TABLE . " AS t
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON t.article_id = r.votes_article
+						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
+						LEFT JOIN " . USERS_TABLE . " AS u ON t.article_author_id = u.user_id
+						LEFT JOIN " . PUB_FILES_TABLE . " AS f1 ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON t.article_id = c.article_id
+						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON t.article_category_id = cat.cat_id
+					WHERE t.article_pin = " . FILE_PINNED . "
+					AND t.approved = '1'
 					$cat_where
 					$sql_xtra
-					GROUP BY f1.file_id
+					GROUP BY t.article_id
 					ORDER BY $sort_method $sort_order";
 				break;
 		}
@@ -953,9 +1089,9 @@ class mx_publisher extends mx_publisher_auth
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username
 					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_CATEGORY_TABLE . " AS cat
-					WHERE f1.file_id = r.votes_file(+)
+					WHERE f1.file_id = r.votes_article(+)
 					AND f1.user_id = u.user_id(+)
 					AND f1.file_pin <> " . FILE_PINNED . "
 					AND f1.file_approved = 1
@@ -967,9 +1103,10 @@ class mx_publisher extends mx_publisher_auth
 				break;
 
 			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username
 					FROM " . PUB_FILES_TABLE . " AS f1
-						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_article
+						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
 						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
 						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON f1.file_catid = cat.cat_id
 					WHERE f1.file_pin <> " . FILE_PINNED . "
@@ -1246,9 +1383,9 @@ class mx_publisher extends mx_publisher_auth
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments, cat.cat_allow_ratings, cat.cat_allow_comments
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments, cat.cat_allow_ratings, cat.cat_allow_comments
 					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c, " . PUB_CATEGORY_TABLE . " AS cat
-					WHERE f1.file_id = r.votes_file(+)
+					WHERE f1.file_id = r.votes_article(+)
 					AND f1.user_id = u.user_id(+)
 					AND f1.file_id = c.file_id(+)
 					AND f1.file_pin = " . FILE_PINNED . "
@@ -1260,9 +1397,9 @@ class mx_publisher extends mx_publisher_auth
 				break;
 
 			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments, cat.cat_allow_ratings, cat.cat_allow_comments
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments, cat.cat_allow_ratings, cat.cat_allow_comments
 					FROM " . PUB_FILES_TABLE . " AS f1
-						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_article
 						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
 						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
 						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON f1.file_catid = cat.cat_id
@@ -1295,9 +1432,9 @@ class mx_publisher extends mx_publisher_auth
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
 					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c
-					WHERE f1.file_id = r.votes_file(+)
+					WHERE f1.file_id = r.votes_article(+)
 					AND f1.user_id = u.user_id(+)
 					AND f1.file_id = c.file_id(+)
 					AND f1.file_pin <> " . FILE_PINNED . "
@@ -1308,9 +1445,9 @@ class mx_publisher extends mx_publisher_auth
 				break;
 
 			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
+				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
 					FROM " . PUB_FILES_TABLE . " AS f1
-						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_article
 						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
 						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
 					WHERE f1.file_pin <> " . FILE_PINNED . "
@@ -1563,7 +1700,7 @@ class mx_publisher extends mx_publisher_auth
 		{
 			$where_sql = "user_id = '-99'";
 		}
-		$where_sql .= !empty($where_sql) ? " AND votes_file = '" . $file_id . "'" : "votes_file = '" . $file_id . "'";
+		$where_sql .= !empty($where_sql) ? " AND votes_article = '" . $file_id . "'" : "votes_article = '" . $file_id . "'";
 
 		$sql = "SELECT user_id, votes_ip
 			FROM " . PUB_VOTES_TABLE . "
@@ -1582,7 +1719,7 @@ class mx_publisher extends mx_publisher_auth
 		{
 			$user_info = new mx_user_info();
 
-			$sql = "INSERT INTO " . PUB_VOTES_TABLE . " (user_id, votes_ip, votes_file, rate_point, voter_os, voter_browser, browser_version)
+			$sql = "INSERT INTO " . PUB_VOTES_TABLE . " (user_id, votes_ip, votes_article, rate_point, voter_os, voter_browser, browser_version)
 						VALUES('" . $userdata['user_id'] . "', '" . $ipaddy . "', '" . $file_id . "','" . $rating . "', '" . $user_info->platform . "', '" . $user_info->agent . "', '" . $user_info->ver . "')";
 
 			if ( !( $db->sql_query( $sql ) ) )
