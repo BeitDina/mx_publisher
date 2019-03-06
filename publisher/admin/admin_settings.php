@@ -255,7 +255,7 @@ class publisher_settings extends publisher_admin
 				$template->assign_vars( array(
 					'S_READONLY' => "disabled=\"disabled\"" )
 				);
-				break;
+			break;
 
 			default:
 				$internal_comments_internal = ( $new['internal_comments'] ) ? "checked=\"checked\"" : "";
@@ -270,7 +270,7 @@ class publisher_settings extends publisher_admin
 				$template->assign_vars( array(
 					'S_READONLY' => "" )
 				);
-				break;
+			break;
 		}
 
 		$allow_comment_wysiwyg_yes = ( $new['allow_comment_wysiwyg'] ) ? "checked=\"checked\"" : "";

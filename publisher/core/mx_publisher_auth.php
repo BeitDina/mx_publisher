@@ -18,6 +18,7 @@ if ( !defined( 'IN_PORTAL' ) )
  *
  * $class->auth_user['auth_view'];
  * $class->auth_user['auth_read'];
+ * $class->auth_user['auth_post'];
  * $class->auth_user['auth_view_file'];
  * $class->auth_user['auth_edit_file'];
  * $class->auth_user['auth_delete_file'];
@@ -78,13 +79,13 @@ class mx_publisher_auth
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
-	var $pub_auth_access_table = PUB_AUTH_ACCESS_TABLE;		
+	var $pub_auth_access_table = PUB_AUTH_ACCESS_TABLE;
 	
 	var $auth_user = array();
 	var $auth_global = array();
 	
-	var $auth_fields = array( 'auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment', 'auth_approval', 'auth_approval_edit' );
-	var $auth_fields_global = array( 'auth_search', 'auth_stats', 'auth_toplist', 'auth_viewall' );
+	var $auth_fields = array('auth_view', 'auth_post', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment', 'auth_approval', 'auth_approval_edit');
+	var $auth_fields_global = array('auth_search', 'auth_stats', 'auth_toplist', 'auth_viewall');
 	var $publisher_config;
 	
 	public function mx_publisher_auth()
@@ -127,12 +128,12 @@ class mx_publisher_auth
 	 *
 	 * @param unknown_type $c_access
 	 */
-	function auth( $c_access )
+	function auth($c_access)
 	{
 		global $db, $lang, $userdata, $mx_user, $publisher_config, $phpbb_auth;
 
-		$a_sql = 'a.auth_view, a.auth_read, a.auth_view_file, a.auth_edit_file, a.auth_delete_file, a.auth_upload, a.auth_download, a.auth_rate, a.auth_email, a.auth_view_comment, a.auth_post_comment, a.auth_edit_comment, a.auth_delete_comment, a.auth_mod, a.auth_search, a.auth_stats, a.auth_toplist, a.auth_viewall, a.auth_approval, a.auth_approval_edit';
-		$auth_fields = array( 'auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment', 'auth_approval', 'auth_approval_edit' );
+		$a_sql = 'a.auth_view, a.auth_post, a.auth_read, a.auth_view_file, a.auth_edit_file, a.auth_delete_file, a.auth_upload, a.auth_download, a.auth_rate, a.auth_email, a.auth_view_comment, a.auth_post_comment, a.auth_edit_comment, a.auth_delete_comment, a.auth_mod, a.auth_search, a.auth_stats, a.auth_toplist, a.auth_viewall, a.auth_approval, a.auth_approval_edit';
+		$auth_fields = array( 'auth_view', 'auth_post', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment', 'auth_approval', 'auth_approval_edit' );
 		$auth_fields_global = array( 'auth_search', 'auth_stats', 'auth_toplist', 'auth_viewall' );
 
 		// If the user isn't logged on then all we need do is check if the forum
@@ -140,6 +141,7 @@ class mx_publisher_auth
 		// are denied access
 		$u_access = array();
 		$global_u_access = array();
+		
 		if ($mx_user->data['user_id'] != 1)
 		{
 			$sql = "SELECT a.cat_id, a.group_id, $a_sql
@@ -161,7 +163,7 @@ class mx_publisher_auth
 				else
 				{
 					$global_u_access = $row;
-				}				
+				}
 			}
 		}
 		
@@ -182,13 +184,13 @@ class mx_publisher_auth
 			// and admin automatically have access to an ACL forum, similarly we assume admins meet an
 			// auth requirement of MOD
 
-			for( $k = 0; $k < $cats = count( $c_access ); $k++ )
+			for ($k = 0; $k < $cats = count($c_access); $k++)
 			{
 				$value = $c_access[$k][$key];
 				$c_cat_id = $c_access[$k]['cat_id'];
 				global $lang;
 
-				switch ( $value )
+				switch ($value)
 				{
 					case AUTH_ALL:
 						$auth_user[$c_cat_id][$key] = true;

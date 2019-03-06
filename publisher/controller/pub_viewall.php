@@ -24,7 +24,7 @@ class publisher_viewall extends publisher_public
 	 *
 	 * @param unknown_type $action
 	 */
-	function main( $action  = false )
+	function main($action = false)
 	{
 		global $template, $lang, $phpEx, $publisher_config, $userdata;
 
@@ -36,26 +36,28 @@ class publisher_viewall extends publisher_public
 			{
 				case 'file_name':
 					$sort_method = 'file_name';
-					break;
+				break;
 				case 'file_time':
 					$sort_method = 'file_time';
-					break;
+				break;
 				case 'file_dls':
 					$sort_method = 'file_dls';
-					break;
+				break;
 				case 'file_rating':
 					$sort_method = 'rating';
-					break;
+				break;
 				case 'file_update_time':
 					$sort_method = 'file_update_time';
-					break;
+				break;
 				default:
-					$sort_method = $publisher_config['sort_method'];
+					//$sort_method = $publisher_config['sort_method'];
+					$sort_method = 'file_time';
 			}
 		}
 		else
 		{
-			$sort_method = $publisher_config['sort_method'];
+			//$sort_method = $publisher_config['sort_method'];
+			$sort_method = 'file_time';
 		}
 
 		if ( isset( $_REQUEST['sort_order'] ) )
@@ -64,10 +66,10 @@ class publisher_viewall extends publisher_public
 			{
 				case 'ASC':
 					$sort_order = 'ASC';
-					break;
+				break;
 				case 'DESC':
 					$sort_order = 'DESC';
-					break;
+				break;
 				default:
 					$sort_order = $publisher_config['sort_order'];
 			}
@@ -83,7 +85,7 @@ class publisher_viewall extends publisher_public
 		}
 		elseif ( !$this->auth_global['auth_viewall'] )
 		{
-			if ( !$userdata['session_logged_in'] )
+			if ( !$mx_user->data['session_logged_in'] )
 			{
 				mx_redirect( mx_append_sid( "login.$phpEx?redirect=dload.$phpEx?action=viewall", true ) );
 			}
@@ -102,7 +104,7 @@ class publisher_viewall extends publisher_public
 			'PROJECTS' => $publisher_config['module_name']
 		));
 
-		$this->display_items( $sort_method, $sort_order, $start, false,  true );
+		$this->display_files($sort_method, $sort_order, $start, false,  true);
 
 		// ===================================================
 		// assign var for navigation

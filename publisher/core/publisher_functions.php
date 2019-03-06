@@ -565,18 +565,30 @@ class publisher_functions
 
 		if ( $action == 'category' )
 		{
-			$upload_url = mx_append_sid( $publisher->this_mxurl( "action=user_upload&cat_id={$_REQUEST['cat_id']}" ) );
-			$mcp_url = mx_append_sid( $publisher->this_mxurl( "action=mcp&cat_id={$_REQUEST['cat_id']}" ) );
-
-			$upload_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat_id']]['auth_upload'];
-			$mcp_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat_id']]['auth_mod'];
+			$_REQUEST['cat'] = isset($_REQUEST['cat']) ? $_REQUEST['cat'] : $_REQUEST['cat_id'];
+			
+			$upload_url = mx_append_sid($publisher->this_mxurl("action=user_upload&cat_id={$_REQUEST['cat']}"));
+			$upload_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_upload'];
+			$mcp_url = mx_append_sid( $publisher->this_mxurl( "action=mcp&cat_id={$_REQUEST['cat']}" ) );
+			$mcp_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_mod'];
+			
+			if ($publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_post'] || $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_mod'])
+			{
+				$add_article_url = mx_append_sid($publisher->this_mxurl("action=add&cat=" . $_REQUEST['cat']));
+				$template->assign_block_vars('switch_add_article', array());
+				$template->assign_block_vars('MCP', array());
+			}
+			else
+			{
+				$add_article_url = '';
+			}
 		}
 		else
 		{
-			$upload_url = mx_append_sid( $publisher->this_mxurl( "action=user_upload" ) );
+			$upload_url = mx_append_sid($publisher->this_mxurl("action=user_upload"));
 
 			$cat_list = $publisher->modules[$publisher->module_name]->generate_jumpbox( 0, 0, '', true, true );
-			// $upload_auth = (empty($cat_list)) ? FALSE : TRUE;
+			$upload_auth = (empty($cat_list)) ? FALSE : TRUE;
 			$upload_auth = false;
 			$mcp_auth = false;
 			unset( $cat_list );
@@ -600,10 +612,12 @@ class publisher_functions
 				'L_TOPLIST' => $lang['Toplist'],
 				'L_UPLOAD' => $lang['User_upload'],
 				'L_VIEW_ALL' => $lang['Viewall'],
-
+				'L_ADD_ARTICLE' => $lang['Add_article'],
+			
 				'SEARCH_IMG' => $images['pub_search'],
 				'STATS_IMG' => $images['pub_stats'],
 				'TOPLIST_IMG' => $images['pub_toplist'],
+				'ADD_ARTICLE_IMG' => $images['pub_post'],
 				'UPLOAD_IMG' => $images['pub_upload'],
 				'VIEW_ALL_IMG' => $images['pub_viewall'],
 				'MCP_IMG' => $images['pub_moderator'],
@@ -613,7 +627,10 @@ class publisher_functions
 				'U_PASEARCH' => mx_append_sid($publisher->this_mxurl("action=search")),
 				'U_UPLOAD' => $upload_url,
 				'U_VIEW_ALL' => mx_append_sid($publisher->this_mxurl("action=viewall")),
+				'U_VIEW_ALL' => mx_append_sid($publisher->this_mxurl( "&action=stats&sort_method=viewall&sort_order=DESC") ),
 				'U_PASTATS' => mx_append_sid($publisher->this_mxurl("action=stats" )),
+				'U_PUBSTATS' => mx_append_sid($publisher->this_mxurl( "&action=stats") ),
+				'U_ADD_ARTICLE' => $add_article_url,
 				'U_MCP' => $mcp_url,
 
 				'MX_ROOT_PATH' => $mx_root_path,
@@ -623,6 +640,7 @@ class publisher_functions
 				'B_SEARCH_IMG' => $this->create_button('pub_search', $lang['Search'], mx_append_sid($publisher->this_mxurl("action=search"))),
 				'B_STATS_IMG' => $this->create_button('pub_stats', $lang['Statistics'], mx_append_sid($publisher->this_mxurl("action=stats"))),
 				'B_TOPLIST_IMG' => $this->create_button('pub_toplist', $lang['Toplist'], mx_append_sid($publisher->this_mxurl("action=toplist"))),
+				'B_ADD_ARTICLE_IMG' => $this->create_button('pub_post', $lang['Add_article'], $add_article_url),
 				'B_UPLOAD_IMG' => $this->create_button('pub_upload', $lang['User_upload'], $upload_url),
 				'B_VIEW_ALL_IMG' => $this->create_button('pub_viewall', $lang['Viewall'], mx_append_sid($publisher->this_mxurl("action=viewall"))),
 				'B_MCP_LINK' => $this->create_button('pub_moderator', $lang['MCP_title'], $mcp_url),
@@ -679,6 +697,144 @@ class publisher_functions
 		}
 	}
 	
+
+	/**
+	 * Quick stats.
+	 *
+	 * @param unknown_type $category_id
+	 */
+	function get_quick_stats( $category_id = '' )
+	{
+		global $db, $template, $lang, $kb_config;
+
+		$stats_list = '';
+
+		$sql_stat = "SELECT *
+				FROM " . PUB_TYPES_TABLE;
+
+		$sql_stat .= " ORDER BY type";
+
+		if ( !( $result = $db->sql_query( $sql_stat ) ) )
+		{
+			mx_message_die( GENERAL_ERROR, "Error getting quick stats", '', __LINE__, __FILE__, $sql );
+		}
+
+		$ii = 0;
+		while ( $type = $db->sql_fetchrow( $result ) )
+		{
+			$ii++;
+			$type_id = $type['id'];
+			$type_name = isset($lang['PUB_type_' . $type['type']]) ? $lang['PUB_type_' . $type['type']] : $type['type'];
+
+			$sql = "SELECT article_id FROM " . PUB_ARTICLES_TABLE . "
+				WHERE article_type = $type_id ";
+
+			if ( !empty( $category_id ) )
+			{
+				$sql .= " AND article_category_id = '$category_id'";
+			}
+
+			if ( !( $count = $db->sql_query( $sql ) ) )
+			{
+				mx_message_die( GENERAL_ERROR, "error getting quick stats", '', __LINE__, __FILE__, $sql );
+			}
+
+			$number_count = 0;
+			$number_count = $db->sql_numrows( $count );
+
+			if ( !empty( $category_id ) && $number_count > 0 )
+			{
+				$stats_list .= empty($stats_list) ? $type_name . '(' . $number_count . ')&nbsp' : '&bull;&nbsp;' . $type_name . '(' . $number_count . ')&nbsp' ;
+			}
+		}
+
+		if (!empty($stats_list))
+		{
+			$template->assign_block_vars( 'switch_quick_stats', array(
+				'L_QUICK_STATS' => $lang['Quick_stats'],
+				'STATS' => $stats_list
+			));
+		}
+	}
+
+	/**
+	 * get type list for adding and editing articles.
+	 *
+	 * @param unknown_type $sel_id
+	 */
+	function get_pub_type_list( $sel_id )
+	{
+		global $db, $template;
+
+		$sql = "SELECT *
+	       	FROM " . PUB_TYPES_TABLE;
+
+		if ( !( $type_result = $db->sql_query( $sql ) ) )
+		{
+			mx_message_die( GENERAL_ERROR, "Could not obtain category information", '', __LINE__, __FILE__, $sql );
+		}
+
+		while ( $type = $db->sql_fetchrow( $type_result ) )
+		{
+			$type_name = isset($lang['PUB_type_' . $type['type']]) ? $lang['PUB_type_' . $type['type']] : $type['type'];
+			$type_id = $type['id'];
+
+			if ( $sel_id == $type_id )
+			{
+				$status = 'selected';
+			}
+			else
+			{
+				$status = '';
+			}
+
+			$type = '<option value="' . $type_id . '" ' . $status . '>' . $type_name . '</option>';
+
+			$template->assign_block_vars( 'types', array(
+				'TYPE' => $type )
+			);
+		}
+	}
+
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $article
+	 * @return unknown
+	 */
+	function article_formatting( $article )
+	{
+		// Prepare ingress/preword
+		$search = array ();
+		$replace = array ();
+
+		$search = array ( "'\[title*?[^\[\]]*?\]'si",
+			"'\[\/title*?[^\[\]]*?\]'si",
+			"'\[subtitle*?[^\[\]]*?\]'si",
+			"'\[\/subtitle*?[^\[\]]*?\]'si",
+			"'\[subsubtitle*?[^\[\]]*?\]'si",
+			"'\[\/subsubtitle*?[^\[\]]*?\]'si",
+			"'\[quote*?[^\[\]]*?\]'si",
+			"'\[\/quote*?[^\[\]]*?\]'si",
+			"'\[abstract*?[^\[\]]*?\]'si",
+			"'\[\/abstract*?[^\[\]]*?\]'si" );
+
+		$replace = array ( "<span class=\"cattitle\">",
+			"</span>",
+			"<span class=\"topictitle\">",
+			"</span>",
+			"<span class=\"gensmall\"><b>",
+			"</b></span>",
+			"<div align=\"center\"><span class=\"gensmall\"><i>''",
+			"''</i></span></div>",
+			"<table cellpadding=\"20\" style=\"margin-bottom: -20px;\"><tr><td><span class=\"postbody\" style=\"font-weight: bold; font-size: 9pt;\">",
+			"</span></td></td></tr></table>" );
+
+		$article = preg_replace( $search, $replace, $article );
+
+		return $article;
+	}
+
 	
 	/**
 	 * Dummy function
@@ -2142,9 +2298,9 @@ function send_file_to_browser($real_filename, $physical_filename, $upload_dir)
 	}
 
 	$gotit = false;
-	if ( @!file_exists( @$publisher_functions->publisher_realpath( $filename ) ) )
+	if (!file_exists($publisher_functions->publisher_realpath($filename)))
 	{
-		mx_message_die( GENERAL_ERROR, $lang['Error_no_download'] . '<br /><br /><b>404 File Not Found:</b> The File <i>' . $filename . '</i> does not exist.' );
+		mx_message_die(GENERAL_ERROR, $lang['Error_no_download'] . '<br /><br /><b>404 File Not Found:</b> The File <i>' . $filename . '</i> does not exist.');
 	}
 	else
 	{

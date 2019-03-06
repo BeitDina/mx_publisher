@@ -11,7 +11,35 @@
 //
 // General
 //
+$lang['PUB_title'] = 'Article Base';
+
 $lang['Category'] = 'Kategori';
+$lang['Sub_categories'] = 'Subcategories';
+$lang['Article'] = 'Article';
+$lang['Articles'] = 'Articles';
+$lang['Article_description'] = 'Description';
+$lang['Article_type'] = 'Type';
+$lang['Article_keywords'] = 'Keywords';
+$lang['Add_article'] = 'Add Article';
+$lang['Click_cat_to_add'] = 'Click a category to add an article';
+$lang['PUB_Home'] = 'Start Page - Articles Home';
+$lang['No_articles'] = 'No Articles';
+$lang['Article_title'] = 'Article Name';
+$lang['Article_text'] = 'Article text';
+$lang['Add_article'] = 'Submit Article';
+$lang['Read_article'] = 'Reading Article';
+$lang['Article_not_exsist'] = 'Article doesn\'t exist';
+$lang['Category_not_exsist'] = 'Category doesn\'t exist';
+$lang['Last_article'] = 'Last article';
+$lang['Quick_jump'] = 'Select Category';
+
+
+
+
+
+
+
+
 $lang['Error_no_download'] = 'Den valda filen finns inte';
 $lang['Options'] = 'Alternativ';
 $lang['Click_return'] = 'Klicka %shär%s för att återgå till föregående sida';
@@ -25,6 +53,161 @@ $lang['No_new_file'] = 'Ingen ny fil';
 $lang['None'] = 'Ingen';
 $lang['No_file'] = 'Inga filer';
 $lang['View_latest_file'] = 'Visa senaste fil';
+
+$lang['Edit'] = 'Edit';
+$lang['Click_cat_to_add'] = 'Click on Category to add Article';
+$lang['Standalone_Not_Supported'] = 'This module does not support standalone usage. In the AdminCP, add the KB block to a portal page.';
+$lang['Article_submitted_Approve'] = 'Article Submitted Successfully.<br />An Administrator will review your article and decide whether to let users view it or not.';
+$lang['Article_submitted'] = 'Article Submitted Successfully.';
+$lang['Click_return_pub'] = 'Press %shere%s to return at ' . $lang['PUB_title'];
+$lang['Click_return_article'] = 'Press %shere%s to return at ' . $lang['Article'];
+
+$lang['Article_Edited_Approve'] = 'Article Edited Successfully.<br />It needs to be approved again before users can view it.';
+$lang['Article_Edited'] = 'Article Edited Successfully.';
+$lang['Edit_article'] = 'Edit Article';
+
+$lang['Article_Deleted'] = 'The article was deleted successfully.';
+
+//
+// Notification
+//
+$lang['PUB_prefix'] = '[ PUB ]';
+$lang['PUB_notify_subject_new'] = 'New Article!';
+$lang['PUB_notify_subject_edited'] = 'Edited Article!';
+$lang['PUB_notify_subject_approved'] = 'Approved Article!';
+$lang['PUB_notify_subject_unapproved'] = 'Unapproved Article!';
+$lang['PUB_notify_subject_deleted'] = 'Deleted Article!';
+
+$lang['PUB_notify_new_body'] = 'A new article has been submitted.';
+$lang['PUB_notify_edited_body'] = 'An article has been modified.';
+$lang['PUB_notify_approved_body'] = 'An article has been approved.';
+$lang['PUB_notify_unapproved_body'] = 'An article has been unapproved.';
+$lang['PUB_notify_deleted_body'] = 'An article has been deleted.';
+$lang['Edited_Article_info'] = 'Article updated by ';
+
+$lang['Read_full_article'] = '>> Read Full Article';
+
+//
+// Auth Can
+//
+$lang['PUB_Rules_post_can'] = 'You <b>can</b> post new articles in this category';
+$lang['PUB_Rules_post_cannot'] = 'You <b>cannot</b> post new articles in this category';
+$lang['PUB_Rules_comment_can'] = 'You <b>can</b> comment articles in this category';
+$lang['PUB_Rules_comment_cannot'] = 'You <b>cannot</b> comment articles in this category';
+$lang['PUB_Rules_edit_can'] = 'You <b>can</b> edit your articles in this category';
+$lang['PUB_Rules_edit_cannot'] = 'You <b>cannot</b> edit your articles in this category';
+$lang['PUB_Rules_delete_can'] = 'You <b>can</b> delete your articles in this category';
+$lang['PUB_Rules_delete_cannot'] = 'You <b>cannot</b> delete your articles in this category';
+$lang['PUB_Rules_rate_can'] = 'You <b>can</b> rate articles in this category';
+$lang['PUB_Rules_rate_cannot'] = 'You <b>cannot</b> rate articles in this category';
+$lang['PUB_Rules_approval_can'] = 'Articles <b>need no</b> approval in this category';
+$lang['PUB_Rules_approval_cannot'] = 'Articles <b>need</b> approval in this category';
+$lang['PUB_Rules_approval_edit_can'] = 'Article edits <b>need no</b> approval in this category';
+$lang['PUB_Rules_approval_edit_cannot'] = 'Article edits <b>need</b> approval in this category';
+$lang['PUB_Rules_moderate'] = 'You <b>can</b> %smoderate this category%s'; // %s replaced by a href links, do not remove!
+$lang['PUB_Rules_moderate_can'] = 'You <b>can</b> moderate this category'; // %s replaced by a href links, do not remove!
+
+$lang['Empty_fields'] ='Please fill out all parts of the form.';
+$lang['Empty_fields_return'] ='Click %sHere%s to return to the form.';
+$lang['Empty_category'] ='You must choose a category';
+$lang['Empty_type']='You must choose a type';
+$lang['Empty_article_name'] = 'You must fill out the article name';
+$lang['Empty_article_desc'] = 'You must fill out the article description';
+
+$lang['Comments'] = 'Comments';
+
+$lang['Post_comments'] = 'Post your comments';
+
+$lang['Category_sub'] = 'Sub-Categories';
+$lang['Quick_stats'] = 'Quick Stats';
+
+$lang['No_Articles'] = 'There are no articles in this category!';
+$lang['Not_authorized'] = 'Sorry, but you are not authorized!';
+$lang['TOC'] = 'Contents';
+
+//
+// Print version
+//
+$lang['Print_version'] = '[Printable version]';
+
+//
+// Stats
+//
+$lang['View_All'] = 'View All';
+$lang['Stats_Most_Popular'] = 'Stats Most Popular';
+$lang['Stats_Latest'] = 'Stats Latest';
+$lang['Top_toprated'] = 'Toprated Articles';
+$lang['Top_most_popular'] = 'Most Popular';
+$lang['Top_latest'] = 'Latest Articles';
+$lang['Top_id'] = 'Article Id';
+$lang['Top_creation'] = 'Article date';
+$lang['Top_alphabetic'] = 'Alphabetic';
+$lang['Top_userrank'] = 'Author userrank';
+
+//
+// Update result messages
+//
+$lang['Click_return'] = 'Click %sHere%s to return to previous page';
+$lang['Click_return_pub'] = 'Click %sHere%s to return to the ' . $lang['PUB_title'];
+$lang['Click_return_article'] = 'Click %sHere%s to return to the ' . $lang['Article'];
+
+//
+// Article formattting
+//
+$lang['Cat_all'] = 'All';
+
+$lang['L_Pages'] = 'Pages';
+$lang['L_Pages_explain'] = 'Use the \'[pages]\' command to split the article into pages';
+$lang['L_Toc'] = 'Table of contents (TOC)';
+$lang['L_Toc_explain'] = 'Use the \'[toc]\' command to add entry in the TOC';
+$lang['L_Abstract'] = 'Abstract';
+$lang['L_Abstract_explain'] = 'Use the \'[abstract]...[/abstract]\' environment to insert an abstract';
+
+$lang['L_Title_Format'] = 'Title';
+$lang['L_Title_Format_explain'] = 'Use the \'[title]...[/title]\' environment to insert a main title';
+
+$lang['L_Subtitle_Format'] = 'Subtitle';
+$lang['L_Subtitle_Format_explain'] = 'Use the \'[subtitle]...[/subtitle]\' environment to insert a subtitle';
+
+$lang['L_Subsubtitle_Format'] = 'Sub-subtitle';
+$lang['L_Subsubtitle_Format'] = 'Use the \'[subsubtitle]...[/subsubtitle]\' environment to insert a small header';
+
+$lang['L_Subsubtitle_Format'] = 'Sub-subtitle';
+$lang['L_Subsubtitle_Format_explain'] = 'Use the \'[subsubtitle]...[/subsubtitle]\' environment to insert a small header';
+
+$lang['Options'] = 'Options ';
+
+$lang['L_Options'] = 'Options:';
+$lang['L_Formatting'] = 'Formatting:';
+
+$lang['Default_article_id'] = 'Set default article, for the article viewer';
+
+$lang['Click_here'] = 'Click here';
+$lang['never'] = 'None';
+$lang['pafiledb_disable'] = 'Download Database is disabled';
+$lang['jump'] = 'Select a category';
+$lang['viewall_disabled'] = 'This feature is disabled by the admin.';
+$lang['New_file'] = 'New file';
+$lang['No_new_file'] = 'No new file';
+$lang['None'] = 'None';
+$lang['No_file'] = 'No Files';
+$lang['View_latest_file'] = 'View Latest File';
+
+$lang['Error_no_download'] = 'The selected File does not exist anymore';
+
+$lang['Article_description'] = 'Description';
+$lang['Article_type'] = 'Type';
+$lang['Article_keywords'] = 'Keywords';
+$lang['Add_article_explain'] = 'Add Article';
+$lang['Pub_Home'] = 'Publisher Home';
+$lang['No_articles'] = 'No Articles';
+$lang['Article_title'] = 'Article Name';
+$lang['Article_text'] = 'Article text';
+$lang['Add_article'] = 'Submit Article';
+$lang['Read_article'] = 'Reading Article';
+$lang['Article_not_exsist'] = 'Article doesn\'t exist';
+$lang['Category_not_exsist'] = 'Category doesn\'t exist';
+$lang['Last_article'] = 'Last article';
 
 //
 // Return
@@ -65,6 +248,7 @@ $lang['License_not_exist'] = 'Licensen du valde finns inte.';
 $lang['File'] = 'Fil';
 $lang['Desc'] = 'Beskrivning';
 $lang['Creator'] = 'Skapare';
+$lang['Submited'] = 'Submited by';
 $lang['Version'] = 'Version';
 $lang['Scrsht'] = 'Screenshot';
 $lang['Docs'] = 'Dokumentation/Manual';
@@ -170,18 +354,27 @@ $lang['Approve_selected'] = 'Godkänn valda';
 $lang['Unapprove_selected'] = 'Underkänn valda';
 $lang['Delete_selected'] = 'Ta bort valda';
 $lang['No_item'] = 'Det finns inga filer';
-
+$lang['No_file'] = 'Det finns inga filer';
 $lang['All_items'] = 'Alla filer';
+$lang['All_files'] = 'Alla filer';
 $lang['Approved_items'] = 'Godkända filer';
 $lang['Unapproved_items'] = 'Underkända filer';
+$lang['Unapproved_files'] = 'Underkända filer';
 $lang['Broken_items'] = 'Skadade filer';
+$lang['Broken_files'] = 'Skadade filer';
 $lang['Item_cat'] = 'Fil i kategori';
+$lang['File_cat'] = 'Fil i kategori';
 $lang['Approve'] = 'Godkänn';
 $lang['Unapprove'] = 'Underkänn';
 
 $lang['Sorry_auth_delete'] = 'Tyvärr, du kan inte ta bort filer i denna kategori.';
 $lang['Sorry_auth_mcp'] = 'Tyvärr, du kan inte hantera filer i denna kategori.';
 $lang['Sorry_auth_approve'] = 'Tyvärr, du kan inte godkänna filer i denna kategori.';
+$lang['Sorry_auth_post'] = 'Sorry, but you cannot post articles in this category.';
+$lang['Sorry_auth_edit'] = 'Sorry, but you cannot edit articles in this category.';
+
+$lang['Edit_article'] = 'Edit';
+$lang['Delete_article'] = 'Delete';
 
 //
 //User Upload
@@ -195,6 +388,17 @@ $lang['License'] = 'Licensgodkännande';
 $lang['Licensewarn'] = 'Du måste godkänna denna licens innan du laddar ner filen';
 $lang['Iagree'] = 'Jag godkänner';
 $lang['Dontagree'] = 'Jag godkänner inte';
+//
+// Added for v. 2.0
+//
+$lang['Addtional_field'] = 'More information (optional)';
+$lang['No_cat_comments_forum_id'] = 'Comments are enabled but you have not specified the target phpBB forum category in the KB adminCP - Categories';
+//
+// Quick Nav
+//
+$lang['Quick_nav'] = 'Quick Navigation';
+$lang['Quick_jump'] = 'Select Category';
+$lang['Quick_go'] = 'Go';
 
 //
 // Search
@@ -208,6 +412,32 @@ $lang['All'] = 'Alla kategorier';
 $lang['Choose_cat'] = 'Välj kategori:';
 $lang['Include_comments'] = 'Inkludera kommentarer';
 $lang['Submiter'] = 'Sänd av';
+//
+// Comments
+//
+$lang['Comments'] = 'Comentarii';
+$lang['Comments_title'] = 'Titlul comentariului';
+$lang['Comment_subject'] = 'Subiectul comentariului';
+$lang['Comment'] = 'Comentariu';
+$lang['Comment_explain'] = 'FolosiÅ£i cÄƒsuÅ£a de text de mai jos pentru a vÄƒ face cunoscutÄƒ opinia vis a vis de acest fiÅŸier!';
+$lang['Comment_add'] = 'AdaugÄƒ comentariu';
+$lang['Comment_edit'] = 'EditeazÄƒ';
+$lang['Comment_delete'] = 'Åžterge';
+$lang['Comment_posted'] = 'Comentariul dumneavoastrÄƒ  a fost introdus cu succes';
+$lang['Comment_deleted'] = 'Comentariul pe care l-aÅ£i selectat a fost ÅŸters cu succes';
+$lang['Comment_desc'] = 'Titlu';
+$lang['No_comments'] = 'Nici un comentariu nu a fost scris.';
+$lang['Links_are_ON'] = 'Link-urile sunt <u>Activate</u>';
+$lang['Links_are_OFF'] = 'Link-urile sunt <u>Dezactivate</u>';
+$lang['Images_are_ON'] = 'Imaginile sunt <u>Activate</u>';
+$lang['Images_are_OFF'] = 'Imaginile sunt <u>Dezactivate</u>';
+$lang['Check_message_length'] = 'VerificÄƒ lungimea mesajului';
+$lang['Msg_length_1'] = 'Mesajul dumneavoastrÄƒ are o lungime de ';
+$lang['Msg_length_2'] = ' caractere.';
+$lang['Msg_length_3'] = 'Limita mesajului este de ';
+$lang['Msg_length_4'] = ' caractere.';;
+$lang['Msg_length_5'] = 'Mai puteÅ£i scrie ';
+$lang['Msg_length_6'] = ' caractere.';
 
 //
 // Statistics
@@ -237,7 +467,11 @@ $lang['Y_label'] = 'Antal filer';
 //
 // Rate
 //
+$lang['Votes_label'] = 'Rating';
+$lang['Votes'] = 'Votes';
+$lang['No_votes'] = 'No votes';
 $lang['Rate'] = 'Betygsätt fil';
+$lang['ADD_RATING'] = '[Rate Article]';
 $lang['Do_rate'] = '[Betygsätt fil]';
 $lang['Rerror'] = 'Tyvärr, du har redan betygsatt den här filen.';
 $lang['Rateinfo'] = 'Du betygsätter filen <i>{filename}</i>.<br>Välj ett betyg. 1 är sämst och 10 är bäst.';
@@ -315,6 +549,7 @@ $lang['Sorry_auth_post_comments'] = 'Tyvärr kan endast %s skicka kommentarer i d
 $lang['Sorry_auth_edit_comments'] = 'Tyvärr kan endast %s ändra kommentarer i denna kategori.';
 $lang['Sorry_auth_delete_comments'] = 'Tyvärr kan endast %s ta bort kommentarer i denna kategori.';
 $lang['Sorry_auth_edit'] = 'Tyvärr, du kan inte ändra filer i denna kategori.';
+$lang['Sorry_auth_viewall'] = 'Sorry, but you cannot view viewall in this category.';
 
 //
 // New
@@ -348,6 +583,9 @@ $lang['PUB_notify_subject_edited'] = 'Ändrad fil!';
 $lang['PUB_notify_subject_approved'] = 'Godkänd fil!';
 $lang['PUB_notify_subject_unapproved'] = 'Underkänd fil!';
 $lang['PUB_notify_subject_deleted'] = 'Borttagen fil!';
+$lang['PUB_notify_subject_unapproved'] = '<br />FiÅŸier Ne-Aprobat!';
+$lang['PUB_notify_body'] = '<br />Un fiÅŸier a fost uploadat sau actualizat:';
+$lang['PUB_no_ratings'] = '<br />Dezactivat Ã®n aceatÄƒ categorie';
 
 $lang['PUB_notify_new_body'] = 'En ny fil lades till.';
 $lang['PUB_notify_edited_body'] = 'En fil har uppdaterats.';
@@ -421,7 +659,47 @@ $lang['Rating'] = 'Betyg';
 $lang['Dls'] = 'Nerladdade';
 
 //
+// Menu
+//
+$lang['sd_Project'] = 'Project';
+$lang['sd_Management'] = 'Management';
+$lang['sd_Doc_view'] = 'View Document';
+$lang['sd_Options'] = 'Options';
+$lang['sd_Help'] = 'Help';
+$lang['sd_Contents'] = 'Contents *';
+$lang['sd_About'] = 'About *';
+
+//
+// Tree
+//
+$lang['sd_Tree_View'] = 'Tree View';
+$lang['sd_Toc'] = 'Table of Contents';
+$lang['sd_Where'] = 'Where';
+$lang['sd_Before'] = 'Before';
+$lang['sd_After'] = 'After';
+$lang['sd_Type'] = 'Type';
+$lang['sd_Name'] = 'Name';
+$lang['sd_Document'] = 'Document';
+$lang['sd_Folder'] = 'Folder';
+
+
+//
+// Index
+//
+$lang['sd_Doc_info'] = 'Document Info';
+$lang['sd_Doc_preview'] = 'Preview Document';
+$lang['sd_Edit_content'] = 'Edit content';
+$lang['sd_Default_edit'] = 'open Edit Content by default';
+$lang['sd_Loading'] = 'Loading data ..';
+$lang['sd_Saving'] = 'Saving data ..';
+
+//
 // Quickdl
 //
 $lang['Quickdl_back'] = 'Tillbaka';
+//
+// Generic Type strings
+// - Types are matched against these lang keys...where 'NAME' is the db defined type name
+//
+$lang['PUB_type_NAME'] = 'Example Type';
 ?>

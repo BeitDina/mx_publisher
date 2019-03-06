@@ -2,7 +2,7 @@
 /**
 *
 * @package Language
-* @version $Id: lang_user_created.php 2018-10-16 09:02:25 admin $
+* @version $Id: lang_user_created.php 2019-03-01 04:12:11 admin $
 * @copyright (c) 2018
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -18,7 +18,7 @@
 /**
 *
 * [Romanian [ ansi ]]
-* LAST UPDATE 2018-10-16 09:02:25 by admin
+* LAST UPDATE 2019-03-01 04:12:11 by admin
 *
 */
 
@@ -29,7 +29,11 @@ if (!defined('IN_PHPBB'))
 
 $lang['MY_CATEGORY'] = 'Categoria Mea';
 $lang['DEMO_VAR'] = 'DEMO VAR';
+$lang['TEST_CAGEGORY']['Test Category'] = 'Categorie Test';
+$lang['TEST_CAGEGORY'] = 'Categorie Test';
 $lang['MY_CATEGORY'] = 'Categoria Mea';
 $lang['DEMO_VAR'] = 'DEMO VAR';
+$lang['TEST_CAGEGORY']['Test Category'] = 'Categorie Test';
+$lang['TEST_CAGEGORY'] = 'Categorie Test';
 
 ?>

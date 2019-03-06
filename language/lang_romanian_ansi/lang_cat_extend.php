@@ -22,5 +22,5 @@
 *
 */
 
-$lang['MY_CATEGORY']= 'Categoria Mea';
+$lang['MY_CATEGORY'] = 'Categoria Mea';
 ?>

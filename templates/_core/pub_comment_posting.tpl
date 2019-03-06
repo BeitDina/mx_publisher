@@ -1,4 +1,4 @@
-pub_<!-- INCLUDE header.tpl -->
+<!-- INCLUDE pub_header.tpl -->
 <!-- BEGIN switch_bbcodes -->
 <script language="JavaScript" type="text/javascript">
 <!--
@@ -520,7 +520,7 @@ function checkForm() {
   </table>
  </form>
 
-<!-- INCLUDE pa_footer.tpl -->
+<!-- INCLUDE pub_footer.tpl -->
 
 
 

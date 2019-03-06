@@ -128,7 +128,7 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 														(1, 'MY_CATEGORY', 'My_category', 0, '', 0, 0, -1, -1, -1, 0, '-1', 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
 		
 		"INSERT INTO " . $mx_table_prefix . "pub_cat (`cat_id`, `cat_name`, `cat_desc`, `cat_parent`, `parents_data`, `cat_order`, `cat_allow_file`, `cat_allow_ratings`, `cat_allow_comments`, `cat_articles`, `cat_last_article_id`, `cat_last_article_name`, `cat_last_article_time`, `auth_view`, `auth_post`, `auth_edit`, `auth_delete`, `auth_read`, `auth_view_article`, `auth_edit_article`, `auth_delete_article`, `auth_upload`, `auth_download`, `auth_rate`, `auth_email`, `auth_view_comment`, `auth_post_comment`, `auth_edit_comment`, `auth_delete_comment`, `auth_approval`, `internal_comments`, `autogenerate_comments`, `comments_forum_id`, `show_pretext`, `notify`, `notify_group`, `auth_approval_edit`) VALUES
-														(2, 'TEST_CAGEGORY', 'Just_a_test_category', 1, '', 0, 1, -1, -1, -1, 0, '-1', 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",		
+														(2, 'TEST_CAGEGORY', 'Just_a_test_category', 1, '', 0, 1, -1, -1, -1, 0, '-1', 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_files`
@@ -214,11 +214,11 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_config`
 		"CREATE TABLE " . $mx_table_prefix . "pub_config (
-		`config_name` varchar(155) NOT NULL DEFAULT '',
-		`config_value` varchar(155) NOT NULL DEFAULT '',
-		`is_dynamic` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-		PRIMARY KEY (`config_name`),
-		KEY `is_dynamic` (`is_dynamic`)
+			`config_name` varchar(155) NOT NULL DEFAULT '',
+			`config_value` varchar(155) NOT NULL DEFAULT '',
+			`is_dynamic` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+			PRIMARY KEY (`config_name`),
+			KEY `is_dynamic` (`is_dynamic`)
 		)",
 
 		// --------------------------------------------------------
@@ -252,32 +252,32 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_customdata`
 		"CREATE TABLE " . $mx_table_prefix . "pub_customdata (
-			  customdata_article int(50) NOT NULL default '0',
-			  customdata_file int(50) NOT NULL default '0',
-			  customdata_custom int(50) NOT NULL default '0',
-			  data text NOT NULL
+			  `customdata_article` int(50) NOT NULL default '0',
+			  `customdata_file` int(50) NOT NULL default '0',
+			  `customdata_custom` int(50) NOT NULL default '0',
+			  `data` text NOT NULL
 		)",
 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_articlesacces_info`
 		"CREATE TABLE " . $mx_table_prefix . "pub_articlesacces_info (
-			article_id mediumint(8) NOT NULL default '0',
-			user_id mediumint(8) NOT NULL default '0',
-			downloader_ip varchar(8) NOT NULL default '',
-			downloader_os varchar(255) NOT NULL default '',
-			downloader_browser varchar(255) NOT NULL default '',
-			browser_version varchar(255) NOT NULL default ''
+			`article_id` mediumint(8) NOT NULL default '0',
+			`user_id` mediumint(8) NOT NULL default '0',
+			`downloader_ip` varchar(8) NOT NULL default '',
+			`downloader_os` varchar(255) NOT NULL default '',
+			`downloader_browser` varchar(255) NOT NULL default '',
+			`browser_version` varchar(255) NOT NULL default ''
 		)",
 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_filesacces_info`
 		"CREATE TABLE " . $mx_table_prefix . "pub_filesacces_info (
-			file_id mediumint(8) NOT NULL default '0',
-			user_id mediumint(8) NOT NULL default '0',
-			downloader_ip varchar(8) NOT NULL default '',
-			downloader_os varchar(255) NOT NULL default '',
-			downloader_browser varchar(255) NOT NULL default '',
-			browser_version varchar(255) NOT NULL default ''
+			`file_id` mediumint(8) NOT NULL default '0',
+			`user_id` mediumint(8) NOT NULL default '0',
+			`downloader_ip` varchar(8) NOT NULL default '',
+			`downloader_os` varchar(255) NOT NULL default '',
+			`downloader_browser` varchar(255) NOT NULL default '',
+			`browser_version` varchar(255) NOT NULL default ''
 		)",
 
 		// --------------------------------------------------------
@@ -333,6 +333,7 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 			   group_id mediumint(8) DEFAULT '0' NOT NULL,
 			   cat_id smallint(5) UNSIGNED DEFAULT '0' NOT NULL,
 			   auth_view tinyint(1) DEFAULT '0' NOT NULL,
+			   auth_post tinyint(1) DEFAULT '0' NOT NULL,
 			   auth_read tinyint(1) DEFAULT '0' NOT NULL,
 			   auth_view_file tinyint(1) DEFAULT '0' NOT NULL,
 			   auth_edit_file tinyint(1) DEFAULT '0' NOT NULL,

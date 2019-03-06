@@ -11,20 +11,25 @@
 //
 // adminCP index
 //
-$lang['MXPub_Download'] = 'Publisher Admin';
+$lang['Pub_title'] = 'Publisher Admin';
 $lang['0_Configuration'] = 'General Settings';
 $lang['1_Cat_manage'] = 'Category Management';
 $lang['2_File_manage'] = 'File Management';
-$lang['3_Permissions'] = 'Permissions';
-$lang['4_License'] = 'License';
-$lang['5_Custom_manage'] = 'Custom fields';
-$lang['6_Fchecker'] = 'File checker';
+$lang['3_Art_man'] = 'Article Manager';
+$lang['4_Permissions'] = 'Permissions';
+$lang['5_Types_man'] = 'Types Manager';
+$lang['6_Custom_manage'] = 'Custom fields';
+$lang['7_Fchecker'] = 'File checker';
+$lang['8_License'] = 'License';
+$lang['9_lang_user'] 	= 'Lang User Created';
 
 //
 // Parameter Types
 //
 $lang['ParType_pub_mapping'] = 'MXPub category mapping';
 $lang['ParType_pub_mapping_info'] = '';
+$lang['ParType_default_article_id'] = 'Default Article';
+$lang['ParType_default_article_id_info'] = '- Article Reader';
 
 $lang['ParType_pub_quick_cat'] = 'MXPub default category';
 $lang['ParType_pub_quick_cat_info'] = '';
@@ -41,7 +46,7 @@ $lang['pub_quick_cat_explain'] = 'This category is used if no matching mapping i
 //
 // Admin Panels - Configuration
 //
-$lang['Panel_config_title'] = 'Download Configuration';
+$lang['Panel_config_title'] = 'Configurare Publisher';
 $lang['Panel_config_explain'] = 'The form below will allow you to customize all the general download options.';
 
 //
@@ -58,11 +63,19 @@ $lang['Enable_module_explain'] = 'This will make the download section unavailabl
 $lang['Wysiwyg_path'] = 'Path to WYSIWYG software';
 $lang['Wysiwyg_path_explain'] = 'This is the path (from MX-Publisher/phpBB root) to the WYSIWYG software folder, eg \'controller/mx_shared/\' if you have uploaded, for example, TinyMCE in controller/mx_shared/tinymce.';
 
+$lang['Allow_file'] = 'Allow Adding article';
+$lang['Allow_file_info'] = 'If you are not allowed to add articles in this category it will be a higher level category.';
+
 $lang['Upload_directory'] = 'Upload Directory';
 $lang['Upload_directory_explain'] = 'Enter the relative path from your root installation (where phpBB or MX-Publisher is located) to the files upload directory. If you stick to the file structure provided in the shipped package, enter \'publisher/uploads/\'.';
 
 $lang['Screenshots_directory'] = 'Screenshots Directory';
 $lang['Screenshots_directory_explain'] = 'Enter the relative path from your root installation (where phpBB or MX-Publisher is located) to the Screenshots upload directory. If you stick to the file structure provided in the shipped package, enter \'publisher/images/screenshots/\'.';
+
+//
+// Article
+//
+$lang['Article_title'] = 'Article';
 
 //
 // File
@@ -96,11 +109,20 @@ $lang['Appearance_title'] = 'Appearance';
 $lang['File_pagination'] = 'File pagination';
 $lang['File_pagination_explain'] = 'The number of files to show in a category before pagination.';
 
+$lang['Article_pag'] = 'Article pagination';
+$lang['Article_pag_explain'] = 'The number of articles to show in a (stats) category before pagination.';
+
 $lang['Sort_method'] = 'Sorting method';
-$lang['Sort_method_explain'] = 'Define how files are sorted within its category.';
+$lang['Sort_method_explain'] = 'Define how files/articles are sorted within its category.';
 
 $lang['Sort_order'] = 'ASC or DESC sorting';
 $lang['Sort_order_explain'] = '';
+
+$lang['Stats_list'] = 'Show KB Stats links';
+$lang['Stats_list_explain'] = 'Show KB stats links in the header.';
+
+$lang['Header_banner'] = 'Show Top Logo';
+$lang['Header_banner_explain'] = 'Show KB logo in the header.';
 
 $lang['Topnum'] = 'Top Number';
 $lang['Topnuminfo'] = 'This is how many files will be displayed on the Top X Downloaded files list';
@@ -113,8 +135,8 @@ $lang['Use_simple_navigation_explain'] = 'If you prefer, this will generate more
 
 $lang['Cat_col'] = 'How many column of categories are to be listed (only used for \'Simple Category Navigation\')';
 
-$lang['Nfdays'] = 'New File Days';
-$lang['Nfdaysinfo'] = 'How many days a new file is to be listed with a \'New File\' icon. If this is set to 5, then all files added within the past 5 days will have the \'New File\' icon';
+$lang['Nfdays'] = 'Zile Nou';
+$lang['Nfdaysinfo'] = 'De câte zile un nou articol este listat cu pictogramã \'Nou\'. If this is set to 5, then all files added within the past 5 days will have the \'New File\' icon';
 
 //
 // Comments
@@ -133,6 +155,7 @@ $lang['Select_topic_id'] = 'Select phpBB Comments Topic!';
 $lang['Internal_comments_phpBB'] = 'phpBB Comments';
 $lang['Internal_comments_internal'] = 'Internal Comments';
 
+$lang['Select_topic_id'] = 'Select phpBB Comments Topic!';
 $lang['Forum_id'] = 'phpBB Forum ID';
 $lang['Forum_id_explain'] = 'If phpBB comments are used, this is the forum where the comments will be kept';
 
@@ -150,10 +173,12 @@ $lang['Allow_Wysiwyg_explain'] = 'If enabled, the standard BBCode/HTML/Smilies i
 
 $lang['Allow_links'] = 'Allow Links';
 $lang['Allow_links_message'] = 'Default \'No Links\' Message';
+$lang['Allow_links_message_explain'] = 'If links are not allowed this text will be displayed instead';
 $lang['Allow_links_explain'] = 'If links are not allowed this text will be displayed instead';
 
 $lang['Allow_images'] = 'Allow Images';
 $lang['Allow_images_message'] = 'Default \'No Images\' Message';
+$lang['Allow_images_message_explain']= 'If images are not allowed this text will be displayed instead';
 $lang['Allow_images_explain'] = 'If images are not allowed this text will be displayed instead';
 
 $lang['Max_subject_char'] = 'Maximum Number of charcters in subject';
@@ -194,11 +219,11 @@ $lang['Votes_check_userid_explain'] = 'Users may only vote once.';
 //
 $lang['Instructions_title'] = 'User Instructions';
 
-$lang['Pre_text_name'] = 'File Submission Instructions';
+$lang['Pre_text_name'] = 'Article Submission Instructions';
 $lang['Pre_text_explain'] = 'Activate Submission Instructions displayed to users at the top of the submission forum.';
 
-$lang['Pre_text_header'] = 'File Submission Instructions Header';
-$lang['Pre_text_body'] = 'File Submission Instructions Body';
+$lang['Pre_text_header'] = 'Article Submission Instructions Header';
+$lang['Pre_text_body'] = 'Article Submission Instructions Body';
 
 $lang['Show'] = 'Show';
 $lang['Hide'] = 'Hide';
@@ -209,11 +234,42 @@ $lang['Hide'] = 'Hide';
 $lang['Notifications_title'] = 'Notification';
 
 $lang['Notify'] = 'Notify admin by';
-$lang['Notify_explain'] = 'Choose which way to receive notices that new files have been uploaded';
+$lang['Notify_explain'] = 'Choose which way to receive notices that new articles have been posted';
 $lang['PM'] = 'PM';
 
 $lang['Notify_group'] = 'and groupmembers ';
 $lang['Notify_group_explain'] = 'Also send notification to members in this group';
+
+$lang['Click_return_kb_config'] = 'Click %sHere%s to return to Knowledge Base Configuration';
+$lang['KB_config_updated'] = 'Knowledge Base Configuration Updated Successfully.';
+
+
+$lang['KB_config'] = 'KB Configuration';
+$lang['Art_types'] = 'Article Types';
+
+
+
+
+$lang['Mod_group'] = 'KB Moderator Group';
+$lang['Mod_group_explain'] = '- with KB Admin permissions!';
+
+
+//
+// General
+//
+$lang['Article'] = 'Article';
+$lang['Articles'] = 'Articles';
+$lang['Article_description'] = 'Description';
+
+$lang['Article_category'] = 'Category';
+
+$lang['Category'] = 'Category';
+$lang['Category_desc'] = 'Category description';
+
+$lang['Article_type'] = 'Type';
+$lang['Art_action'] = 'Action';
+
+
 
 //
 // Permissions
@@ -236,6 +292,30 @@ $lang['Settings'] = 'Configuration';
 $lang['Settings_changed'] = 'Your settings have been successfully updated';
 
 //
+// Admin Panels - Article
+//
+$lang['Panel_art_title'] = 'Article administration';
+$lang['Panel_art_explain'] = 'Here you can approve articles so users can view them, or you can delete articles.';
+
+//approve
+$lang['Art_edit'] = 'Edited Articles';
+$lang['Art_not_approved'] = 'Not Approved';
+$lang['Art_approved'] = 'Approved';
+$lang['Approve'] = 'Approve';
+$lang['Un_approve'] = 'Un-Approve';
+$lang['Article_approved'] = 'Article is now Approved.';
+$lang['Article_unapproved'] = 'Article is now Unapproved.';
+
+//delete
+$lang['Delete'] = 'Delete';
+$lang['Confirm_art_delete'] = 'Are you sure you want to delete this article?';
+$lang['Confirm_art_delete_yes'] = '%sYes, I want to delete this article%s';
+$lang['Confirm_art_delete_no'] = '%sNo, I don\'t want to delete this article%s';
+$lang['Article_deleted'] = 'Article Deleted Successfully.';
+
+$lang['Click_return_article_manager'] = 'Click %sHere%s to return to the Article Manager';
+
+//
 // Admin Panels - Categories
 //
 $lang['Panel_cat_title'] = 'Category administration';
@@ -243,7 +323,27 @@ $lang['Panel_cat_explain'] = 'You can use the Category Management section to add
 
 $lang['Use_default'] = 'Use default setting';
 
+
+ 
+// Categories
+$lang['Cat_manage_title'] = 'Category Management';
+$lang['Article_manage_title'] = 'Article Management';
+$lang['File_manage_title'] = 'File Management';
+$lang['All_files'] = 'All Files';
+$lang['All_articles'] = 'All Articles';
+$lang['Approved_files'] = 'Unapproved Files';
+$lang['Broken_files'] = 'Broken Files';
+$lang['Articles_cat'] = 'Articles in Category';
+$lang['File_cat'] = 'File in Category';
+$lang['File_art'] = 'File in Articles';
 $lang['Maintenance'] = 'File Maintenance';
+$lang['Approve'] = 'Approve';
+$lang['Unapprove'] = 'Unapprove';
+$lang['File_mode'] = 'View';
+$lang['Approve_selected'] = 'Approve Selected';
+$lang['Unapprove_selected'] = 'Unapprove Selected';
+$lang['Delete_selected'] = 'Delete Selected';
+$lang['No_file'] = 'There is no files';
 $lang['Acat'] = 'Category: Add';
 $lang['Ecat'] = 'Category: Edit';
 $lang['Dcat'] = 'Category: Delete';
@@ -294,12 +394,23 @@ $lang['Checker_sp3'] = 'Deleting unused Files...';
 //
 // Admin Panels - Permissions
 //
+$lang['Pub_Auth_Title'] = 'Pub Permissions';
+$lang['Pub_Auth_Explain'] = 'Here you can choose which usergroup(s) can be the moderators for each KB category, or just has the private access';
+
 $lang['View'] = 'View';
 $lang['Read'] = 'Read';
 $lang['View_file'] = 'View File';
 $lang['Delete_file'] = 'Delete File';
 $lang['Edit_file'] = 'Edit File';
+
+$lang['Select_a_Category'] = 'Select a Category';
+$lang['Look_up_Category'] = 'Look up Category';
+$lang['Pub_Auth_successfully'] = 'Auth has been updated successfully';
+$lang['Click_return_Pub_auth'] = 'Click %sHere%s to return to the Pub Permissions';
+
 $lang['Upload'] = 'Upload File';
+$lang['Rate'] = 'Rate';
+$lang['Comment'] = 'Comment';
 $lang['Approval'] = 'Approval';
 $lang['Approval_edit'] = 'Approval Edit';
 $lang['Download_file'] = 'Download File';
@@ -322,6 +433,46 @@ $lang['Category_REG'] = 'REG';
 $lang['Category_PRIVATE'] = 'PRIVATE';
 $lang['Category_MOD'] = 'MOD';
 $lang['Category_ADMIN'] = 'ADMIN';
+
+$lang['Allow_rating'] = 'Allow ratings';
+$lang['Allow_rating_explain'] = 'Users are allowed to rate articles.';
+
+$lang['Allow_anonymos_rating'] = 'Allow anonymous ratings';
+$lang['Allow_anonymos_rating_explain'] = 'If ratings are activated, allow anonymous users to add ratings to your articles';
+
+$lang['Category_Permissions'] = 'Category Permissions';
+$lang['Category_Title'] = 'Category Title';
+$lang['Category_Desc'] = 'Category Description';
+$lang['View_level'] = 'View Level';
+$lang['Upload_level'] = 'Upload Level';
+$lang['Rate_level'] = 'Rate Level';
+$lang['View_Comment_level'] = 'View Comment';
+$lang['Post_Comment_level'] = 'Post Comment';
+$lang['Edit_Comment_level'] = 'Edit Comment';
+$lang['Delete_Comment_level'] = 'Delete Comment';
+$lang['Edit_level'] = ' Edit Level';
+$lang['Delete_level'] = 'Delete Level';
+$lang['Approval_level'] = 'Approval Level';
+$lang['Approval_edit_level'] = 'Approval Edit Level';
+
+//
+// Admin Panels - Types
+//
+$lang['Types_man'] = 'Types Manager';
+$lang['KB_types_description'] = 'Here you can add, delete, and/or edit the different article types';
+$lang['Create_type'] = 'Create new Article Type:';
+$lang['Type_created'] = 'Article Type Created Successfully.';
+$lang['Click_return_type_manager'] = 'Click %sHere%s to return to the Types Manager';
+
+$lang['Edit_type'] = 'Edit Type';
+$lang['Edit_type_description'] = 'Here you can edit the name of the type';
+$lang['Type_edited'] = 'Article Type Edited Successfully.';
+
+$lang['Type_delete_title'] = 'Delete Article Type';
+$lang['Type_delete_desc'] = 'Here you can change what the article type is of the articles that have the type you are deleting.';
+$lang['Change_type'] = 'Change article\'s type to';
+$lang['Change_and_Delete'] = 'Change and Delete';
+$lang['Type_deleted'] = 'Article Type Deleted Successfully.';
 
 //
 // Admin Panels - Custom Fields

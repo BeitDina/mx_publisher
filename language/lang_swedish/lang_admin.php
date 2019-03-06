@@ -11,20 +11,25 @@
 //
 // adminCP index
 //
-$lang['MXPub_Download'] = 'Publisher Admin';
+$lang['Pub_title'] = 'Publisher Admin';
 $lang['0_Configuration'] = 'Inställningar';
 $lang['1_Cat_manage'] = 'Kategorihantering';
 $lang['2_File_manage'] = 'Filhantering';
-$lang['3_Permissions'] = 'Rättigheter';
-$lang['4_License'] = 'Licenser';
-$lang['5_Custom_manage'] = 'Extra fält';
-$lang['6_Fchecker'] = 'Filkontroll';
+$lang['3_Art_man'] = 'Article Manager';
+$lang['4_Permissions'] = 'Rättigheter';
+$lang['5_Types_man'] = 'Types Manager';
+$lang['6_Custom_manage'] = 'Extra fält';
+$lang['7_Fchecker'] = 'Filkontroll';
+$lang['8_License'] = 'Licenser';
+$lang['9_lang_user'] 	= 'Lang User Created';
 
 //
 // Parameter Types
 //
 $lang['ParType_pub_mapping'] = 'MXPub category mapping';
 $lang['ParType_pub_mapping_info'] = '';
+$lang['ParType_default_article_id'] = 'Default Article';
+$lang['ParType_default_article_id_info'] = '- Article Reader';
 
 $lang['ParType_pub_quick_cat'] = 'MXPub grundkategori';
 $lang['ParType_pub_quick_cat_info'] = '';
@@ -58,11 +63,20 @@ $lang['Enable_module_explain'] = 'När modulen är inaktiverad för användare har f
 $lang['Wysiwyg_path'] = 'Var finns wysiwyg mjukvaran?';
 $lang['Wysiwyg_path_explain'] = 'Sövägen till (från MX-Publisher roten) mappen där wysiwyg mjukvaran är uppladdad, t ex \'controller/mx_shared/\' om tinymce finns i mappen controller/mx_shared/tinymce.';
 
+$lang['Allow_file'] = 'Tillåt lägga till artiklar';
+$lang['Allow_file_info'] = 'Om du inte tillåter att artiklar läggs till denna kategori, så blir kategorin en toppnivåkategori - en plats med subkategorier.';
+
+
 $lang['Upload_directory'] = 'Uppladdningsmapp';
 $lang['Upload_directory_explain'] = 'Enter the relative path from your root installation (where phpBB or MX-Publisher is located) to the files upload directory. If you stick to the file structure provided in the shipped package, enter \'publisher/uploads/\'.';
 
 $lang['Screenshots_directory'] = 'Screenshots Directory';
 $lang['Screenshots_directory_explain'] = 'Enter the relative path from your root installation (where phpBB or MX-Publisher is located) to the Screenshots upload directory. If you stick to the file structure provided in the shipped package, enter \'publisher/images/screenshots/\'.';
+
+//
+// Article
+//
+$lang['Article_title'] = 'Article';
 
 //
 // File
@@ -96,11 +110,20 @@ $lang['Appearance_title'] = 'Utseende';
 $lang['File_pagination'] = 'Filer och sidbrytning';
 $lang['File_pagination_explain'] = 'Antal filer att visa innan sidbrytning.';
 
+$lang['Article_pag'] = 'Article pagination';
+$lang['Article_pag_explain'] = 'The number of articles to show in a (stats) category before pagination.';
+
 $lang['Sort_method'] = 'Sorteringssätt';
 $lang['Sort_method_explain'] = 'Bestäm hur filer sorteras inom sin kategori.';
 
 $lang['Sort_order'] = 'ASC eller DESC sortering';
 $lang['Sort_order_explain'] = '';
+
+$lang['Stats_list'] = 'Show KB Stats links';
+$lang['Stats_list_explain'] = 'Show KB stats links in the header.';
+
+$lang['Header_banner'] = 'Show Top Logo';
+$lang['Header_banner_explain'] = 'Show KB logo in the header.';
 
 $lang['Topnum'] = 'X antal toppnerladdade filer';
 $lang['Topnuminfo'] = 'Detta bestämmer antal filer som visas på \'Top X Downloaded files\' listan';
@@ -129,6 +152,8 @@ $lang['Internal_comments'] = 'Interna eller phpBB kommentarer';
 $lang['Internal_comments_explain'] = 'Använd interna eller phpBB kommentarer';
 
 $lang['Select_topic_id'] = 'Välj phpBB kommentarforum!';
+$lang['Internal_comments_phpBB'] = 'phpBB Comments';
+$lang['Internal_comments_internal'] = 'Internal Comments';
 
 $lang['Internal_comments_phpBB'] = 'phpBB kommentarer';
 $lang['Internal_comments_internal'] = 'Interna kommentarer';
@@ -150,6 +175,7 @@ $lang['Allow_Wysiwyg_explain'] = 'Om aktiverad, ersätts den vanliga bbcode/html/
 
 $lang['Allow_links'] = 'Tillåt länkar';
 $lang['Allow_links_message'] = 'Default \'inga länkar\' meddelande';
+$lang['Allow_links_message_explain'] = 'If links are not allowed this text will be displayed instead';
 $lang['Allow_links_explain'] = 'Om länkar ej är tillåtna visas detta meddelande istället';
 
 $lang['Allow_images'] = 'Tillåt bilder';
@@ -212,19 +238,34 @@ $lang['Notify'] = 'Informera admin via: ';
 $lang['Notify_explain'] = 'Bestäm på vilket sätt admin skall bli informerad om nya/redigerade artiklar';
 $lang['PM'] = 'PM';
 
-$lang['Notify_group'] = 'och till grupp: ';
-$lang['Notify_group_explain'] = 'Informera dessutom medlemmarna i denna grupp.';
+$lang['Notify_group'] = 'and groupmembers ';
+$lang['Notify_group_explain'] = 'Also send notification to members in this group';
+
+$lang['Click_return_kb_config'] = 'Click %sHere%s to return to Knowledge Base Configuration';
+$lang['KB_config_updated'] = 'Knowledge Base Configuration Updated Successfully.';
+
+
+$lang['KB_config'] = 'KB Configuration';
+$lang['Art_types'] = 'Article Types';
+
+
+
+
+$lang['Mod_group'] = 'KB Moderator Group';
+$lang['Mod_group_explain'] = '- with KB Admin permissions!';
+
 
 //
-// Permissions
+// General
 //
-$lang['Permission_settings'] = 'Rättigheter';
+$lang['Article'] = 'Artikel';
+$lang['Articles'] = 'Artiklar';
+$lang['Article_description'] = 'Beskrivning';
 
-$lang['Auth_search'] = 'Sök röttighet';
-$lang['Auth_search_explain'] = 'Tillåt sökning av vissa typer av användare';
+$lang['Article_category'] = 'Category';
 
-$lang['Auth_stats'] = 'Statistik';
-$lang['Auth_stats_explain'] = 'Tillåt statistik för vissa typer av användare';
+$lang['Category'] = 'Kategori';
+$lang['Category_desc'] = 'Kategoribeskrivning';
 
 $lang['Auth_toplist'] = 'Topplista';
 $lang['Auth_toplist_explain'] = 'Tillåt topplista för vissa typer av användare';
@@ -234,6 +275,30 @@ $lang['Auth_viewall_explain'] = 'Tillåt \'visa alla filer\' för vissa typer av a
 
 $lang['Settings'] = 'Konfiguration';
 $lang['Settings_changed'] = 'Inställningarna uppdaterades...';
+
+//
+// Admin Panels - Article
+//
+$lang['Panel_art_title'] = 'Article administration';
+$lang['Panel_art_explain'] = 'Here you can approve articles so users can view them, or you can delete articles.';
+
+//approve
+$lang['Art_edit'] = 'Edited Articles';
+$lang['Art_not_approved'] = 'Not Approved';
+$lang['Art_approved'] = 'Approved';
+$lang['Approve'] = 'Approve';
+$lang['Un_approve'] = 'Un-Approve';
+$lang['Article_approved'] = 'Article is now Approved.';
+$lang['Article_unapproved'] = 'Article is now Unapproved.';
+
+//delete
+$lang['Delete'] = 'Delete';
+$lang['Confirm_art_delete'] = 'Are you sure you want to delete this article?';
+$lang['Confirm_art_delete_yes'] = '%sYes, I want to delete this article%s';
+$lang['Confirm_art_delete_no'] = '%sNo, I don\'t want to delete this article%s';
+$lang['Article_deleted'] = 'Article Deleted Successfully.';
+
+$lang['Click_return_article_manager'] = 'Click %sHere%s to return to the Article Manager';
 
 //
 // Admin Panels - Categories
@@ -276,6 +341,25 @@ $lang['Move_to'] = 'Flytta till';
 $lang['Catsdeleted'] = 'Kategorin (kategorierna) togs bort...';
 $lang['Cdelerror'] = 'Du valde inga kategorier att ta bort.';
 $lang['Rcatdone'] = 'Kategorierna sorterades...';
+$lang['Catexplain'] = 'You can use the Category Management section to add, edit, delete and reorder categories. In order to add files to your database, you must have at least one category created. You can select a link below to manage your categories.';
+$lang['Rcatexplain'] = 'You can reorder categories to change the position they are displayed in on the main page. To reorder the categories, change the numbers to the order you want them shown in. 1 will be showed first, 2 will be shown second, etc. This does not affect sub-categories.';
+$lang['Catadded'] = 'The new category has been successfully added';
+$lang['Catname'] = 'Category Name';
+$lang['Catnameinfo'] = 'This will become the name of the category.';
+$lang['Catdesc'] = 'Category Description';
+$lang['Catdescinfo'] = 'This is a description of the files in the category';
+$lang['Catparent'] = 'Parent Category';
+$lang['Catparentinfo'] = 'If you want this category to be a sub-category, select the category you want it to be a sub-category of.';
+$lang['Allow_file'] = 'Allow Adding file';
+$lang['Allow_file_info'] = 'If you are not allowed to add files in this category it will be a higher level category.';
+$lang['None'] = 'None';
+$lang['Catedited'] = 'The category you selected has been successfully edited';
+$lang['Delfiles'] = 'What do you want to do with the files in this category?';
+$lang['Do_cat'] = 'What do you want to do with the sub category in this category?';
+$lang['Move_to'] = 'Move to';
+$lang['Catsdeleted'] = 'The categories you selected have been successfully deleted';
+$lang['Cdelerror'] = 'You didn\'t select any categories to delete';
+$lang['Rcatdone'] = 'The categories have been successfully re-ordered';
 
 //
 // Admin Panels - File Maintainance
@@ -294,12 +378,23 @@ $lang['Checker_sp3'] = 'Tar bort ej använda filer...';
 //
 // Admin Panels - Permissions
 //
+$lang['Pub_Auth_Title'] = 'Pub Permissions';
+$lang['Pub_Auth_Explain'] = 'Here you can choose which usergroup(s) can be the moderators for each KB category, or just has the private access';
+
 $lang['View'] = 'Visa';
 $lang['Read'] = 'Läsa';
 $lang['View_file'] = 'Visa fil';
 $lang['Delete_file'] = 'Ta bort fil';
 $lang['Edit_file'] = 'Ändra fil';
+
+$lang['Select_a_Category'] = 'Select a Category';
+$lang['Look_up_Category'] = 'Look up Category';
+$lang['Pub_Auth_successfully'] = 'Auth has been updated successfully';
+$lang['Click_return_Pub_auth'] = 'Click %sHere%s to return to the Pub Permissions';
+
 $lang['Upload'] = 'Ladda upp fil';
+$lang['Rate'] = 'Rate';
+$lang['Comment'] = 'Comment';
 $lang['Approval'] = 'Godkänna fil';
 $lang['Approval_edit'] = 'Godkänna ändrade filer';
 $lang['Download_file'] = 'Ladda ner fil';
@@ -322,6 +417,46 @@ $lang['Category_REG'] = 'REGISTRERAD';
 $lang['Category_PRIVATE'] = 'PRIVAT';
 $lang['Category_MOD'] = 'MOD';
 $lang['Category_ADMIN'] = 'ADMIN';
+
+$lang['Allow_rating'] = 'Allow ratings';
+$lang['Allow_rating_explain'] = 'Users are allowed to rate articles.';
+
+$lang['Allow_anonymos_rating'] = 'Allow anonymous ratings';
+$lang['Allow_anonymos_rating_explain'] = 'If ratings are activated, allow anonymous users to add ratings to your articles';
+
+$lang['Category_Permissions'] = 'Category Permissions';
+$lang['Category_Title'] = 'Category Title';
+$lang['Category_Desc'] = 'Category Description';
+$lang['View_level'] = 'View Level';
+$lang['Upload_level'] = 'Upload Level';
+$lang['Rate_level'] = 'Rate Level';
+$lang['View_Comment_level'] = 'View Comment';
+$lang['Post_Comment_level'] = 'Post Comment';
+$lang['Edit_Comment_level'] = 'Edit Comment';
+$lang['Delete_Comment_level'] = 'Delete Comment';
+$lang['Edit_level'] = ' Edit Level';
+$lang['Delete_level'] = 'Delete Level';
+$lang['Approval_level'] = 'Approval Level';
+$lang['Approval_edit_level'] = 'Approval Edit Level';
+
+//
+// Admin Panels - Types
+//
+$lang['Types_man'] = 'Types Manager';
+$lang['KB_types_description'] = 'Here you can add, delete, and/or edit the different article types';
+$lang['Create_type'] = 'Create new Article Type:';
+$lang['Type_created'] = 'Article Type Created Successfully.';
+$lang['Click_return_type_manager'] = 'Click %sHere%s to return to the Types Manager';
+
+$lang['Edit_type'] = 'Edit Type';
+$lang['Edit_type_description'] = 'Here you can edit the name of the type';
+$lang['Type_edited'] = 'Article Type Edited Successfully.';
+
+$lang['Type_delete_title'] = 'Delete Article Type';
+$lang['Type_delete_desc'] = 'Here you can change what the article type is of the articles that have the type you are deleting.';
+$lang['Change_type'] = 'Change article\'s type to';
+$lang['Change_and_Delete'] = 'Change and Delete';
+$lang['Type_deleted'] = 'Article Type Deleted Successfully.';
 
 //
 // Admin Panels - Custom Fields

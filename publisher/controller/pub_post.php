@@ -17,7 +17,7 @@ if ( !defined( 'IN_PORTAL' ) )
  * Enter description here...
  *
  */
-class mx_pub_post extends mx_pub_public
+class publisher_post extends publisher_public
 {
 	/**
 	 * Enter description here...
@@ -26,7 +26,7 @@ class mx_pub_post extends mx_pub_public
 	 */
 	function main($action = false)
 	{
-		global $template, $mx_pub_functions, $lang, $board_config, $phpEx, $pub_config, $db, $images, $userdata;
+		global $template, $mx_user, $publisher_functions, $lang, $board_config, $phpEx, $publisher_config, $db, $images, $userdata;
 		global $mx_root_path, $module_root_path, $phpbb_root_path, $is_block, $mx_request_vars, $theme;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
 		global $mx_block, $mx_bbcode, $_SERVER;
@@ -40,7 +40,7 @@ class mx_pub_post extends mx_pub_public
 		// Request vars
 		//
 		$article_id = $mx_request_vars->request('k', MX_TYPE_INT, '');
-		$cat_id = $mx_request_vars->request('cat', MX_TYPE_INT, 0);
+		$cat_id = $mx_request_vars->is_request('cat') ? $mx_request_vars->request('cat', MX_TYPE_INT, 0) : $mx_request_vars->request('cat_id', MX_TYPE_INT, 0);
 
 		$do = ( isset( $_REQUEST['do'] ) ) ? intval( $_REQUEST['do'] ) : '';
 		$pub_post_mode = empty( $article_id ) ? 'add' : 'edit'; //Main mode toggle
@@ -49,45 +49,45 @@ class mx_pub_post extends mx_pub_public
 		$delete = $mx_request_vars->request('delete', MX_TYPE_NO_TAGS, '');
 		$preview = $mx_request_vars->is_request('preview');
 		$cancel = $mx_request_vars->is_request('cancel');
-
+		//$this->auth_user[$cat_id]['auth_post'] = 1;
+		
 		//
 		// Main Auth
 		//
-		if ( !empty( $cat_id ) )
+		if (!empty($cat_id))
 		{
-			if ( !$this->auth_user[$cat_id]['auth_post'] )
+			if (!$this->auth_user[$cat_id]['auth_post'])
 			{
-				mx_message_die( GENERAL_MESSAGE, $lang['Sorry_auth_post'] );
+				mx_message_die( GENERAL_MESSAGE, $lang['Sorry_auth_post'] . $this->auth_user[$cat_id]['auth_post'] );
 			}
 		}
 		else
 		{
-			$dropmenu = ( !$cat_id ) ? $this->generate_jumpbox( 0, 0, '', true, true, 'auth_post' ) : $this->generate_jumpbox( 0, 0, array( $cat_id => 1 ), true, true, 'auth_post' );
+			$dropmenu = (!$cat_id) ? $this->generate_jumpbox(0, 0, '', true, true, 'auth_post') : $this->generate_jumpbox(0, 0, array($cat_id => 1), true, true, 'auth_post');
 
 			if ( empty( $dropmenu ) )
 			{
-				mx_message_die( GENERAL_MESSAGE, $lang['Sorry_auth_post'] );
+				mx_message_die(GENERAL_MESSAGE, $lang['Sorry_auth_post'] . $this->auth_user[$cat_id]['auth_post']);
 			}
 		}
 
 		//
 		// Load article info...if $article_id is set
 		//
-		if ( $article_id )
+		if ($article_id)
 		{
 			$sql = 'SELECT *
 				FROM ' . PUB_ARTICLES_TABLE . "
 				WHERE article_id = '" . $article_id . "'";
-
-			if ( !( $result = $db->sql_query( $sql ) ) )
+			if (!($result = $db->sql_query($sql)))
 			{
-				mx_message_die( GENERAL_ERROR, 'Couldnt query Article data', '', __LINE__, __FILE__, $sql );
+				mx_message_die(GENERAL_ERROR, 'Couldnt query article data', '', __LINE__, __FILE__, $sql);
 			}
 
-			$article_data = $db->sql_fetchrow( $result );
+			$article_data = $db->sql_fetchrow($result);
 			$cat_id = $article_data['article_category_id'];
 
-			$db->sql_freeresult( $result );
+			$db->sql_freeresult($result);
 		}
 
 		//
@@ -119,38 +119,37 @@ class mx_pub_post extends mx_pub_public
 				//
 				// Comments
 				//
-				if ($this->comments[$cat_id]['activated'] && $pub_config['del_topic'])
+				if ($this->comments[$cat_id]['activated'] && $publisher_config['del_topic'])
 				{
 					if ( $this->comments[$cat_id]['internal_comments'] )
 					{
-						$sql = 'DELETE FROM ' . KB_COMMENTS_TABLE . "
+						$sql = 'DELETE FROM ' . PUB_COMMENTS_TABLE . "
 						WHERE article_id = '" . $article_id . "'";
-
-						if ( !( $db->sql_query( $sql ) ) )
+						if ( !($db->sql_query($sql)))
 						{
-							mx_message_die( GENERAL_ERROR, 'Couldnt delete comments', '', __LINE__, __FILE__, $sql );
+							mx_message_die(GENERAL_ERROR, 'Couldnt delete comments', '', __LINE__, __FILE__, $sql);
 						}
 					}
 					else
 					{
 						if ( $article_data['topic_id'] )
 						{
-							include( $module_root_path . 'publisher/core/functions_comment.' . $phpEx );
+							include($module_root_path . 'publisher/core/functions_comment.' . $phpEx);
 							$publisher_comments = new publisher_comments();
-							$publisher_comments->init( $article_data, 'phpbb');
+							$publisher_comments->init($article_data, 'phpbb');
 							$publisher_comments->post('delete_all', $article_data['topic_id']);
 						}
 					}
 				}
 
 				$this->delete_items( $article_id );
-				//sync $this->_pub();
-				$message = $lang['Article_Deleted'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "mode=cat&cat=" . $cat_id ) ) . '">', '</a>' );
-				mx_message_die( GENERAL_MESSAGE, $message );
+				$this->_pub();
+				$message = $lang['Article_Deleted'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "action=cat&cat=" . $cat_id ) ) . '">', '</a>' );
+				mx_message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
-				mx_message_die( GENERAL_MESSAGE, $lang['Sorry_auth_delete'] );
+				mx_message_die(GENERAL_MESSAGE, $lang['Sorry_auth_delete']);
 			}
 		}
 
@@ -168,13 +167,13 @@ class mx_pub_post extends mx_pub_public
 		//
 		// Instatiate custom fields (only used in pub_article)
 		//
-		$mx_pub_custom_field = new mx_custom_field(KB_CUSTOM_TABLE, KB_CUSTOM_DATA_TABLE);
+		$mx_pub_custom_field = new mx_custom_field(PUB_CUSTOM_TABLE, PUB_CUSTOM_DATA_TABLE);
 		$mx_pub_custom_field->init();
 
 		//
 		// wysiwyg
 		//
-		if ( $pub_config['allow_wysiwyg'] && file_exists( $mx_root_path . $pub_config['wysiwyg_path'] . 'tinymce/jscripts/tiny_mce/tiny_mce.js' ))
+		if ( $publisher_config['allow_wysiwyg'] && file_exists($mx_root_path . $publisher_config['wysiwyg_path'] . 'tinymce/jscripts/tiny_mce/tiny_mce.js'))
 		{
 			$allow_wysiwyg = true;
 			$bbcode_on = false;
@@ -209,12 +208,12 @@ class mx_pub_post extends mx_pub_public
 		else
 		{
 			$allow_wysiwyg = false;
-			$bbcode_on = $pub_config['allow_bbcode'] ? true : false;
-			$html_on = $pub_config['allow_html'] ? true : false;
-			$smilies_on = $pub_config['allow_smilies'] ? true : false;
-			$links_on = $pub_config['allow_links'] ? true : false;
-			$images_on = $pub_config['allow_images'] ? true : false;
-			$board_config['allow_html_tags'] = $pub_config['allowed_html_tags'];
+			$bbcode_on = $publisher_config['allow_bbcode'] ? true : false;
+			$html_on = $publisher_config['allow_html'] ? true : false;
+			$smilies_on = $publisher_config['allow_smilies'] ? true : false;
+			$links_on = $publisher_config['allow_links'] ? true : false;
+			$images_on = $publisher_config['allow_images'] ? true : false;
+			$board_config['allow_html_tags'] = $publisher_config['allowed_html_tags'];
 
 			$template->assign_block_vars( 'formatting', array() );
 
@@ -245,7 +244,7 @@ class mx_pub_post extends mx_pub_public
 		{
 			if ( !$mx_request_vars->is_request('article_name') || !$mx_request_vars->is_request('article_desc') || !$mx_request_vars->is_request('message') )
 			{
-				$message = $lang['Empty_fields'] . '<br /><br />' . sprintf( $lang['Empty_fields_return'], '<a href="' . mx_append_sid( $this->this_mxurl( 'mode=add' ) ) . '">', '</a>' );
+				$message = $lang['Empty_fields'] . '<br /><br />' . sprintf( $lang['Empty_fields_return'], '<a href="' . mx_append_sid( $this->this_mxurl( 'action=add' ) ) . '">', '</a>' );
 				mx_message_die( GENERAL_MESSAGE, $message );
 			}
 
@@ -259,11 +258,11 @@ class mx_pub_post extends mx_pub_public
 
 			$username = $mx_text->encode_username($username);
 			$date = time();
-			$author_id = $userdata['user_id'] > 0 ? intval( $userdata['user_id'] ) : '-1';
+			$author_id = $userdata['user_id'] > 0 ? intval( $mx_user->data['user_id'] ) : '-1';
 
-			if ( !$article_id )
+			if (!$article_id)
 			{
-				if ( $this->auth_user[$cat_id]['auth_post'] || $this->auth_user[$cat_id]['auth_mod'] )
+				if ($this->auth_user[$cat_id]['auth_post'] || $this->auth_user[$cat_id]['auth_mod'])
 				{
 					//
 					// Approve
@@ -271,9 +270,8 @@ class mx_pub_post extends mx_pub_public
 					$approve = $this->auth_user[$cat_id]['auth_approval'] || $this->auth_user[$cat_id]['auth_mod'] ?  1 : 0; // approved
 
 					$sql = "INSERT INTO " . PUB_ARTICLES_TABLE . " ( article_category_id , article_title , article_description , article_date , article_author_id , username , bbcode_uid , article_body , article_type , approved, views )
-				   	VALUES ( '$cat_id', '" . str_replace( "\'", "''", $article_title ) . "', '" . str_replace( "\'", "''", $article_description ) . "', '$date', '$author_id', '" . str_replace( "\'", "''", $username ) . "', '$bbcode_uid', '" . str_replace( "\'", "''", $article_text ) . "', '$type_id', '$approve', '0')";
-
-					if ( !( $results = $db->sql_query( $sql ) ) )
+					VALUES ( '$cat_id', '" . str_replace( "\'", "''", $article_title ) . "', '" . str_replace( "\'", "''", $article_description ) . "', '$date', '$author_id', '" . str_replace( "\'", "''", $username ) . "', '$bbcode_uid', '" . str_replace( "\'", "''", $article_text ) . "', '$type_id', '$approve', '0')";
+					if (!($results = $db->sql_query($sql)))
 					{
 						mx_message_die( GENERAL_ERROR, "Could not submit aritcle", '', __LINE__, __FILE__, $sql );
 					}
@@ -282,7 +280,7 @@ class mx_pub_post extends mx_pub_public
 					// Get new article id
 					//
 					$sql = "SELECT MAX(article_id) AS new_id FROM " . PUB_ARTICLES_TABLE;
-					if( !($result = $db->sql_query($sql)) )
+					if (!($result = $db->sql_query($sql)))
 					{
 						mx_message_die(GENERAL_ERROR, "Couldn't find max article_id", "", __LINE__, __FILE__, $sql);
 					}
@@ -292,10 +290,10 @@ class mx_pub_post extends mx_pub_public
 					//
 					// Update custom fields
 					//
-					$mx_pub_custom_field->file_update_data( $article_id );
+					$mx_pub_custom_field->file_update_data($article_id);
 
-					$this->modified( true );
-					$this->_kb();
+					$this->modified(true);
+					$this->_pub();
 				}
 				else
 				{
@@ -310,18 +308,17 @@ class mx_pub_post extends mx_pub_public
 					// Approve
 					//
 					$approve = $this->auth_user[$cat_id]['auth_approval_edit'] || $this->auth_user[$cat_id]['auth_mod'] ? 1 : 0; // approved
-
 					$sql = "UPDATE " . PUB_ARTICLES_TABLE . "
-							SET article_category_id = '$cat_id',
-							article_title = '" . str_replace( "\'", "''", $article_title ) . "',
-							article_description = '" . str_replace( "\'", "''", $article_description ) . "',
-							article_body = '" . str_replace( "\'", "''", $article_text ) . "',
-					        article_type = '" . $type_id . "',
-					        approved = '" . $approve . "',
-					        bbcode_uid = '" . $bbcode_uid . "'
-					    WHERE article_id = ". $article_id;
-
-					if ( !( $results = $db->sql_query( $sql ) ) )
+						SET article_category_id 	= '$cat_id',
+								article_title 			= '" . str_replace( "\'", "''", $article_title ) . "',
+								article_description 	= '" . str_replace( "\'", "''", $article_description ) . "',
+								article_body 			= '" . str_replace( "\'", "''", $article_text ) . "',
+								article_type 			= '" . $type_id . "',
+								approved 			= '" . $approve . "',
+								bbcode_uid 			= '" . $bbcode_uid . "'
+						WHERE article_id 			= ". $article_id;
+						
+					if (!($results = $db->sql_query($sql)))
 					{
 						mx_message_die( GENERAL_ERROR, "Could not edit article", '', __LINE__, __FILE__, $sql );
 					}
@@ -354,56 +351,57 @@ class mx_pub_post extends mx_pub_public
 				// Autogenerate comment (duplicate the notification message)
 				//
 				$mx_pub_notification = new mx_pub_notification();
-				$mx_pub_notification->init( $article_id, $pub_config['allow_comment_wysiwyg'] );
+				$mx_pub_notification->init( $article_id, $publisher_config['allow_comment_wysiwyg'] );
 				$mx_pub_notification->_compose_auto_note($pub_post_mode == 'add' ? MX_NEW_NOTIFICATION : MX_EDITED_NOTIFICATION);
 
 				//
 				// Generate comment
 				//
-				$this->update_add_comment('', $article_id, 0, addslashes(trim($mx_pub_notification->topic_title)), addslashes(trim($mx_pub_notification->message)),true,false,false,true );
+				$this->update_add_comment('', $article_id, 0, addslashes(trim($mx_pub_notification->topic_title)), addslashes(trim($mx_pub_notification->message)), true, false, false, true );
 			}
 
 			if ( $approve == 1 )
 			{
-		     	$message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . mx_append_sid( $this->this_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf($lang['Click_return_article'], '<a href="' . mx_append_sid($this->this_mxurl("mode=article&amp;k=" . $article_id)). '">', '</a>') . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid( $mx_root_path . "index.$phpEx" ) . '">', '</a>' );
+		     	$message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . mx_append_sid( $this->this_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf($lang['Click_return_article'], '<a href="' . mx_append_sid($this->this_mxurl("action=article&amp;k=" . $article_id)). '">', '</a>') . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid( $mx_root_path . "index.$phpEx" ) . '">', '</a>' );
 			}
 			else
 			{
 				$message = $lang['Article_submitted_Approve'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . mx_append_sid( $this->this_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid( $mx_root_path . "index.$phpEx" ) . '">', '</a>' );
 			}
-
 			mx_message_die( GENERAL_MESSAGE, $message );
 		}
 		else
-		// =======================================================
-		// IF not submit then load data MAIN form
-		// =======================================================
 		{
-			if ( !$article_id )
+			//$article_id = empty($article_id) ? 1 : 0;
+			// =======================================================
+			// IF not submit then load data MAIN form
+			// =======================================================
+			if (!$article_id)
 			{
-				if ( !$this->auth_user[$cat_id]['auth_post'] )
+				$cat_id = $mx_request_vars->is_request('cat') ? $mx_request_vars->request('cat', MX_TYPE_INT, 0) : $mx_request_vars->request('cat_id', MX_TYPE_INT, 0);
+				if (!$this->auth_user[$cat_id]['auth_post'])
 				{
-					mx_message_die( GENERAL_MESSAGE, $lang['Sorry_auth_post'] );
+					mx_message_die(GENERAL_MESSAGE, $lang['Sorry_auth_post']);
 				}
 			}
 			else
 			{
-				if ( !( ( $this->auth_user[$cat_id]['auth_edit'] && $article_data['user_id'] == $userdata['user_id'] ) || $this->auth_user[$cat_id]['auth_mod'] ) )
+				if (!(($this->auth_user[$cat_id]['auth_edit'] && $article_data['user_id'] == $mx_user->data['user_id'] ) || $this->auth_user[$cat_id]['auth_mod'] ) )
 				{
-					mx_message_die( GENERAL_MESSAGE, $lang['Sorry_auth_edit'] );
+					mx_message_die(GENERAL_MESSAGE, $lang['Sorry_auth_edit']);
 				}
 			}
 
 			//
 			// PreText HIDE/SHOW
 			//
-			if ( $pub_config['show_pretext'] )
+			if ( $publisher_config['show_pretext'] )
 			{
 				//
 				// Pull Header/Body info.
 				//
-				$pt_header = $pub_config['pt_header'];
-				$pt_body = $pub_config['pt_body'];
+				$pt_header = $publisher_config['pt_header'];
+				$pt_body = $publisher_config['pt_body'];
 
 				$template->set_filenames( array( 'pretext' => 'pub_post_pretext.tpl' ) );
 
@@ -411,7 +409,7 @@ class mx_pub_post extends mx_pub_public
 					'PRETEXT_HEADER' => $pt_header,
 					'PRETEXT_BODY' => $pt_body ) );
 
-				$template->assign_var_from_handle( 'KB_PRETEXT_BOX', 'pretext' );
+				$template->assign_var_from_handle( 'PUB_PRETEXT_BOX', 'pretext' );
 			}
 
 			if ( $preview )
@@ -423,9 +421,9 @@ class mx_pub_post extends mx_pub_public
 				$preview_desc = $mx_text->encode_preview_simple($pub_desc);
 				$preview_text = $mx_text->encode_preview($pub_text);
 
-				if (!$pub_config['allow_images'] || !$pub_config['allow_links'])
+				if (!$publisher_config['allow_images'] || !$publisher_config['allow_links'])
 				{
-					$preview_text = $mx_text_formatting->remove_images_links( $preview_text, $pub_config['allow_images'], $pub_config['no_image_message'], $pub_config['allow_links'], $pub_config['no_link_message'] );
+					$preview_text = $mx_text_formatting->remove_images_links( $preview_text, $publisher_config['allow_images'], $publisher_config['no_image_message'], $publisher_config['allow_links'], $publisher_config['no_link_message'] );
 				}
 
 				$template->set_filenames( array( 'preview' => 'pub_post_preview.tpl' ) );
@@ -435,10 +433,10 @@ class mx_pub_post extends mx_pub_public
 					'ARTICLE_TITLE' => $preview_title,
 					'ARTICLE_DESC' => $preview_desc,
 					'ARTICLE_BODY' => $preview_text,
-					'PRE_COMMENT' => $preview_text )
+					'PRE_COMMENT' => $preview_text)
 				);
 
-				$template->assign_var_from_handle( 'KB_PREVIEW_BOX', 'preview' );
+				$template->assign_var_from_handle('PUB_PREVIEW_BOX', 'preview');
 
 				//
 				// Decode for form editing
@@ -482,26 +480,30 @@ class mx_pub_post extends mx_pub_public
 			//
 			// set up page
 			//
-			$template->set_filenames( array( 'body' => 'pub_post_body.tpl' ) );
+			$template->set_filenames(array('body' => 'pub_post_body.tpl'));
 
-			if ( !$userdata['session_logged_in'] )
+			if (!$mx_user->data['session_logged_in'])
 			{
-				$template->assign_block_vars( 'switch_name', array() );
+				$template->assign_block_vars('switch_name', array());
 			}
 
-			$pub_action_url = $pub_post_mode == 'add' ? mx_append_sid($this->this_mxurl('mode=add')) : mx_append_sid($this->this_mxurl('mode=edit'));
+			$pub_action_url = $pub_post_mode == 'add' ? mx_append_sid($this->this_mxurl("action=add&cat=" . $cat_id)) : mx_append_sid($this->this_mxurl('action=edit'));
 			$custom_data = $pub_post_mode == 'add' ? $mx_pub_custom_field->display_edit() : $mx_pub_custom_field->display_edit( $article_id );
 
 			if ( $custom_data )
 			{
-				$template->assign_block_vars( 'custom_data_fields', array(
+				$template->assign_block_vars('custom_data_fields', array(
 					'L_ADDTIONAL_FIELD' => $lang['Addtional_field']
 				));
 			}
 
-			$template->assign_vars( array(
+			$template->assign_vars(array(
+				'S_POST_ACTION' => $pub_action_url,
 				'S_ACTION' => $pub_action_url,
+				
 				'S_HIDDEN_FIELDS' => $s_hidden_vars,
+
+				'L_PUB' => $lang['PUB_title'],
 
 				'ARTICLE_TITLE' => $pub_title,
 				'ARTICLE_DESC' => $pub_desc,
@@ -521,7 +523,7 @@ class mx_pub_post extends mx_pub_public
 				'L_NAME' => $lang['Username'],
 
 				'HTML_STATUS' => $html_status,
-				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . PHPBB_URL . mx_append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . PHPBB_URL . mx_append_sid("faq.$phpEx?action=bbcode") . '" target="_phpbbcode">', '</a>'),
 				'SMILIES_STATUS' => $smilies_status,
 				'LINKS_STATUS' => $links_status,
 				'IMAGES_STATUS' => $images_status,
@@ -588,14 +590,15 @@ class mx_pub_post extends mx_pub_public
 
 				'L_BBCODE_CLOSE_TAGS' => $lang['Close_Tags'],
 				'L_STYLES_TIP' => $lang['Styles_tip']
-			) );
 
-			$mx_pub_functions->get_pub_type_list( $type_id );
+			));
 
-			if ( $pub_post_mode == 'edit' )
+			$publisher_functions->get_pub_type_list($type_id);
+
+			if ($pub_post_mode == 'edit')
 			{
 				$template->assign_block_vars( 'switch_edit', array(
-					'CAT_LIST' => $this->generate_jumpbox( 0, 0, array( $cat_id => 1 ), false, true, 'auth_edit')
+					'CAT_LIST' => $this->generate_jumpbox(0, 0, array( $cat_id => 1 ), false, true, 'auth_edit')
 				));
 			}
 
@@ -607,17 +610,22 @@ class mx_pub_post extends mx_pub_public
 			// ===================================================
 			// assign var for top navigation
 			// ===================================================
-			$this->generate_navigation( $cat_id );
+			$this->generate_navigation($cat_id);
 
 			//
 			// User authorisation levels output
 			//
-			$this->auth_can( $cat_id );
+			$this->auth_can($cat_id);
 
 			//
 			// Get footer quick dropdown jumpbox
 			//
-			$this->generate_jumpbox( 0, 0, array( $cat_id => 1 ));
+			$this->generate_jumpbox(0, 0, array($cat_id => 1));
+			
+			//
+			// Output all
+			//
+			$this->display( $lang['Publisher'], 'pub_post_body.tpl' );
 		}
 	}
 }

@@ -13,5 +13,5 @@ if ( !defined( 'IN_PORTAL' ) || !defined( 'IN_ADMIN' ) )
 	die("Hacking attempt");
 }
 
-$lang['MY_CATEGORY']= 'Kategori';
+$lang['MY_CATEGORY'] = 'Kategori';
 ?>

@@ -422,7 +422,7 @@ class mx_publisher extends mx_publisher_auth
 		{
 			global $db;
 
-			$sql = 'SELECT COUNT(file_id) as total_files
+			$sql = 'SELECT COUNT(file_id) as total_articless
 				FROM ' . PUB_FILES_TABLE . "
 				WHERE file_approved = '1'
 				AND file_catid IN (" . $this->gen_cat_ids( $cat_id ) . ')
@@ -436,7 +436,7 @@ class mx_publisher extends mx_publisher_auth
 			$number_of_items = 0;
 			if ( $row = $db->sql_fetchrow( $result ) )
 			{
-				$number_of_items = $row['total_files'];
+				$number_of_items = $row['total_articless'];
 			}
 
 			$sql = 'UPDATE ' . PUB_CATEGORY_TABLE . "
@@ -670,7 +670,58 @@ class mx_publisher extends mx_publisher_auth
 	 * @param unknown_type $cat_id
 	 * @param unknown_type $file_info
 	 */
-	function last_item_in_cat( $cat_id, &$file_info )
+	function last_item_in_cat($cat_id, $file_info = array())
+	{
+		if ( ( empty( $this->cat_rowset[$cat_id]['cat_last_article_id'] ) && empty( $this->cat_rowset[$cat_id]['cat_last_article_name'] ) && empty( $this->cat_rowset[$cat_id]['cat_last_article_time'] ) ) || $this->modified )
+		{
+			global $db;
+
+			$sql = 'SELECT article_date, article_id, article_title, article_category_id
+				FROM ' . PUB_ARTICLES_TABLE . "
+				WHERE approved = '1'
+				AND article_category_id IN (" . $this->gen_cat_ids($cat_id) . ")
+				ORDER BY article_date DESC";
+
+			if ( !( $result = $db->sql_query($sql) ) )
+			{
+				mx_message_die( GENERAL_ERROR, 'Couldnt Query links info', '', __LINE__, __FILE__, $sql );
+			}
+
+			while ( $row = $db->sql_fetchrow( $result ) )
+			{
+				$temp_cat[] = $row;
+			}
+
+			$file_info = $temp_cat[0];
+			if ( !empty( $file_info ) )
+			{
+				$sql = 'UPDATE ' . PUB_CATEGORIES_TABLE . "
+					SET cat_last_article_id = " . intval( $file_info['article_id'] ) . ",
+					cat_last_article_name = '" . addslashes( $file_info['article_title'] ) . "',
+					cat_last_article_time = " . intval( $file_info['article_date'] ) . "
+					WHERE category_id = $cat_id";
+
+				if ( !( $db->sql_query( $sql ) ) )
+				{
+					mx_message_die( GENERAL_ERROR, 'Couldnt Query links info', '', __LINE__, __FILE__, $sql );
+				}
+			}
+		}
+		else
+		{
+			$file_info['article_id'] = $this->cat_rowset[$cat_id]['cat_last_article_id'];
+			$file_info['article_title'] = $this->cat_rowset[$cat_id]['cat_last_article_name'];
+			$file_info['article_date'] = $this->cat_rowset[$cat_id]['cat_last_article_time'];
+		}
+	}
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $cat_id
+	 * @param unknown_type $file_info
+	 */
+	function last_file_in_cat( $cat_id, &$file_info )
 	{
 		if ( ( empty( $this->cat_rowset[$cat_id]['cat_last_file_id'] ) && empty( $this->cat_rowset[$cat_id]['cat_last_file_name'] ) && empty( $this->cat_rowset[$cat_id]['cat_last_file_time'] ) ) || $this->modified )
 		{
@@ -988,7 +1039,7 @@ class mx_publisher extends mx_publisher_auth
 	}
 
 	/**
-	 * display items.
+	 * display files.
 	 *
 	 * @param unknown_type $sort_method
 	 * @param unknown_type $sort_order
@@ -999,7 +1050,7 @@ class mx_publisher extends mx_publisher_auth
 	 * @param unknown_type $sql_xtra
 	 * @param unknown_type $target_page_id
 	 */
-	function display_items( $sort_method, $sort_order, $start, $cat_id = false, $show_file_message = true, $sort_options_list = false, $sql_xtra = '', $target_page_id = false )
+	function display_files( $sort_method, $sort_order, $start, $cat_id = false, $show_file_message = true, $sort_options_list = false, $sql_xtra = '', $target_page_id = false )
 	{
 		global $db, $publisher_config, $template, $board_config;
 		global $images, $lang, $phpEx, $publisher_functions;
@@ -1015,16 +1066,16 @@ class mx_publisher extends mx_publisher_auth
 		//
 		if (!$cat_id)
 		{
-			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids('0') . ")";
+			$cat_where = "AND f1.file_catid IN (" . $this->gen_cat_ids( '0' ) . ")";
 		}
 		else if (is_array($cat_id))
 		{
-			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids( $cat_id['parent'] ) . ")";
+			$cat_where = "AND f1.file_catid IN (" . $this->gen_cat_ids( $cat_id['parent'] ) . ")";
 			$cat_id = false;
 		}
 		else
 		{
-			$cat_where = "AND t.article_category_id = $cat_id";
+			$cat_where = "AND f1.file_catid = $cat_id";
 		}
 
 		//
@@ -1033,9 +1084,9 @@ class mx_publisher extends mx_publisher_auth
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.file_id) AS total_comments
-					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c, " . PUB_CATEGORY_TABLE . " AS cat
-					WHERE f1.file_id = r.votes_article(+)
+				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username
+					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_CATEGORY_TABLE . " AS cat
+					WHERE f1.file_id = r.votes_file(+)
 					AND f1.user_id = u.user_id(+)
 					AND f1.file_id = c.file_id(+)
 					AND f1.file_pin = " . FILE_PINNED . "
@@ -1045,24 +1096,21 @@ class mx_publisher extends mx_publisher_auth
 					$sql_xtra
 					GROUP BY f1.file_id
 					ORDER BY $sort_method $sort_order";
-				break;
+			break;
 
 			default:
-				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.article_id) AS total_comments, typ.type
-					FROM " . PUB_ARTICLES_TABLE . " AS t
-						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON t.article_id = r.votes_article
-						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
-						LEFT JOIN " . USERS_TABLE . " AS u ON t.article_author_id = u.user_id
-						LEFT JOIN " . PUB_FILES_TABLE . " AS f1 ON f1.file_id = r.votes_file
-						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON t.article_id = c.article_id
-						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON t.article_category_id = cat.cat_id
-					WHERE t.article_pin = " . FILE_PINNED . "
-					AND t.approved = '1'
+				$sql = "SELECT f1.*, f1.file_id, r.votes_file, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username
+					FROM " . PUB_FILES_TABLE . " AS f1
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
+						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON f1.file_catid = cat.cat_id
+					WHERE f1.file_pin = " . FILE_PINNED . "
+					AND f1.file_approved = 1
 					$cat_where
 					$sql_xtra
-					GROUP BY t.article_id
+					GROUP BY f1.file_id
 					ORDER BY $sort_method $sort_order";
-				break;
+			break;
 		}
 
 		if ( !( $result = $db->sql_query( $sql ) ) )
@@ -1089,9 +1137,9 @@ class mx_publisher extends mx_publisher_auth
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username
+				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username
 					FROM " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_CATEGORY_TABLE . " AS cat
-					WHERE f1.file_id = r.votes_article(+)
+					WHERE f1.file_id = r.votes_file(+)
 					AND f1.user_id = u.user_id(+)
 					AND f1.file_pin <> " . FILE_PINNED . "
 					AND f1.file_approved = 1
@@ -1100,13 +1148,12 @@ class mx_publisher extends mx_publisher_auth
 					$sql_xtra
 					GROUP BY f1.file_id
 					ORDER BY $sort_method $sort_order";
-				break;
+			break;
 
 			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username
+				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username
 					FROM " . PUB_FILES_TABLE . " AS f1
-						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_article
-						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
 						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
 						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON f1.file_catid = cat.cat_id
 					WHERE f1.file_pin <> " . FILE_PINNED . "
@@ -1115,7 +1162,7 @@ class mx_publisher extends mx_publisher_auth
 					$sql_xtra
 					GROUP BY f1.file_id
 					ORDER BY $sort_method $sort_order";
-				break;
+			break;
 		}
 
 		if ( !( $result = $db->sql_query_limit( $sql, $publisher_config['pagination'], $start ) ) )
@@ -1153,6 +1200,374 @@ class mx_publisher extends mx_publisher_auth
 		//
 		// Ratings
 		//
+		$pa_use_ratings = false;
+		for ( $i = 0; $i < count( $file_rowset ); $i++ )
+		{
+			if ( $this->ratings[$file_rowset[$i]['file_catid']]['activated'] )
+			{
+				$pa_use_ratings = true;
+				break;
+			}
+		}
+
+		for ( $i = 0; $i < count( $file_rowset ); $i++ )
+		{
+			// ===================================================
+			// Format the date for the given file
+			// ===================================================
+			$date = phpBB2::create_date( $board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone'] );
+			$date_updated = phpBB2::create_date( $board_config['default_dateformat'], $file_rowset[$i]['file_update_time'], $board_config['board_timezone'] );
+			// ===================================================
+			// Get rating and comments for the file and format it
+			// ===================================================
+			$rating = ( $file_rowset[$i]['rating'] != 0 ) ? round( $file_rowset[$i]['rating'], 2 ) . '/10' : $lang['Not_rated'];
+			//$comments = ( $file_rowset[$i]['total_comments'] != 0 ) ? $file_rowset[$i]['total_comments'] : $lang['No_comments'];
+			// ===================================================
+			// If the file is new then put a new image in front of it
+			// ===================================================
+			$is_new = false;
+			if ( (time() - ( $publisher_config['settings_newdays'] * 24 * 60 * 60 )) < $file_rowset[$i]['file_time'] )
+			{
+				$is_new = true;
+			}
+
+			$cat_name = ( empty( $cat_id ) ) ? $this->cat_rowset[$file_rowset[$i]['file_catid']]['cat_name'] : '';
+			$cat_url = mx_append_sid( $this->this_mxurl( 'action=category&cat_id=' . $file_rowset[$i]['file_catid'] ) );
+			// ===================================================
+			// Get the post icon fot this file
+			// ===================================================
+			if ( $file_rowset[$i]['file_pin'] != FILE_PINNED )
+			{
+				if ( $file_rowset[$i]['file_posticon'] == 'none' || $file_rowset[$i]['file_posticon'] == 'none.gif' )
+				{
+					$posticon = PORTAL_URL . $module_root_path . ICONS_DIR . 'none.gif';
+				}
+				else
+				{
+					$posticon = PORTAL_URL . $module_root_path . ICONS_DIR . $file_rowset[$i]['file_posticon'];
+				}
+			}
+			else
+			{
+				$posticon = $images['pa_folder_sticky'];
+			}
+
+			$save_as_icon = PORTAL_URL . $module_root_path . ICONS_DIR . 'icon_download1.gif';
+
+			//
+			// Poster
+			//
+			$file_poster = ( $file_rowset[$i]['user_id'] != ANONYMOUS ) ? '<a href="' . mx_append_sid( $phpbb_root_path . 'profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $file_rowset[$i]['user_id'] ) . '" target=_blank>' : '';
+			$file_poster .= ( $file_rowset[$i]['user_id'] != ANONYMOUS ) ? $file_rowset[$i]['username'] : $file_rowset[$i]['post_username'] . '(' . $lang['Guest'] . ')';
+			$file_poster .= ( $file_rowset[$i]['user_id'] != ANONYMOUS ) ? '</a>' : '';
+
+			// ===================================================
+			// Assign Vars
+			// ===================================================
+			if (!$file_rowset[$i]['file_disable'])
+			{
+				$dl_link_jump = mx_append_sid( $this->this_mxurl( 'action=download&file_id=' . $file_rowset[$i]['file_id'], true, false ) );
+				$dl_link_jump_save_as = mx_append_sid( $this->this_mxurl( 'action=download&file_id=' . $file_rowset[$i]['file_id'] . '&save_as', true, false ) );
+			}
+			else
+			{
+				$dl_link_jump = $dl_link_jump_save_as = "javascript:disable_popup(".$file_rowset[$i]['file_id'].")";
+			}
+
+			$template->assign_block_vars( "file_rows", array(
+				'L_NEW_FILE' => $lang['New_file'],
+				'L_SAVE_AS' => $lang['Save_as'],
+				'PIN_IMAGE' => $posticon,
+				'SAVE_AS_IMAGE' => $save_as_icon,
+				'FILE_NAME' => $file_rowset[$i]['file_name'],
+				'FILE_DESC' => $file_rowset[$i]['file_desc'],
+				'FILE_ID' => $file_rowset[$i]['file_id'],
+				'DATE' => $date,
+				'UPDATED' => $date_updated,
+				'L_RATING' => $lang['DlRating'],
+				'DO_RATE' => $this->auth_user[$cat_id]['auth_rate'] ? '<a href="' . mx_append_sid( $this->this_mxurl( 'action=rate&amp;file_id=' . $file_rowset[$i]['file_id'] ) ) . '">' . $lang['Do_rate'] . '</a>' : '',
+				'L_COMMENT' => '<a href="' . mx_append_sid( $this->this_mxurl( 'action=post_comment&amp;item_id=' . $file_rowset[$i]['file_id'] . '&amp;cat_id=' . $file_rowset[$i]['file_catid'] ) ) . '">' . $lang['Comments'] . '</a>',
+				'RATING' => $rating,
+				'FILE_VOTES' => $file_rowset[$i]['total_votes'],
+				'FILE_DLS' => $file_rowset[$i]['file_dls'],
+				'CAT_NAME' => $cat_name,
+				'IS_NEW_FILE' => $is_new,
+
+				'U_CAT' => $cat_url,
+				'SHOW_RATINGS' => ( $pa_use_ratings ?  true : false ),
+				'U_FILE' => mx_append_sid( $this->this_mxurl( 'action=file&file_id=' . $file_rowset[$i]['file_id'], false, false, $target_page_id ) ),
+				'U_FILE_JUMP' => $dl_link_jump,
+				'U_FILE_JUMP_SAVE_AS' => $dl_link_jump_save_as,
+				'COLOR' => ( ( $i % 2 ) ? "row2" : "row1" ),
+				'POSTER' => $file_poster,
+				'FILE_DISABLE_MSG' => nl2br( $file_rowset[$i]['disable_msg'] ),
+
+				'FILE_NEW_IMAGE' => $images['pa_file_new'],
+				'HAS_SCREENSHOTS' => ( !empty( $file_rowset[$i]['file_ssurl'] ) ) ? true : false,
+				'SS_AS_LINK' => ( $file_rowset[$i]['file_sshot_link'] ) ? true : false,
+				'FILE_SCREENSHOT' => $file_rowset[$i]['file_ssurl'],
+				'FILE_SCREENSHOT_URL' => $module_root_path . 'publisher/images/lwin.gif',
+			));
+
+			//
+			// Options (only used for the toplist block)
+			//
+			if ($sort_options_list)
+			{
+				foreach ($sort_options_list as $sort_option => $options_value)
+				{
+					switch ($sort_option)
+					{
+						case 'date':
+							$template->assign_block_vars( "file_rows.display_date", array());
+						break;
+						case 'username':
+							$template->assign_block_vars( "file_rows.display_username", array());
+						break;
+						case 'counter':
+							$template->assign_block_vars( "file_rows.display_counter", array());
+						break;
+						case 'rate':
+							$template->assign_block_vars( "file_rows.display_rate", array());
+						break;
+					}
+				}
+			}
+
+			$filelist = true;
+			$pa_use_ratings = $this->ratings[$file_rowset[$i]['file_catid']]['activated'];
+		}
+
+		if ( $filelist )
+		{
+			$action = ( empty( $cat_id ) ) ? 'viewall' : 'category&amp;cat_id=' . $cat_id;
+			$template->assign_vars( array(
+				'FILELIST' => $filelist,
+				'ORIGINAL_STYLE' => false,
+
+				'L_CATEGORY' => $lang['Category'],
+				'L_VOTES' => $lang['Votes'],
+				'L_DOWNLOADS' => $lang['Dls'],
+				'L_SUBMITED_BY' => $lang['Submiter'],
+				'L_DATE' => $lang['Date'],
+				'L_NAME' => $lang['Name'],
+				'L_FILE' => $lang['File'],
+				'L_FILES' => $lang['Files'],
+				'L_UPDATE_TIME' => $lang['Update_time'],
+				'L_SCREENSHOTS' => $lang['Scrsht'],
+
+				'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
+				'L_ORDER' => $lang['Order'],
+				'L_SORT' => $lang['Sort'],
+
+				'L_ASC' => $lang['Sort_Ascending'],
+				'L_DESC' => $lang['Sort_Descending'],
+
+				'SORT_NAME' => ( $sort_method == 'file_name' ) ? 'selected="selected"' : '',
+				'SORT_TIME' => ( $sort_method == 'file_time' ) ? 'selected="selected"' : '',
+				'SORT_RATING' => ( $sort_method == 'rating' ) ? 'selected="selected"' : '',
+				'SORT_DOWNLOADS' => ( $sort_method == 'file_dls' ) ? 'selected="selected"' : '',
+				'SORT_UPDATE_TIME' => ( $sort_method == 'file_update_time' ) ? 'selected="selected"' : '',
+
+				'SORT_ASC' => ( $sort_order == 'ASC' ) ? 'selected="selected"' : '',
+				'SORT_DESC' => ( $sort_order == 'DESC' ) ? 'selected="selected"' : '',
+				'PAGINATION' => phpBB2::generate_pagination( mx_append_sid( $this->this_mxurl( "action=$action&amp;sort_method=$sort_method&amp;sort_order=$sort_order" ) ), $total_file, $publisher_config['pagination'], $start ),
+				'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $publisher_config['pagination'] ) + 1 ), ceil( $total_file / $publisher_config['pagination'] ) ),
+				'ID' => $cat_id,
+				'START' => $start,
+				'SHOW_RATINGS' => ( $pa_use_ratings ) ? true : false,
+
+				'S_ACTION_SORT' => mx_append_sid( $this->this_mxurl( "action=$action" ) ) )
+			);
+		}
+		else
+		{
+			$template->assign_vars( array(
+				'L_CATEGORY' => $lang['Category'],
+				'L_RATING' => $lang['DlRating'],
+				'L_DOWNLOADS' => $lang['Dls'],
+				'L_DATE' => $lang['Date'],
+				'L_NAME' => $lang['Name'],
+				'L_FILE' => $lang['File'],
+				'L_UPDATE_TIME' => $lang['Update_time'],
+				'L_SCREENSHOTS' => $lang['Scrsht'],
+				'NO_FILE' => $show_file_message,
+				'L_NO_FILES' => $lang['No_files'],
+				'L_NO_FILES_CAT' => $lang['No_files_cat'] )
+			);
+		}
+
+		return $total_file;
+	}
+
+	/**
+	 * display items.
+	 *
+	 * @param unknown_type $sort_method
+	 * @param unknown_type $sort_order
+	 * @param unknown_type $start
+	 * @param unknown_type $cat_id
+	 * @param unknown_type $show_file_message
+	 * @param unknown_type $sort_options_list
+	 * @param unknown_type $sql_xtra
+	 * @param unknown_type $target_page_id
+	 */
+	function display_items( $sort_method, $sort_order, $start, $cat_id = false, $show_file_message = true, $sort_options_list = false, $sql_xtra = '', $target_page_id = false )
+	{
+		global $db, $publisher_config, $template, $board_config;
+		global $images, $lang, $phpEx, $publisher_functions, $phpBB2;
+		global $phpbb_root_path, $mx_root_path, $module_root_path, $is_block, $phpEx;
+
+		$filelist = false;
+
+		$file_rowset = array();
+		$total_articles = 0;
+
+		//
+		// Category SQL
+		//
+		if (!$cat_id)
+		{
+			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids('0') . ")";
+		}
+		else if (is_array($cat_id))
+		{
+			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids( $cat_id['parent'] ) . ")";
+			$cat_id = false;
+		}
+		else
+		{
+			$cat_where = "AND t.article_category_id = $cat_id";
+		}
+
+		//
+		// This first query is needed to find pinned files
+		//
+		switch ( SQL_LAYER )
+		{
+			case 'oracle':
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.article_id) AS total_comments
+					FROM " . PUB_ARTICLES_TABLE . " AS t, " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c, " . PUB_CATEGORY_TABLE . " AS cat
+					WHERE t.article_id = r.votes_article(+)
+					AND t.user_id = u.user_id(+)
+					AND t.article_id = c.article_id(+)
+					AND t.article_pin = " . FILE_PINNED . "
+					AND t.approved = 1
+					AND t.article_category_id = cat.cat_id
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+			break;
+				
+			default:
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.article_id) AS total_comments, typ.type
+					FROM " . PUB_ARTICLES_TABLE . " AS t
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON t.article_id = r.votes_article
+						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
+						LEFT JOIN " . USERS_TABLE . " AS u ON t.article_author_id = u.user_id
+						LEFT JOIN " . PUB_FILES_TABLE . " AS f1 ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON t.article_id = c.article_id
+						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON t.article_category_id = cat.cat_id
+					WHERE t.article_pin = " . FILE_PINNED . "
+					AND t.approved = 1
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+			break;
+		}
+
+		if ( !( $result = $db->sql_query( $sql ) ) )
+		{
+			mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql );
+		}
+
+		$file_rowset = array();
+		$total_articles = 0;
+
+		while ( $row = $db->sql_fetchrow( $result ) )
+		{
+			if ( $this->auth_user[$row['file_catid']]['auth_read'] )
+			{
+				$file_rowset[] = $row;
+			}
+		}
+
+		$db->sql_freeresult( $result );
+
+		//
+		// Main query
+		//
+		switch ( SQL_LAYER )
+		{
+			case 'oracle':
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username
+					FROM " . PUB_ARTICLES_TABLE . " AS t, " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_CATEGORY_TABLE . " AS cat
+					WHERE t.article_id = r.votes_article(+)
+					AND t.user_id = u.user_id(+)
+					AND t.article_id = c.article_id(+)
+					AND t.article_pin = " . FILE_PINNED . "
+					AND t.approved = 1
+					AND t.article_category_id = cat.cat_id
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+				break;
+
+			default:
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, typ.type
+					FROM " . PUB_ARTICLES_TABLE . " AS t
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON t.article_id = r.votes_article
+						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
+						LEFT JOIN " . USERS_TABLE . " AS u ON t.article_author_id = u.user_id
+						LEFT JOIN " . PUB_FILES_TABLE . " AS f1 ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON t.article_category_id = cat.cat_id
+					WHERE t.article_pin = " . FILE_PINNED . "
+					AND t.approved = 1
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+				break;
+		}
+
+		if ( !( $result = $db->sql_query_limit( $sql, $publisher_config['pagination'], $start ) ) )
+		{
+			mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql );
+		}
+
+		while ( $row = $db->sql_fetchrow( $result ) )
+		{
+			if ( $this->auth_user[$row['file_catid']]['auth_read'] )
+			{
+				$file_rowset[] = $row;
+			}
+		}
+
+		$db->sql_freeresult( $result );
+
+		$sql = "SELECT COUNT(t.article_id) as total_articles
+			FROM " . PUB_ARTICLES_TABLE . " AS t
+			WHERE t.approved='1'
+			$cat_where
+			$sql_xtra";
+
+		if (!($result = $db->sql_query($sql)))
+		{
+			mx_message_die(GENERAL_ERROR, 'Couldn\'t get number of file', '', __LINE__, __FILE__, $sql);
+		}
+
+		$row = $db->sql_fetchrow( $result );
+		$db->sql_freeresult( $result );
+
+		$total_articles = $row['total_articles'];
+		unset( $row );
+
+		//
+		// Ratings
+		//
 		$pub_use_ratings = false;
 		for ( $i = 0; $i < count( $file_rowset ); $i++ )
 		{
@@ -1168,8 +1583,8 @@ class mx_publisher extends mx_publisher_auth
 			// ===================================================
 			// Format the date for the given file
 			// ===================================================
-			$date = phpBB2::create_date( $board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone'] );
-			$date_updated = phpBB2::create_date( $board_config['default_dateformat'], $file_rowset[$i]['file_update_time'], $board_config['board_timezone'] );
+			$date = $phpBB2->create_date( $board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone'] );
+			$date_updated = $phpBB2->create_date( $board_config['default_dateformat'], $file_rowset[$i]['file_update_time'], $board_config['board_timezone'] );
 			// ===================================================
 			// Get rating and comments for the file and format it
 			// ===================================================
@@ -1273,16 +1688,16 @@ class mx_publisher extends mx_publisher_auth
 					{
 						case 'date':
 							$template->assign_block_vars( "file_rows.display_date", array());
-							break;
+						break;
 						case 'username':
 							$template->assign_block_vars( "file_rows.display_username", array());
-							break;
+						break;
 						case 'counter':
 							$template->assign_block_vars( "file_rows.display_counter", array());
-							break;
+						break;
 						case 'rate':
 							$template->assign_block_vars( "file_rows.display_rate", array());
-							break;
+						break;
 					}
 				}
 			}
@@ -1324,8 +1739,8 @@ class mx_publisher extends mx_publisher_auth
 
 				'SORT_ASC' => ( $sort_order == 'ASC' ) ? 'selected="selected"' : '',
 				'SORT_DESC' => ( $sort_order == 'DESC' ) ? 'selected="selected"' : '',
-				'PAGINATION' => phpBB2::generate_pagination( mx_append_sid( $this->this_mxurl( "action=$action&amp;sort_method=$sort_method&amp;sort_order=$sort_order" ) ), $total_file, $publisher_config['pagination'], $start ),
-				'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $publisher_config['pagination'] ) + 1 ), ceil( $total_file / $publisher_config['pagination'] ) ),
+				'PAGINATION' => $phpBB2->generate_pagination( mx_append_sid( $this->this_mxurl( "action=$action&amp;sort_method=$sort_method&amp;sort_order=$sort_order" ) ), $total_articles, $publisher_config['pagination'], $start ),
+				'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $publisher_config['pagination'] ) + 1 ), ceil( $total_articles / $publisher_config['pagination'] ) ),
 				'ID' => $cat_id,
 				'START' => $start,
 				'SHOW_RATINGS' => ( $pub_use_ratings ) ? true : false,
@@ -1350,7 +1765,7 @@ class mx_publisher extends mx_publisher_auth
 			);
 		}
 
-		return $total_file;
+		return $total_articles;
 	}
 
 	/**
@@ -1417,7 +1832,7 @@ class mx_publisher extends mx_publisher_auth
 		}
 
 		$file_rowset = array();
-		$total_file = 0;
+		$total_articles = 0;
 
 		while ( $row = $db->sql_fetchrow( $result ) )
 		{
@@ -1474,7 +1889,7 @@ class mx_publisher extends mx_publisher_auth
 		$db->sql_freeresult( $result );
 
 		$where_sql = ( !empty( $cat_id ) ) ? "AND file_catid = $cat_id" : '';
-		$sql = "SELECT COUNT(file_id) as total_file
+		$sql = "SELECT COUNT(file_id) as total_articles
 			FROM " . PUB_FILES_TABLE . "
 			WHERE file_approved='1'
 			$where_sql";
@@ -1487,7 +1902,7 @@ class mx_publisher extends mx_publisher_auth
 		$row = $db->sql_fetchrow( $result );
 		$db->sql_freeresult( $result );
 
-		$total_file = $row['total_file'];
+		$total_articles = $row['total_articles'];
 		unset( $row );
 
 		for ( $i = 0; $i < count( $file_rowset ); $i++ )
@@ -1583,8 +1998,8 @@ class mx_publisher extends mx_publisher_auth
 
 					'SORT_ASC' => ( $sort_order == 'ASC' ) ? 'selected="selected"' : '',
 					'SORT_DESC' => ( $sort_order == 'DESC' ) ? 'selected="selected"' : '',
-					'PAGINATION' => phpBB2::generate_pagination( mx_append_sid( $this->this_mxurl( "action=$action&amp;sort_method=$sort_method&amp;sort_order=$sort_order" ) ), $total_file, $publisher_config['pagination'], $start ),
-					'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $publisher_config['pagination'] ) + 1 ), ceil( $total_file / $publisher_config['pagination'] ) ),
+					'PAGINATION' => phpBB2::generate_pagination( mx_append_sid( $this->this_mxurl( "action=$action&amp;sort_method=$sort_method&amp;sort_order=$sort_order" ) ), $total_articles, $publisher_config['pagination'], $start ),
+					'PAGE_NUMBER' => sprintf( $lang['Page_of'], ( floor( $start / $publisher_config['pagination'] ) + 1 ), ceil( $total_articles / $publisher_config['pagination'] ) ),
 					'FILELIST' => $filelist,
 					'ID' => $cat_id,
 					'START' => $start,
@@ -1627,42 +2042,97 @@ class mx_publisher extends mx_publisher_auth
 	}
 
 	/**
-	 * Enter description here...
+	 * MX URL Fix
+	 * Temporary solution to handle addons urls 
 	 *
 	 * @param unknown_type $args
 	 * @param unknown_type $force_standalone_mode
 	 * @param unknown_type $non_html_amp
 	 * @return unknown
 	 */
-	function this_mxurl( $args = '', $force_standalone_mode = false, $non_html_amp = false, $pageId = '' )
+	function this_mxurl($args = '', $force_standalone_mode = false, $non_html_amp = false, $is_block = true)
 	{
 		global $mx_root_path, $module_root_path, $page_id, $phpEx, $is_block;
-
-		$pageId = empty($pageId) ? $page_id : $pageId;
+		
+		$page = $this->request->variable('page', $page_id);
+		$pageId = $this->request->variable('page_id', $page);
+		
+		$start = $this->request->get('start', MX_TYPE_INT, 0);
+		$file_id = $this->request->request('file_id', MX_TYPE_INT, '');
+		$page_num = $this->request->request('page_num', MX_TYPE_INT, 1) - 1;
+		
+		$dynamicId = isset($_GET['dynamic_block']) ? ( $non_html_amp ? '&dynamic_block=' : '&amp;dynamic_block=' ) . $this->request->variable('dynamic_block') : '';
+		
+		$actions_args 	= isset($args) ? @explode('&', str_replace('?', '&', str_replace('&amp;', '&', $args))) : '';
+		
+		$mode 		= $this->request->variable('mode', '');
+		$action 		= $this->request->variable('action', $mode);
+		
+		$do 			= $this->request->variable('do', '');
+		
+		$article_id 		= $this->request->variable('article_id', '');
+		
+		$cat_id 	= $this->request->variable('cat_id', '');
+	
+		if ( ($cat_id == 0) && ($article_id !== 0) )
+		{
+			$sql = "SELECT article_id
+				FROM " . PUB_ARTICLES_TABLE . "
+				WHERE article_id = '" . $article_id . "'";
+			if ( !( $result = $this->db->sql_query( $sql ) ) )
+			{
+				$this->message_die( GENERAL_ERROR, 'Couldnt query download file category', '', __LINE__, __FILE__, $sql );
+			}
+			$article_data = $this->db->sql_fetchrow($result);
+			$this->db->sql_freeresult($result);
+			
+			$cat_id = $article_data['article_category_id'];
+		}
+		
+		$use_action = isset($action) ? '_' . str_replace('category', 'cat', $action) : '';
+		
+		$use_cat_or_file_array = ((isset($cat_id) && !isset($article_id)) || (!isset($cat_id) && isset($article_id))) ? true : false;					
+		$use_cat_and_file_array = isset($cat_id) && isset($article_id) ? true : false;
+		
+		$use_cat_array = ($use_cat_file_array == false) && isset($cat_id) ? true : false;	
+		$use_action_do_array = isset($action) && isset($do) ? true : false;
+		
+		$route_cat_or_file_array = (($use_cat_or_file_array == true) && ($use_cat_array == true)) ? array('cat_id' => $cat_id) : ( (($use_cat_or_file_array == true) && ($use_file_array == true )) ? array('file_id' => $file_id) : array('mode' => $mode) );
+		$route_cat_and_file_array = ($use_cat_and_file_array == true) ? array('cat_id' => $cat_id, 'article_id' => $article_id) : $route_cat_or_file_array;	
+		
+		$route_action_do_file_array = (($use_action_do_array == true) && ($use_file_array == true)) ? array('action' => $action, 'do' => $do, 'file_id' => $file_id) : ((($use_action_do_array == true) && ($use_cat_array == true)) ? array('mode' => $mode, 'do' => $do, 'file_id' => $file_id) : $route_cat_and_file_array);
+		
+		$route_array = ($use_action_do_array == true && is_array($route_action_do_file_array)) ? $route_action_do_file_array : $route_cat_and_file_array;		
+		
+		
+		$this->backend = PORTAL_BACKEND;
+		
 		$dynamicId = !empty($_GET['dynamic_block']) ? ( $non_html_amp ? '&dynamic_block=' : '&amp;dynamic_block=' ) . $_GET['dynamic_block'] : '';
 
 		$args .= ($args == '' ? '' : '&' ) . 'modrewrite=no';
-
+		
+		
 		if ( !MXBB_MODULE )
 		{
-			$mxurl = PORTAL_URL . $module_root_path . 'dload.' . $phpEx . ( $args == '' ? '' : '?' . $args );
+			$mxurl = PORTAL_URL . $module_root_path . 'kb.' . $phpEx . ( $args == '' ? '' : '?' . $args );
 			return $mxurl;
 		}
 
 		if ( $force_standalone_mode || !$is_block )
 		{
-			$mxurl = PORTAL_URL . $module_root_path . 'dload.' . $phpEx . ( $args == '' ? '' : '?' . $args );
+			$mxurl = PORTAL_URL . $module_root_path . 'kb.' . $phpEx . ( $args == '' ? '' : '?' . $args );
 		}
 		else
 		{
 			$mxurl = PORTAL_URL . 'index.' . $phpEx;
-			if ( is_numeric( $pageId ) )
+			
+			if (is_numeric($pageId))
 			{
-				$mxurl .= '?page=' . $pageId . $dynamicId . ( $args == '' ? '' : ( $non_html_amp ? '&' : '&amp;' ) . $args );
+				$mxurl .= '?page=' . $pageId . $dynamicId . ( $args == '' ? ( $non_html_amp ? '&' : '&amp;' ) . 'action=' . $action : ( $non_html_amp ? '&' : '&amp;' ) . $args );
 			}
 			else
 			{
-				$mxurl .= ( $args == '' ? '' : '?' . $args );
+				$mxurl .= ( $args == '' ? ( $non_html_amp ? '&' : '&amp;' ) . 'action=' . $mode : ( $non_html_amp ? '&' : '&amp;' ) . $args );
 			}
 		}
 		return $mxurl;
@@ -1739,7 +2209,7 @@ class mx_publisher extends mx_publisher_auth
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $file_data
+	 * @param unknown_type $article_data
 	 * @param unknown_type $item_id
 	 * @param unknown_type $cid
 	 * @param unknown_type $subject
@@ -1748,29 +2218,29 @@ class mx_publisher extends mx_publisher_auth
 	 * @param unknown_type $bbcode_on
 	 * @param unknown_type $smilies_on
 	 */
-	function update_add_comment($file_data = '', $item_id, $cid, $subject = '', $message = '', $html_on = false, $bbcode_on = true, $smilies_on = false, $wysiwyg_on = false)
+	function update_add_comment($article_data = '', $item_id, $cid, $subject = '', $message = '', $html_on = false, $bbcode_on = true, $smilies_on = false, $allow_wysiwyg = false)
 	{
-		global $template, $publisher_functions, $lang, $board_config, $phpEx, $publisher_config, $db, $images, $userdata;
+		global $template, $mx_pub_functions, $lang, $board_config, $phpEx, $publisher_config, $db, $images, $userdata;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
 		global $mx_root_path, $module_root_path, $phpbb_root_path, $is_block, $phpEx, $mx_request_vars;
 
 		//
 		// Ensure we have article_data defined
 		//
-		if (!is_array($file_data) && !empty($item_id) && $item_id > 0)
+		if (!is_array($article_data) && !empty($item_id) && $item_id > 0)
 		{
 			$sql = "SELECT *
-				FROM " . PUB_FILES_TABLE . "
-				WHERE file_id = '" . $item_id . "'";
+				FROM " . PUB_ARTICLES_TABLE . "
+				WHERE article_id = '" . $item_id . "'";
 
 			if ( !( $result = $db->sql_query( $sql ) ) )
 			{
 				mx_message_die( GENERAL_ERROR, 'Couldnt select download', '', __LINE__, __FILE__, $sql );
 			}
 
-			if ( !$file_data = $db->sql_fetchrow( $result ) )
+			if ( !$article_data = $db->sql_fetchrow( $result ) )
 			{
-				mx_message_die( GENERAL_MESSAGE, $lang['File_not_exsist'] );
+				mx_message_die( GENERAL_MESSAGE, $lang['Article_not_exsist'] );
 			}
 
 			$db->sql_freeresult( $result );
@@ -1783,14 +2253,14 @@ class mx_publisher extends mx_publisher_auth
 		$subject = !empty($subject) ? $subject : $_POST['subject'];
 		$message = !empty($message) ? $message : $_POST['message'];
 
-		$length = strlen( $message );
+		$length = strlen($message);
 
 		//
 		// Instantiate the mx_text class
 		//
 		$mx_text = new mx_text();
 		$mx_text->init($html_on, $bbcode_on, $smilies_on);
-		$mx_text->allow_all_html_tags = $wysiwyg_on;
+		$mx_text->allow_all_html_tags = $allow_wysiwyg;
 
 		//
 		// Encode for db storage
@@ -1806,16 +2276,16 @@ class mx_publisher extends mx_publisher_auth
 
 		if ( $update_comment )
 		{
-			if ( $this->comments[$file_data['file_catid']]['internal_comments'] )
+			if ( $this->comments[$article_data['article_category_id']]['internal_comments'] )
 			{
 				$sql = "UPDATE " . PUB_COMMENTS_TABLE . "
 					SET comments_text = '" . str_replace( "\'", "''", $comments_text ) . "',
 				          comments_title = '" . str_replace( "\'", "''", $title ) . "',
 				          comment_bbcode_uid = '" . $comment_bbcode_uid . "'
 				    WHERE comments_id = " . $cid . "
-						AND file_id = ". $item_id;
+						AND article_id = ". $item_id;
 
-				if (!($db->sql_query($sql)))
+				if ( !( $db->sql_query($sql)) )
 				{
 					mx_message_die( GENERAL_ERROR, 'Couldnt update comments', '', __LINE__, __FILE__, $sql );
 				}
@@ -1832,11 +2302,11 @@ class mx_publisher extends mx_publisher_auth
 		}
 		else
 		{
-			if ( $this->comments[$file_data['file_catid']]['internal_comments'] )
+			if ( $this->comments[$article_data['article_category_id']]['internal_comments'] )
 			{
 				$time = time();
 				$poster_id = intval( $userdata['user_id'] );
-				$sql = "INSERT INTO " . PUB_COMMENTS_TABLE . "(file_id, comments_text, comments_title, comments_time, comment_bbcode_uid, poster_id)
+				$sql = "INSERT INTO " . PUB_COMMENTS_TABLE . "(article_id, comments_text, comments_title, comments_time, comment_bbcode_uid, poster_id)
 					VALUES('$item_id','" . str_replace( "\'", "''", $comments_text ) . "','" . str_replace( "\'", "''", $title ) . "','$time', '$comment_bbcode_uid','$poster_id')";
 
 				if ( !( $db->sql_query( $sql ) ) )
@@ -1847,27 +2317,27 @@ class mx_publisher extends mx_publisher_auth
 			else
 			{
 				include( $module_root_path . 'publisher/core/functions_comment.' . $phpEx );
-				$publisher_comments = new publisher_comments();
-				$publisher_comments->init( $item_id );
+				$mx_kb_comments = new publisher_comments();
+				$mx_kb_comments->init( $item_id );
 
 				$return_data = $publisher_comments->post( 'insert', '', $title, $comments_text, $userdata['user_id'], $userdata['username'], 0, '', '', $comment_bbcode_uid);
 			}
 		}
 
-		if ( !$this->comments[$file_data['file_catid']]['internal_comments'] )
+		if ( !$this->comments[$article_data['article_category_id']]['internal_comments'] )
 		{
 
 			//
 			// Update the item data itself
 			//
-			if ($file_data['topic_id'] == 0 )
+			if ($article_data['topic_id'] == 0 )
 			{
 				//
 				// Update item with new topic_id
 				//
-				$sql = "UPDATE " . PUB_FILES_TABLE . "
+				$sql = "UPDATE " . PUB_ARTICLES_TABLE . "
 					SET topic_id = '" . $return_data['topic_id'] . "'
-				    WHERE file_id = ". $item_id;
+				    WHERE article_id = ". $item_id;
 
 				if ( !( $result = $db->sql_query( $sql ) ) )
 				{
@@ -2102,9 +2572,9 @@ class mx_publisher extends mx_publisher_auth
 
 			$update_data = $db->sql_fetchrow( $result );
 
-			$db->sql_freeresult( $result );	
+			$db->sql_freeresult( $result );
 			
-			$sql = array(			
+			$sql = array(
 				'file_name' => str_replace( "\'", "''", $file_name ),
 				'file_desc' => str_replace( "\'", "''", $file_short_desc ),
 				'file_longdesc' => str_replace( "\'", "''", $file_long_desc ),
@@ -2134,14 +2604,14 @@ class mx_publisher extends mx_publisher_auth
 				'disable_msg' => $disable_msg,
 				'file_broken' => (int) $update_data['file_broken'],
 				'topic_id' => (int) $update_data['topic_id'],
-				'file_dls' => (int) $file_dls,			
+				'file_dls' => (int) $file_dls,
 			);
 
 			$sql = "UPDATE " . PUB_FILES_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql) . "
-				WHERE file_id = '" . $db->sql_escape($file_id) . "'";			
+				WHERE file_id = '" . $db->sql_escape($file_id) . "'";
 		}
 	
-		if ( !( $db->sql_query( $sql ) ) )
+		if (!($db->sql_query($sql)))
 		{
 			mx_message_die( GENERAL_ERROR, 'Couldnt Add the file information to the database', '', __LINE__, __FILE__, $sql );
 		}
@@ -2552,12 +3022,12 @@ class publisher_public extends mx_publisher
 	 * @param unknown_type $page_title send page title
 	 * @param unknown_type $tpl_name template file name
 	 */
-	function display( $page_title, $tpl_name )
+	function display($page_title, $tpl_name)
 	{
 		global $template, $publisher_functions;
 
-		$publisher_functions->page_header( $page_title );
-		$template->set_filenames( array( 'body' => $tpl_name ) );
+		$publisher_functions->page_header($page_title);
+		$template->set_filenames(array( 'body' => $tpl_name));
 		$publisher_functions->page_footer();
 	}
 }

@@ -182,11 +182,11 @@ switch (PORTAL_BACKEND)
 	case 'internal':
 	case 'phpbb2':
 		$is_admin = ( ( $userdata['user_level'] == ADMIN  ) && $userdata['session_logged_in'] ) ? true : 0;
-		break;
+	break;
 	case 'phpbb3':
 	default:
 		$is_admin = ( $userdata['user_type'] == USER_FOUNDER ) ? true : 0;
-		break;
+	break;
 }
 
 // ===================================================

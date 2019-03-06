@@ -24,7 +24,7 @@ class publisher_file extends publisher_public
 	 *
 	 * @param unknown_type $action
 	 */
-	function main( $action  = false )
+	function main($action  = false)
 	{
 		global $template, $lang, $board_config, $phpEx, $publisher_config, $images;
 		global $phpbb_root_path, $userdata, $db, $publisher_functions, $mx_user;
@@ -47,28 +47,27 @@ class publisher_file extends publisher_public
 		switch ( SQL_LAYER )
 		{
 			case 'oracle':
-				$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) as total_comments, cat.cat_allow_ratings, cat.cat_allow_comments
-					FROM " . PUB_FILES_TABLE . " AS f, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c, " . PUB_CATEGORY_TABLE . " AS cat
+				$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, cat.cat_allow_ratings, cat.cat_allow_comments
+					FROM " . PUB_FILES_TABLE . " AS f, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_CATEGORY_TABLE . " AS cat
 					WHERE f.file_id = r.votes_file(+)
 					AND f.user_id = u.user_id(+)
-					AND f.file_id = c.file_id(+)
 					AND f.file_id = $file_id
 					AND f.file_approved = 1
 					AND f.file_catid = cat.cat_id
 					GROUP BY f.file_id ";
-				break;
+			break;
 
 			default:
-				$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) as total_comments, cat.cat_allow_ratings, cat.cat_allow_comments
-					FROM " . PUB_FILES_TABLE . " AS f
+				$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, cat.cat_allow_ratings, cat.cat_allow_comments
+					FROM " . PUB_FILES_TABLE . " AS f 
 						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON f.file_id = r.votes_file
 						LEFT JOIN " . USERS_TABLE . " AS u ON f.user_id = u.user_id
-						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON f.file_id = c.file_id
 						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON f.file_catid = cat.cat_id
+						LEFT JOIN " . PUB_ARTICLES_TABLE . " AS t ON t.article_category_id = cat.cat_id
 					WHERE f.file_id = $file_id
 					AND f.file_approved = 1
 					GROUP BY f.file_id ";
-				break;
+			break;
 		}
 
 		if ( !( $result = $db->sql_query( $sql ) ) )
@@ -86,16 +85,14 @@ class publisher_file extends publisher_public
 		$db->sql_freeresult( $result );
 
 		// ===================================================
-		// Pafiledb auth for viewing file
+		// mx_pafiledb auth for viewing file
 		// ===================================================
 		if ( ( !$this->auth_user[$file_data['file_catid']]['auth_view_file'] ) )
 		{
-			/*
-			if ( !$userdata['session_logged_in'] )
+			if ( !$mx_user->data['session_logged_in'] )
 			{
-				mx_redirect(mx_append_sid($mx_root_path . "login.$phpEx?redirect=".$this->this_mxurl("action=file&file_id=" . $file_id), true));
+				//mx_redirect(mx_append_sid($mx_root_path . "login.$phpEx?redirect=".$this->this_mxurl("action=file&file_id=" . $file_id), true));
 			}
-			*/
 			$message = sprintf( $lang['Sorry_auth_view'], $this->auth_user[$file_data['file_catid']]['auth_view_file_type'] );
 			mx_message_die( GENERAL_MESSAGE, $message );
 		}
@@ -147,8 +144,8 @@ class publisher_file extends publisher_public
 		}
 		
 		//overwrite some phpBB3 vars
-		$images['pub_icon_delpost'] = $mx_user->img('icon_post_delete', 'DELETE_POST', false, '', 'src');
-		$images['pub_icon_edit'] = $mx_user->img('icon_post_edit', 'EDIT_POST', false, '', 'src');
+		$images['pub_icon_delpost'] = $publisher_functions->img('icon_post_delete', 'DELETE_POST', false, '', 'src');
+		$images['pub_icon_edit'] = $publisher_functions->img('icon_post_edit', 'EDIT_POST', false, '', 'src');
 
 		$template->assign_vars( array(
 			'L_CLICK_HERE' => $lang['Click_here'],
@@ -211,7 +208,7 @@ class publisher_file extends publisher_public
 			'B_EMAIL_IMG' => $mx_user->create_button('pub_email', $lang['Emailfile'], mx_append_sid( $this->this_mxurl( 'action=email&file_id=' . $file_id ))),
 		));
 
-		$custom_field = new custom_field();
+		$custom_field = new mx_custom_field(PUB_CUSTOM_TABLE, PUB_CUSTOM_DATA_TABLE);
 		$custom_field->init();
 		$custom_field->display_data( $file_id );
 

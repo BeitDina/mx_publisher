@@ -27,7 +27,7 @@ class publisher_user_upload extends publisher_public
 	function main( $action  = false )
 	{
 		global $publisher_config, $board_config, $phpbb_root_path;
-		global $template, $db, $lang, $userdata, $user_ip, $phpEx, $publisher_functions;
+		global $template, $db, $lang, $mx_user, $userdata, $user_ip, $phpEx, $publisher_functions;
 		global $mx_root_path, $module_root_path, $is_block, $mx_request_vars, $mx_block;
 
 		//
@@ -109,7 +109,7 @@ class publisher_user_upload extends publisher_public
 		//
 		// Load custom fields
 		//
-		$custom_field = new custom_field();
+		$custom_field = new mx_custom_field(PUB_CUSTOM_TABLE, PUB_CUSTOM_DATA_TABLE);
 		$custom_field->init();
 
 		// =======================================================
@@ -186,7 +186,7 @@ class publisher_user_upload extends publisher_public
 						$message = $lang['Fileadded_not_validated'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "action=category&cat_id=" . $cat_id ) ) . '">', '</a>' );
 					}
 
-					$this->_publisher();
+					$this->_pub();
 				}
 				else
 				{
@@ -212,7 +212,7 @@ class publisher_user_upload extends publisher_public
 
 					}
 
-					$this->_publisher();
+					$this->_pub();
 				}
 				else
 				{
@@ -282,7 +282,7 @@ class publisher_user_upload extends publisher_public
 				//
 				// AUTH CHECK
 				//
-				if ( ( $this->auth_user[$cat_id]['auth_edit_file'] && $file_data['user_id'] == $userdata['user_id'] ) || $this->auth_user[$cat_id]['auth_mod'] )
+				if ( ( $this->auth_user[$cat_id]['auth_edit_file'] && $file_data['user_id'] == $mx_user->data['user_id'] ) || $this->auth_user[$cat_id]['auth_mod'] )
 				{
 					$file_name = $file_data['file_name'];
 					$file_desc = $file_data['file_desc'];
@@ -324,10 +324,9 @@ class publisher_user_upload extends publisher_public
 			$s_hidden_fields .= '<input type="hidden" name="action" value="user_upload">';
 
 			$template->assign_vars( array(
-				'S_ADD_FILE_ACTION' => mx_append_sid( $this->this_mxurl() ),
-
+				'S_ADD_FILE_ACTION' => mx_append_sid($this->this_mxurl()),
 				'PROJECTS' => $publisher_config['module_name'],
-				'FILESIZE' => intval( $publisher_config['max_file_size'] ),
+				'FILESIZE' => intval($publisher_config['max_file_size']),
 				'FILE_NAME' => $file_name,
 				'FILE_DESC' => $file_desc,
 				'FILE_LONG_DESC' => $file_long_desc,

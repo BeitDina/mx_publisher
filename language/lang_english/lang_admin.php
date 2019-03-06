@@ -113,7 +113,7 @@ $lang['Article_pag'] = 'Article pagination';
 $lang['Article_pag_explain'] = 'The number of articles to show in a (stats) category before pagination.';
 
 $lang['Sort_method'] = 'Sorting method';
-$lang['Sort_method_explain'] = 'Define how articles are sorted within its category.';
+$lang['Sort_method_explain'] = 'Define how files/articles are sorted within its category.';
 
 $lang['Sort_order'] = 'ASC or DESC sorting';
 $lang['Sort_order_explain'] = '';
@@ -150,6 +150,7 @@ $lang['Use_comments_explain'] = 'Enable comments for articles, to be inserted in
 $lang['Internal_comments'] = 'Internal or phpBB Comments';
 $lang['Internal_comments_explain'] = 'Use internal comments, or phpBB comments';
 
+$lang['Select_topic_id'] = 'Select phpBB Comments Topic!';
 $lang['Internal_comments_phpBB'] = 'phpBB Comments';
 $lang['Internal_comments_internal'] = 'Internal Comments';
 
