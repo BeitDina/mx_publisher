@@ -144,9 +144,9 @@ class publisher_user_upload extends publisher_public
 						if ( $file_data['topic_id'] )
 						{
 							include( $module_root_path . 'publisher/core/functions_comment.' . $phpEx );
-							$mx_pub_comments = new publisher_comments();
-							$mx_pub_comments->init( $file_data, 'phpbb');
-							$mx_pub_comments->post('delete_all', $file_data['topic_id']);
+							$publisher_comments = new publisher_comments();
+							$publisher_comments->init( $file_data, 'phpbb');
+							$publisher_comments->post('delete_all', $file_data['topic_id']);
 						}
 					}
 				}
@@ -204,11 +204,11 @@ class publisher_user_upload extends publisher_public
 
 					if ( $this->auth_user[$cat_id]['auth_approval_edit'] || $this->auth_user[$cat_id]['auth_mod'] )
 					{
-						$message = $lang['Fileedited'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "action=file&file_id=" . $file_id ) ) . '">', '</a>' );
+						$message = $lang['Fileedited'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid($this->this_mxurl("action=file&file_id=" . $file_id)) . '">', '</a>' );
 					}
 					else
 					{
-						$message = $lang['Fileedited_not_validated'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "action=category&cat_id=" . $cat_id ) ) . '">', '</a>' );
+						$message = $lang['Fileedited_not_validated'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid($this->this_mxurl("action=category&cat_id=" . $cat_id)) . '">', '</a>' );
 
 					}
 
@@ -385,8 +385,8 @@ class publisher_user_upload extends publisher_public
 				'L_FILE_LICENSE' => $lang['Filelicense'],
 				'L_NONE' => $lang['None'],
 				'L_FILE_LICENSE_INFO' => $lang['Filelicenseinfo'],
-				'L_FILE_PINNED' => $lang['Filepin'],
-				'L_FILE_PINNED_INFO' => $lang['Filepininfo'],
+				'L_ARTICLE_PINNED' => $lang['Filepin'],
+				'L_ARTICLE_PINNED_INFO' => $lang['Filepininfo'],
 				'L_FILE_DISABLE' => $lang['Filedisable'],
 				'L_FILE_DISABLE_INFO' => $lang['Filedisableinfo'],
 				'L_FILE_DISABLE_MSG' => $lang['Filedisablemsg'],

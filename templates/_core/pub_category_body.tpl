@@ -1,163 +1,124 @@
 <!-- INCLUDE pub_header.tpl -->
-<table width="100%" cellpadding="2" cellspacing="2">
-  <tr>
-	<td valign="bottom">
-		<span class="nav"><a href="{U_DOWNLOAD}" class="nav ask target-block_{BLOCK_ID}">{DOWNLOAD}</a><!-- BEGIN navlinks -->&nbsp;&raquo;&nbsp;<a href="{navlinks.U_VIEW_CAT}" class="nav ask target-block_{BLOCK_ID}">{navlinks.CAT_NAME}</a><!-- END navlinks --></span>
-	</td>
-  </tr>
+<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+	<tr>
+		<td align="left" class="nav">
+		<a href="{U_KB}" class="nav">{L_KB}</a>
+		<!-- BEGIN navlinks -->
+		&nbsp;&raquo;&nbsp;<a href="{navlinks.U_VIEW_CAT}" class="nav">{navlinks.CAT_NAME}</a>
+		<!-- END navlinks -->
+		</td>
+	</tr>
 </table>
 
-<!-- IF CAT_NAV_STANDARD -->
-<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
+<!-- BEGIN CAT_NAV_STANDARD -->
+<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline" >
   	<tr>
 		<th class="thCornerL" width="6%">&nbsp;</th>
-		<th class="thTop">&nbsp;{L_CATEGORY}&nbsp;</th>
-		<th class="thCornerR" width="10%">&nbsp;{L_LAST_FILE}&nbsp;</th>
-		<th class="thCornerR" width="8%">&nbsp;{L_FILES}&nbsp;</th>
+  	   	<th class="thTop">&nbsp;{L_CATEGORY}&nbsp;</th>
+		<th class="thCornerR" width="10%">&nbsp;{L_LAST_ARTICLE}&nbsp;</th>
+	   	<th class="thCornerR" width="50" >&nbsp;{L_ARTICLES}&nbsp;</th>
   	</tr>
-	<!-- BEGIN no_cat_parent -->
-	<!-- IF no_cat_parent.IS_HIGHER_CAT -->
-	<tr>
-		<td class="cat" colspan="2" valign="middle"><a href="{no_cat_parent.U_CAT}" class="cattitle ask target-block_{BLOCK_ID}">{no_cat_parent.CAT_NAME}</a></td>
-		<td class="rowpic" colspan="2" align="right">&nbsp;</td>
-	</tr>
-	<!-- ELSE -->
-	<tr>
-		<td class="row1" valign="middle" align="center"><a href="{no_cat_parent.U_CAT}" class="cattitle ask target-block_{BLOCK_ID}"><img src="{no_cat_parent.CAT_IMAGE}" border="0" alt="{no_cat_parent.CAT_NEW_FILE}"></a></td>
-		<td class="row1" valign="middle" onmouseout="this.className='row1';" onmouseover="this.className='row2';" onclick="window.location.href='{no_cat_parent.U_CAT}';"><a href="{no_cat_parent.U_CAT}" class="cattitle ask target-block_{BLOCK_ID}">{no_cat_parent.CAT_NAME}</a><br><span class="genmed">{no_cat_parent.CAT_DESC}</span><span class="gensmall">{no_cat_parent.SUB_CAT}</span></b></td>
-		<td class="row2" align="center" valign="middle" nowrap="nowrap"><span class="genmed">{no_cat_parent.LAST_FILE}</span></td>
-		<td class="row2" align="center" valign="middle"><span class="genmed">{no_cat_parent.FILECAT}</span></td>
-	</tr>
-	<!-- ENDIF -->
-	<!-- END no_cat_parent -->
+  	<!-- BEGIN catrow -->
+  	<!-- BEGIN catcol -->
+ 	<tr>
+		<td class="row1" align="center" valign="middle"><img src="{CAT_NAV_STANDARD.catrow.catcol.CAT_IMAGE}" border="0" alt="{CAT_NAV_STANDARD.catrow.catcol.CAT_DESCRIPTION}"></td>
+  	   	<td class="row1" onmouseout="this.className='row1';" onmouseover="this.className='row2';" ><a href="{CAT_NAV_STANDARD.catrow.catcol.U_CATEGORY}" class="cattitle">{CAT_NAV_STANDARD.catrow.catcol.CATEGORY}</a><br /><span class="genmed">{CAT_NAV_STANDARD.catrow.catcol.CAT_DESCRIPTION}</span></td>
+		<td class="row2" align="center" valign="middle"><span class="genmed">{CAT_NAV_STANDARD.catrow.catcol.LAST_ARTICLE}</span></td>
+	   	<td class="row2" align="center" valign="middle"><span class="genmed">{CAT_NAV_STANDARD.catrow.catcol.CAT_ARTICLES}</span></td>
+  	</tr>
+  	<!-- BEGIN show_subs -->
   	<tr>
-		<td class="cat" colspan="4">&nbsp;</td>
+		<td class="row2" width="6%">&nbsp;</td>
+  	   	<td class="row2" colspan="2"><span class="genmed"><b>{CAT_NAV_STANDARD.catrow.catcol.L_SUB_CAT}:</b> {CAT_NAV_STANDARD.catrow.catcol.SUB_CAT}</span></td>
+	   	<td class="row2" align="center" valign="middle">&nbsp;</td>
   	</tr>
+  	<!-- END show_subs -->
+  	<!-- END catcol -->
+  	<!-- END catrow -->
+
+  <!-- BEGIN no_cats -->
+  <tr>
+  	   <td class="row1" align="center" colspan="4" height="50"><span class="genmed">{CAT_NAV_STANDARD.no_cats.COMMENT}</span></td>
+  </tr>
+  <!-- END no_cats -->
+  <tr>
+  	  <td class="cat" colspan="4">&nbsp;</td>
+  </tr>
 </table>
-<br />
-<!-- ENDIF -->
+<br>
+<!-- END CAT_NAV_STANDARD -->
 
-<!-- IF CAT_NAV_SIMPLE -->
-<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
-  	<tr>
-		<th class="thHead" colspan="2">{L_CATEGORY}</th>
-  	</tr>
-  	<tr>
-  		<td class="row1" colspan="2">
-			<table border="0" cellpadding="2" cellspacing="1" width="100%" >
-			<!-- BEGIN catcol -->
-				<tr>
-				<!-- BEGIN no_cat_parent -->
-					<td width="{WIDTH}%">
-						<table border="0" cellpadding="2" cellspacing="2" width="100%">
-							<tr>
-								<td>
-									<a href="{catcol.no_cat_parent.U_CAT}"><img src="{catcol.no_cat_parent.CAT_IMAGE}" alt="{catcol.no_cat_parent.CAT_NAME}" align="absmiddle" border="0" /></a>
-								</td>
-								<td width="100%" valign="middle" nowrap="nowrap">
-									<a href="{catcol.no_cat_parent.U_CAT}"  class="cattitle">{catcol.no_cat_parent.CAT_NAME}</a>&nbsp;<span class="gensmall">({catcol.no_cat_parent.FILECAT})</span><br>
-									{catcol.no_cat_parent.SUB_CAT}
-								</td>
-							</tr>
-						</table>
-					</td>
-				<!-- END no_cat_parent -->
-      			</tr>
-			<!-- END catcol -->
-			</table>
-  	 	</td>
-  	</tr>
-</table>
-<br />
-<!-- ENDIF -->
-
-<!-- IF FILELIST -->
-<table width="100%" cellpadding="0" cellspacing="0" border="0" class="forumline"><tr><td>
-	<!-- IF ORIGINAL_STYLE -->
-	<table width="100%" cellpadding="4" cellspacing="1">
-	  <tr>
-		<th class="thCornerL" width="5%">&nbsp;</th>
-		<th class="thTop" width="57%">&nbsp;{L_FILE}&nbsp;</th>
-		<th class="thTop" width="15%">&nbsp;{L_UPDATE_TIME}&nbsp;</th>
-		<th class="thTop" width="10%">&nbsp;{L_DOWNLOADS}&nbsp;</th>
-		<!-- IF SHOW_RATINGS -->
-		<th class="thTop" width="10%">&nbsp;{L_RATING}&nbsp;</th>
-		<!-- ENDIF -->
-		<th class="thCornerR" width="3%">&nbsp;</th>
-	  </tr>
-
-	<!-- BEGIN file_rows -->
-	  <tr>
-		<td class="row1" align="center" valign="middle"><a href="{file_rows.U_FILE}" class="topictitle ask target-block_{BLOCK_ID}"><img src="{file_rows.PIN_IMAGE}" border="0"></a></td>
-		<td class="row1" valign="middle" onmouseout="this.className='row1';" onmouseover="this.className='row2';" onclick="window.location.href='{file_rows.U_FILE}';"><a href="{file_rows.U_FILE}" class="topictitle ask target-block_{BLOCK_ID}">{file_rows.FILE_NAME}</a>&nbsp;<!-- IF file_rows.IS_NEW_FILE --><img src="{file_rows.FILE_NEW_IMAGE}" border="0" alt="{L_NEW_FILE}"><!-- ENDIF --><br><span class="genmed">{file_rows.FILE_DESC}</span></td>
-		<td class="row2" align="center" valign="middle" nowrap="nowrap"><span class="postdetails">{file_rows.UPDATED}</td>
-		<td class="row2" align="center" valign="middle"><span class="postdetails">{file_rows.FILE_DLS}</td>
-		<!-- IF file_rows.SHOW_RATINGS -->
-		<td class="row2" align="center" valign="middle" nowrap="nowrap"><span class="postdetails">{file_rows.RATING}</td>
-		<!-- ENDIF -->
-		<td class="row2" align="center" valign="middle">
-		<!-- IF file_rows.HAS_SCREENSHOTS -->
-			<!-- IF file_rows.SS_AS_LINK -->
-		<a href="{file_rows.FILE_SCREENSHOT}" class="topictitle" target="_blank"><img src="{file_rows.FILE_SCREENSHOT_URL}" border="0" alt="{L_SCREENSHOTS}"></a>
-			<!-- ELSE -->
-		<a href="javascript:mpFoto('{file_rows.FILE_SCREENSHOT}')" class="topictitle"><img src="{file_rows.FILE_SCREENSHOT_URL}" border="0" alt="{L_SCREENSHOTS}"></a>
-			<!-- ENDIF -->
-		<!-- ELSE -->
-		&nbsp;
-		<!-- ENDIF -->
+<!-- BEGIN CAT_NAV_SIMPLE -->
+<table width="100%" cellpadding="2" cellspacing="1" border="0" class="forumline">
+  <tr>
+	<th class="thHead">{L_CATEGORIES}</th>
+  </tr>
+  <tr><td class="row1">
+	<table border="0" cellpadding="5" cellspacing="1" width="100%">
+	<!-- BEGIN catrow -->
+		<tr>
+		<!-- BEGIN catcol -->
+		<td width="{WIDTH}%">
+		<table border="0" cellpadding="2" cellspacing="2" width="100%">
+		<tr>
+			<td><a href="{CAT_NAV_SIMPLE.catrow.catcol.U_CATEGORY}"><img src="{CAT_NAV_SIMPLE.catrow.catcol.CAT_IMAGE}" alt="{CAT_NAV_SIMPLE.catrow.catcol.CAT_DESCRIPTION}" align="absmiddle" border="0" /></a></td>
+			<td width="100%" valign="middle"><a href="{CAT_NAV_SIMPLE.catrow.catcol.U_CATEGORY}"  class="cattitle">{CAT_NAV_SIMPLE.catrow.catcol.CATEGORY}</a>&nbsp;<span class="gensmall">({CAT_NAV_SIMPLE.catrow.catcol.CAT_ARTICLES})</span><br>
+			{CAT_NAV_SIMPLE.catrow.catcol.SUB_CAT}
+			</td>
+		</tr></table>
 		</td>
-	  </tr>
-	<!-- END file_rows -->
+		<!-- END catcol -->
+      		</tr>
+	<!-- END catrow -->
 	</table>
-	<!-- ELSE -->
+  </td></tr>
+</table>
+<br />
+<!-- END CAT_NAV_SIMPLE -->
+
+<!-- BEGIN ARTICLELIST -->
+<table width="100%" cellpadding="0" cellspacing="0" class="forumline">
+  <tr>
+  	<td>
 		<table width="100%" cellpadding="3" cellspacing="1">
 		  <tr>
-				<th class="thHead" colspan="2">{L_FILES}</th>
+			<th class="thHead" colspan="2">{L_ARTICLES}</th>
 		  </tr>
-		<!-- BEGIN file_rows -->
+		<!-- BEGIN articlerow -->
 		  <tr>
-			<td rowspan="2" class="{file_rows.COLOR}" valign="middle">&nbsp;<img src="{file_rows.PIN_IMAGE}" border="0" ></td>
-			<td width="100%" class="{file_rows.COLOR}">
-			<a href="{file_rows.U_FILE}" class="topictitle">{file_rows.FILE_NAME}</a>&nbsp;
-			<!-- IF file_rows.IS_NEW_FILE -->
-			<img src="{file_rows.FILE_NEW_IMAGE}" border="0" alt="{L_NEW_FILE}">
-			<!-- ENDIF -->
-			<br><span class="genmed">{file_rows.FILE_DESC}</span>
+			<td rowspan="2" class="{ARTICLELIST.articlerow.COLOR}" valign="middle">&nbsp;<img src="{ARTICLELIST.articlerow.ARTICLE_IMAGE}" border="0" class="mx_icon"></td>
+			<td width="100%" class="{ARTICLELIST.articlerow.COLOR}">
+			<a href="{ARTICLELIST.articlerow.U_ARTICLE}" class="topictitle">{ARTICLELIST.articlerow.ARTICLE}</a>&nbsp;
+			<br><span class="genmed">{ARTICLELIST.articlerow.ARTICLE_DESCRIPTION}</span>
 			</td>
 		  </tr>
 		  <tr>
-			<td valign="top" align="left" class="{file_rows.COLOR}">
-			<span class="gensmall">
-				{L_UPDATE_TIME}: {file_rows.UPDATED}&nbsp;&bull;&nbsp;{L_DOWNLOADS}: {file_rows.FILE_DLS}&nbsp;&bull;&nbsp;{L_SUBMITED_BY}&nbsp;{file_rows.POSTER}
-				<!-- IF SHOW_RATINGS -->
-				&bull;&nbsp;{file_rows.L_RATING}: {file_rows.RATING} ({file_rows.FILE_VOTES} {L_VOTES}) {file_rows.DO_RATE}
-				<!-- ENDIF -->
-				<!-- IF SHOW_COMMENTS -->
-				&bull;&nbsp;{file_rows.L_COMMENT}: {file_rows.COMMENTS}
-				<!-- ENDIF -->
+			<td valign="top" align="left" class="{ARTICLELIST.articlerow.COLOR}"><span class="gensmall">{L_ARTICLE_TYPE}: {ARTICLELIST.articlerow.ARTICLE_TYPE}&nbsp;&bull;&nbsp;{L_ARTICLE_DATE}: {ARTICLELIST.articlerow.ARTICLE_DATE}&nbsp;&bull;&nbsp;{L_VIEWS}: {ARTICLELIST.articlerow.ART_VIEWS}&nbsp;&bull;&nbsp;{L_ARTICLE_AUTHOR}:&nbsp;{ARTICLELIST.articlerow.ARTICLE_AUTHOR}
+			<!-- BEGIN show_ratings -->
+			&bull;&nbsp;{ARTICLELIST.articlerow.L_RATING}: {ARTICLELIST.articlerow.RATING} ({ARTICLELIST.articlerow.ARTICLE_VOTES} {L_VOTES}) {ARTICLELIST.articlerow.DO_RATE}
+			<!-- END show_ratings -->
 			</span>
 			</td>
 		  </tr>
-		<!-- END file_rows -->
-		</table>
-	<!-- ENDIF -->
+		<!-- END articlerow -->
 
+		</table>
+		</td>
+	</tr>
 	<form action="{S_ACTION_SORT}" method="post">
-	<table width="100%" cellpadding="4" cellspacing="1">
 	<input type="hidden" name="action" value="category">
 	<input type="hidden" name="cat_id" value="{ID}">
 	<input type="hidden" name="start" value="{START}">
 	  <tr>
-		<td class="cat" align="center" colspan="6"><span class="genmed">{L_SELECT_SORT_METHOD}:&nbsp;
+		<td align="center" colspan="2" class="cat"><span class="genmed">{L_SELECT_SORT_METHOD}:&nbsp;
 		<select name="sort_method">
-			<option {SORT_NAME} value='file_name'>{L_NAME}</option>
-			<option {SORT_TIME} value='file_time'>{L_DATE}</option>
-			<!-- IF SHOW_RATINGS -->
-			<option {SORT_RATING} value='file_rating'>{L_RATING}</option>
-			<!-- ENDIF -->
-			<option {SORT_DOWNLOADS} value='file_dls'>{L_DOWNLOADS}</option>
-			<option {SORT_UPDATE_TIME} value='file_update_time'>{L_UPDATE_TIME}</option>
-		</select>
+			<option {SORT_ALPHABETIC} value='Alphabetic'>{L_ALPHABETIC}</option>
+			<option {SORT_LATEST} value='Latest'>{L_LATEST}</option>
+			<option {SORT_TOPRATED} value='Toprated'>{L_TOPRATED}</option>
+			<option {SORT_MOST_POPULAR} value='Most_popular'>{L_MOST_POPULAR}</option>
+			<option {SORT_USERRANK} value='Userrank'>{L_USERRANK}</option>
+			<option {SORT_ID} value='Id'>{L_ID}</option>
+			</select>
 			&nbsp;{L_ORDER}:
 			<select name="sort_order">
 				<option {SORT_ASC} value="ASC">{L_ASC}</option>
@@ -166,27 +127,25 @@
 		&nbsp;<input type="submit" name="submit" value="{L_SORT}" class="liteoption" />
 		</span></td>
 	  </tr>
-	</table>
 	</form>
-</td></tr></table>
-<!-- ENDIF -->
+</table>
 
-
-<table width="100%" cellspacing="2" border="0" cellpadding="2">
+<table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
   <tr>
-	<td align="left" nowrap="nowrap"><span class="nav">{PAGE_NUMBER}</span></td>
-	<td align="right" nowrap="nowrap"><span class="nav">{PAGINATION}</span></td>
+	<td align="left" valign="top"><span class="nav">{PAGE_NUMBER}</span></td>
+	<td align="right" valign="top"><span class="nav">{PAGINATION}</span></td>
   </tr>
 </table>
+<!-- END ARTICLELIST -->
 
-<!-- IF NO_FILE -->
-<table class="forumline" width="100%" cellspacing="1" cellpadding="4">
+<!-- BEGIN no_articles -->
+<table class="forumline" width="100%" cellspacing="1" cellpadding="3">
 	<tr>
-		<th class="thHead">{L_NO_FILES}</th>
+		<th class="thHead">{no_articles.L_NO_ARTICLES}</th>
 	</tr>
 	<tr>
-		<td class="row1" align="center" height="30"><span class="genmed">{L_NO_FILES_CAT}</span></td>
+		<td class="row1" align="center" height="30"><span class="genmed">{no_articles.L_NO_ARTICLES_CAT}</span></td>
 	</tr>
 </table>
-<!-- ENDIF -->
+<!-- END no_articles -->
 <!-- INCLUDE pub_footer.tpl -->

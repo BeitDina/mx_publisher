@@ -550,17 +550,19 @@ class publisher_functions
 	 *
 	 * @param unknown_type $page_title
 	 */
-	function page_header( $page_title )
+	function page_header($page_title)
 	{
 		global $publisher_config, $lang, $template, $userdata, $images, $publisher, $mx_user;
 		global $template, $db, $theme, $gen_simple_header, $starttime, $phpEx, $board_config, $user_ip;
 		global $admin_level, $level_prior, $tree, $do_gzip_compress;
 		global $phpbb_root_path, $mx_root_path, $module_root_path, $is_block, $title, $mx_block;
 		global $action;
-
-		if ( $action != 'download' )
+		
+		//$print_version = $no_page_header = $mx_request_vars->is_request('print') ? true : false;
+		
+		if (!$is_block && ($action != 'download') && ($action != 'category') && !defined('HEADER_INC') && !isset($layouttemplate))
 		{
-			//include_once( $mx_root_path . 'includes/page_header.' . $phpEx );
+			include_once($mx_root_path . 'includes/page_header.' . $phpEx);
 		}
 
 		if ( $action == 'category' )
@@ -683,7 +685,7 @@ class publisher_functions
 
 		if ( !isset( $_GET['explain'] ) )
 		{
-			$template->pparse( 'body' );
+			$template->pparse('body');
 		}
 
 		$publisher_cache->unload();

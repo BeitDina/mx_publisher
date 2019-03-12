@@ -110,8 +110,8 @@ class mx_publisher_auth
 		$this->config = $board_config;
 		$this->pub_auth_access_table = PUB_AUTH_ACCESS_TABLE;
 		
-		$this->is_admin = ( $this->user->data['user_level'] == ADMIN && $this->user->data['session_logged_in'] ) ? true : 0;
-		$this->is_mod = ( $this->user->data['user_level'] == MOD && $this->user->data['session_logged_in'] ) ? true : 0;
+		$this->is_admin = ($this->user->data['user_level'] == ADMIN && $this->user->data['session_logged_in']) ? true : 0;
+		$this->is_mod = ($this->user->data['user_level'] == MOD && $this->user->data['session_logged_in']) ? true : 0;
 
 		$this->auth_fields = array( 'auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment', 'auth_approval', 'auth_approval_edit' );
 		$this->auth_fields_global = array( 'auth_search', 'auth_stats', 'auth_toplist', 'auth_viewall' );
@@ -149,7 +149,7 @@ class mx_publisher_auth
 				WHERE ug.user_id = {$mx_user->data['user_id']}
 					AND ug.user_pending = 0
 					AND a.group_id = ug.group_id";
-			if ( !( $result = $db->sql_query( $sql ) ) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				mx_message_die( GENERAL_ERROR, 'Failed obtaining category access control lists', '', __LINE__, __FILE__, $sql );
 			}

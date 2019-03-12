@@ -1,0 +1,163 @@
+<link href="{U_PORTAL_ROOT_PATH}modules/mx_kb/templates/prosilver/prosilver.css" rel="stylesheet" type="text/css" media="screen" />
+<!-- INCLUDE pub_header.tpl -->
+<div width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+	<ul>
+		<dt align="left" class="nav">
+		<a href="{U_KB}" class="nav">{L_KB}</a>
+		<!-- BEGIN navlinks -->
+		&nbsp;&raquo;&nbsp;<a href="{navlinks.U_VIEW_CAT}" class="nav">{navlinks.CAT_NAME}</a>
+		<!-- END navlinks -->
+		</dt>
+	</ul>
+</div>
+		<div class="forabg forumbg-div">
+			<div class="inner">
+<!-- BEGIN CAT_NAV_STANDARD -->
+<div width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline" >
+  	<ul>
+		<dd class="thCornerL" width="6%">&nbsp;</dd>
+  	   	<dd class="thTop">&nbsp;{L_CATEGORY}&nbsp;</dd>
+		<dd class="thCornerR" width="10%">&nbsp;{L_LAST_ARTICLE}&nbsp;</dd>
+	   	<dd class="thCornerR" width="50" >&nbsp;{L_ARTICLES}&nbsp;</dd>
+  	</ul>
+  	<!-- BEGIN catrow -->
+  	<!-- BEGIN catcol -->
+ 	<ul>
+		<dt class="row1" align="center" valign="middle"><img src="{CAT_NAV_STANDARD.catrow.catcol.CAT_IMAGE}" border="0" alt="{CAT_NAV_STANDARD.catrow.catcol.CAT_DESCRIPTION}"></dt>
+  	   	<dt class="row1" onmouseout="this.className='row1';" onmouseover="this.className='row2';" ><a href="{CAT_NAV_STANDARD.catrow.catcol.U_CATEGORY}" class="cattitle">{CAT_NAV_STANDARD.catrow.catcol.CATEGORY}</a><br /><span class="genmed">{CAT_NAV_STANDARD.catrow.catcol.CAT_DESCRIPTION}</span></dt>
+		<dt class="row2" align="center" valign="middle"><span class="genmed">{CAT_NAV_STANDARD.catrow.catcol.LAST_ARTICLE}</span></dt>
+	   	<dt class="row2" align="center" valign="middle"><span class="genmed">{CAT_NAV_STANDARD.catrow.catcol.CAT_ARTICLES}</span></dt>
+  	</ul>
+  	<!-- BEGIN show_subs -->
+  	<ul>
+		<dt class="row2" width="6%">&nbsp;</dt>
+  	   	<dt class="row2" colspan="2"><span class="genmed"><b>{CAT_NAV_STANDARD.catrow.catcol.L_SUB_CAT}:</b> {CAT_NAV_STANDARD.catrow.catcol.SUB_CAT}</span></dt>
+	   	<dt class="row2" align="center" valign="middle">&nbsp;</dt>
+  	</ul>
+  	<!-- END show_subs -->
+  	<!-- END catcol -->
+  	<!-- END catrow -->
+
+  <!-- BEGIN no_cats -->
+  <ul>
+  	   <dt class="row1" align="center" colspan="4" height="50"><span class="genmed">{CAT_NAV_STANDARD.no_cats.COMMENT}</span></dt>
+  </ul>
+  <!-- END no_cats -->
+  <ul>
+  	  <dt class="cat" colspan="4">&nbsp;</dt>
+  </ul>
+</div>
+<!-- END CAT_NAV_STANDARD -->
+			</div>
+		</div>
+<!-- BEGIN CAT_NAV_SIMPLE -->
+<div width="100%" cellpadding="2" cellspacing="1" border="0" class="forumline">
+  <ul>
+	<dd class="thHead">{L_CATEGORIES}</dd>
+  </ul>
+  <ul><dt class="row1">
+	<div border="0" cellpadding="5" cellspacing="1" width="100%">
+	<!-- BEGIN catrow -->
+		<ul>
+		<!-- BEGIN catcol -->
+		<dt width="{WIDTH}%">
+		<div border="0" cellpadding="2" cellspacing="2" width="100%">
+		<ul>
+			<dt>
+			<a href="{CAT_NAV_SIMPLE.catrow.catcol.U_CATEGORY}">
+			<img src="{CAT_NAV_SIMPLE.catrow.catcol.CAT_IMAGE}" alt="{CAT_NAV_SIMPLE.catrow.catcol.CAT_DESCRIPTION}" align="absmiddle" border="0" />
+			</a>
+			</dt>
+			<dt width="100%" valign="middle"><a href="{CAT_NAV_SIMPLE.catrow.catcol.U_CATEGORY}"  class="cattitle">{CAT_NAV_SIMPLE.catrow.catcol.CATEGORY}</a>&nbsp;<span class="gensmall">({CAT_NAV_SIMPLE.catrow.catcol.CAT_ARTICLES})</span><br>
+			{CAT_NAV_SIMPLE.catrow.catcol.SUB_CAT}
+			</dt>
+		</ul></div>
+		</dt>
+		<!-- END catcol -->
+      		</ul>
+	<!-- END catrow -->
+	</div>
+  </dt></ul>
+</div>
+<br />
+<!-- END CAT_NAV_SIMPLE -->
+
+<!-- BEGIN ARTICLELIST -->
+<div width="100%" cellpadding="0" cellspacing="0" class="forumline">
+  <ul>
+  	<dt>
+		<li width="100%" cellpadding="3" cellspacing="1">
+		  <ul>
+			<dd class="thHead" colspan="2">{L_ARTICLES}</dd>
+		  </ul>
+		<!-- BEGIN articlerow -->
+		  <ul>
+			<dt rowspan="2" class="{ARTICLELIST.articlerow.ROW}" valign="middle">
+			<a class="mx_icon icon_message" valign="middle" id="{ARTICLELIST.articlerow.ARTICLE_ID}" style="background: url('{ARTICLELIST.articlerow.ARTICLE_IMAGE_ICON}');">
+			&nbsp;<i src="<!-- IF not ARTICLELIST.articlerow.S_ARTICLE_IMAGE_NEW -->{ARTICLELIST.articlerow.ARTICLE_IMAGE_ICON}<!-- ELSE -->{ARTICLELIST.articlerow.ARTICLE_IMAGE_ICON_NEW}<!-- ENDIF -->" border="0" class="mx_icon" />
+			</a>
+			</dt>
+			<dt width="100%" class="{ARTICLELIST.articlerow.ROW}">
+			<a href="{ARTICLELIST.articlerow.U_ARTICLE}" class="topictitle">{ARTICLELIST.articlerow.ARTICLE}</a>
+			&nbsp;
+			</br>
+			<span class="genmed">{ARTICLELIST.articlerow.ARTICLE_DESCRIPTION}</span>
+			</dt>
+		  </ul>
+		  <ul>
+			<dt valign="top" align="left" class="{ARTICLELIST.articlerow.ROW}"><span class="gensmall">{L_ARTICLE_TYPE}: {ARTICLELIST.articlerow.ARTICLE_TYPE}&nbsp;&bull;&nbsp;{L_ARTICLE_DATE}: {ARTICLELIST.articlerow.ARTICLE_DATE}&nbsp;&bull;&nbsp;{L_VIEWS}: {ARTICLELIST.articlerow.ART_VIEWS}&nbsp;&bull;&nbsp;{L_ARTICLE_AUTHOR}:&nbsp;{ARTICLELIST.articlerow.ARTICLE_AUTHOR}
+			<!-- BEGIN show_ratings -->
+			&bull;&nbsp;{ARTICLELIST.articlerow.L_RATING}: {ARTICLELIST.articlerow.RATING} ({ARTICLELIST.articlerow.ARTICLE_VOTES} {L_VOTES}) {ARTICLELIST.articlerow.DO_RATE}
+			<!-- END show_ratings -->
+			</span>
+			</dt>
+		  </ul>
+		<!-- END articlerow -->
+
+		</li>
+		</dt>
+	</ul>
+	<form action="{S_ACTION_SORT}" method="post">
+	<input type="hidden" name="action" value="category">
+	<input type="hidden" name="cat_id" value="{ID}">
+	<input type="hidden" name="start" value="{START}">
+	  <ul>
+		<dt align="center" colspan="2" class="cat"><span class="genmed">{L_SELECT_SORT_METHOD}:&nbsp;
+		<select name="sort_method">
+			<option {SORT_ALPHABETIC} value='Alphabetic'>{L_ALPHABETIC}</option>
+			<option {SORT_LATEST} value='Latest'>{L_LATEST}</option>
+			<option {SORT_TOPRATED} value='Toprated'>{L_TOPRATED}</option>
+			<option {SORT_MOST_POPULAR} value='Most_popular'>{L_MOST_POPULAR}</option>
+			<option {SORT_USERRANK} value='Userrank'>{L_USERRANK}</option>
+			<option {SORT_ID} value='Id'>{L_ID}</option>
+			</select>
+			&nbsp;{L_ORDER}:
+			<select name="sort_order">
+				<option {SORT_ASC} value="ASC">{L_ASC}</option>
+				<option {SORT_DESC} value="DESC">{L_DESC}</option>
+			</select>
+		&nbsp;<input type="submit" name="submit" value="{L_SORT}" class="liteoption" />
+		</span></dt>
+	  </ul>
+	</form>
+</div>
+
+<div width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
+  <ul>
+	<dt align="left" valign="top"><span class="nav">{PAGE_NUMBER}</span></dt>
+	<dt align="right" valign="top"><span class="nav">{PAGINATION}</span></dt>
+  </ul>
+</div>
+<!-- END ARTICLELIST -->
+
+<!-- BEGIN no_articles -->
+<div class="forumline" width="100%" cellspacing="1" cellpadding="3">
+	<ul>
+		<dd class="thHead">{no_articles.L_NO_ARTICLES}</dd>
+	</ul>
+	<ul>
+		<dt class="row1" align="center" height="30"><span class="genmed">{no_articles.L_NO_ARTICLES_CAT}</span></dt>
+	</ul>
+</div>
+<!-- END no_articles -->
+<!-- INCLUDE pub_footer.tpl -->

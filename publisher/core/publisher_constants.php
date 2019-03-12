@@ -69,6 +69,7 @@ define( 'PUB_CAT_ALLOW_FILE', 1 );
 define( 'PUB_AUTH_LIST_ALL', 0 );
 define( 'PUB_AUTH_ALL', 0 );
 define( 'FILE_PINNED', 1 );
+define( 'ARTICLE_PINNED', 1 );
 define( 'PUB_AUTH_VIEW', 1 );
 define( 'PUB_AUTH_READ', 2 );
 define( 'PUB_AUTH_VIEW_FILE', 3 );
@@ -92,6 +93,42 @@ define( 'PUB_AUTH_COMMENT_DELETE', 11 );
 @define( 'CHECKBOX', 5 );
 
 @define( 'RANKS_PATH', 'images/ranks' );
+
+//
+// Generate logged in/logged out status
+//
+switch (PORTAL_BACKEND)
+{
+	case 'internal':
+	case 'mybb':
+		//To do: Profile oe UCP Links for each backend.
+	case 'smf2':
+		
+		$pub_register = mx_append_sid('login.'.$phpEx.'?mode=register');
+		$pub_profile = 'profile.'.$phpEx;
+	break;
+	
+	case 'phpbb2':
+		
+		//To do: Check this in sessions/phpbb2 comparing to sessions/internal
+		$pub_register = mx_append_sid("{$phpbb_root_path}profile.".$phpEx."?mode=register");
+		$pub_profile = "{$phpbb_root_path}profile.".$phpEx;
+	break;
+	
+	case 'olympus':
+		
+		//To do: Check this in sessions/phpbb2 comparing to sessions/internal
+		$pub_register = mx_append_sid("{$phpbb_root_path}ucp.php?mode=register&redirect=$redirect_url");
+		$pub_profile = "{$phpbb_root_path}ucp.".$phpEx;
+	break;
+	
+	default:
+	
+		$pub_register = mx_append_sid("{$phpbb_root_path}ucp.php?mode=register&redirect=$redirect_url");
+		$pub_profile = "{$phpbb_root_path}ucp.".$phpEx;
+	break;
+}
+define( 'PROFILE_PATH', $pub_profile);
 
 if ( !MXBB_MODULE || MXBB_27x )
 {

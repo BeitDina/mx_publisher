@@ -26,13 +26,14 @@ class publisher_category extends publisher_public
 	 */
 	function main( $action  = false )
 	{
-		global $template, $lang, $phpEx, $publisher_config, $userdata;
+		global $template, $lang, $phpEx, $publisher_config, $mx_user, $userdata;
 		global $mx_root_path, $module_root_path, $is_block, $mx_request_vars;
 
 		// =======================================================
 		// Request vars
 		// =======================================================
 		$start = $mx_request_vars->request('start', MX_TYPE_INT, 0);
+		$view = $mx_request_vars->variable('view', '');
 		$cat_id = $mx_request_vars->request('cat_id', MX_TYPE_INT, '');
 
 		if ( empty( $cat_id ) )
@@ -49,19 +50,19 @@ class publisher_category extends publisher_public
 			{
 				case 'file_name':
 					$sort_method = 'file_name';
-					break;
+				break;
 				case 'file_time':
 					$sort_method = 'file_time';
-					break;
+				break;
 				case 'file_dls':
 					$sort_method = 'file_dls';
-					break;
+				break;
 				case 'file_rating':
 					$sort_method = 'rating';
-					break;
+				break;
 				case 'file_update_time':
 					$sort_method = 'file_update_time';
-					break;
+				break;
 				default:
 					$sort_method = $publisher_config['sort_method'];
 			}
@@ -77,10 +78,10 @@ class publisher_category extends publisher_public
 			{
 				case 'ASC':
 					$sort_order = 'ASC';
-					break;
+				break;
 				case 'DESC':
 					$sort_order = 'DESC';
-					break;
+				break;
 				default:
 					$sort_order = $publisher_config['sort_order'];
 			}
@@ -109,7 +110,7 @@ class publisher_category extends publisher_public
 
 		if ( ( !$this->auth_user[$cat_id]['auth_read'] ) && ( !$show_category ) )
 		{
-			if ( !$userdata['session_logged_in'] )
+			if ( !$mx_user->data['session_logged_in'] )
 			{
 				// mx_redirect(mx_append_sid($mx_root_path . "login.$phpEx?redirect=". $this->this_mxurl("action=category&cat_id=" . $cat_id, true), true));
 			}
@@ -146,7 +147,7 @@ class publisher_category extends publisher_public
 		// ===================================================
 		// assign var for navigation
 		// ===================================================
-		$this->generate_navigation( $cat_id );
+		$this->generate_navigation($cat_id);
 
 		if ( isset( $this->subcat_rowset[$cat_id] ) )
 		{
@@ -162,14 +163,15 @@ class publisher_category extends publisher_public
 			}
 		}
 
-		$this->display_items( $sort_method, $sort_order, $start, $cat_id, $no_file_message );
+		$this->display_items($sort_method, $sort_order, $start, $cat_id, $no_file_message);
 
 		//
 		// User authorisation levels output
 		//
 		$this->auth_can($cat_id);
 
-		$this->display( $lang['Download'], 'pub_category_body.tpl' );
+		$this->display($lang['Download'], 'pub_category_body.tpl');
+
 	}
 }
 ?>

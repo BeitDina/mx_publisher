@@ -128,7 +128,7 @@ if ( !$result = $db->sql_query( "SELECT config_name from " . $mx_table_prefix . 
 														(1, 'MY_CATEGORY', 'My_category', 0, '', 0, 0, -1, -1, -1, 0, '-1', 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
 		
 		"INSERT INTO " . $mx_table_prefix . "pub_cat (`cat_id`, `cat_name`, `cat_desc`, `cat_parent`, `parents_data`, `cat_order`, `cat_allow_file`, `cat_allow_ratings`, `cat_allow_comments`, `cat_articles`, `cat_last_article_id`, `cat_last_article_name`, `cat_last_article_time`, `auth_view`, `auth_post`, `auth_edit`, `auth_delete`, `auth_read`, `auth_view_article`, `auth_edit_article`, `auth_delete_article`, `auth_upload`, `auth_download`, `auth_rate`, `auth_email`, `auth_view_comment`, `auth_post_comment`, `auth_edit_comment`, `auth_delete_comment`, `auth_approval`, `internal_comments`, `autogenerate_comments`, `comments_forum_id`, `show_pretext`, `notify`, `notify_group`, `auth_approval_edit`) VALUES
-														(2, 'TEST_CAGEGORY', 'Just_a_test_category', 1, '', 0, 1, -1, -1, -1, 0, '-1', 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+														(2, 'TEST_CATEGORY', 'Just_a_test_category', 1, '', 0, 1, -1, -1, -1, 0, '-1', 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
 
 		// --------------------------------------------------------
 		// Table structure for table `phpbb_pub_files`

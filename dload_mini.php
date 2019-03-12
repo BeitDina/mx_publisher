@@ -76,9 +76,9 @@ $page_title = $lang['Download'];
 
 if ( $action != 'download' )
 {
-	if ( !$is_block )
+	if (!$is_block && ($action != 'download') && ($action != 'category') && !defined('HEADER_INC') && !isset($layouttemplate))
 	{
-		include( $mx_root_path . 'includes/page_header.' . $phpEx );
+		include_once($mx_root_path . 'includes/page_header.' . $phpEx);
 	}
 }
 

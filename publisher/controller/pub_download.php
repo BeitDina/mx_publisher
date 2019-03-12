@@ -191,7 +191,7 @@ class publisher_download extends publisher_public
 			// ===================================================
 			$this->generate_navigation( $file_data['file_catid'] );
 
-			include( $mx_root_path . 'includes/page_header.' . $phpEx );
+			include_once($mx_root_path . 'includes/page_header.' . $phpEx);
 			$this->display( $lang['Download'], 'pub_mirrors_body.tpl' );
 			include( $mx_root_path . 'includes/page_tail.' . $phpEx );
 		}

@@ -210,7 +210,7 @@ class publisher_file extends publisher_public
 
 		$custom_field = new mx_custom_field(PUB_CUSTOM_TABLE, PUB_CUSTOM_DATA_TABLE);
 		$custom_field->init();
-		$custom_field->display_data( $file_id );
+		$custom_field->display_data($file_id);
 
 		//
 		// Ratings

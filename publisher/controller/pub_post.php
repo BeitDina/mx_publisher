@@ -50,7 +50,7 @@ class publisher_post extends publisher_public
 		$preview = $mx_request_vars->is_request('preview');
 		$cancel = $mx_request_vars->is_request('cancel');
 		//$this->auth_user[$cat_id]['auth_post'] = 1;
-		
+
 		//
 		// Main Auth
 		//
@@ -99,17 +99,18 @@ class publisher_post extends publisher_public
 			$article_id = 0;
 		}
 
-		if ( $cat_id && !$this->cat_rowset[$cat_id]['category_id'] )
+		if ( $cat_id && !$this->cat_rowset[$cat_id]['cat_id'] )
 		{
 			$cat_id = 0;
 		}
+
 
 		// =======================================================
 		// Delete
 		// =======================================================
 		if ( $do == 'delete' && $article_id)
 		{
-			if ( ( $this->auth_user[$cat_id]['auth_delete'] && $article_data['user_id'] == $userdata['user_id'] ) || $this->auth_user[$cat_id]['auth_mod'] )
+			if ( ( $this->auth_user[$cat_id]['auth_delete'] && $article_data['user_id'] == $mx_user->data['user_id'] ) || $this->auth_user[$cat_id]['auth_mod'] )
 			{
 				//
 				// Notification
@@ -143,8 +144,8 @@ class publisher_post extends publisher_public
 				}
 
 				$this->delete_items( $article_id );
-				$this->_pub();
-				$message = $lang['Article_Deleted'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "action=cat&cat=" . $cat_id ) ) . '">', '</a>' );
+				$this->_publisher();
+				$message = $lang['Article_Deleted'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid($this->this_mxurl("action=cat&cat=" . $cat_id)) . '">', '</a>' );
 				mx_message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -167,8 +168,8 @@ class publisher_post extends publisher_public
 		//
 		// Instatiate custom fields (only used in pub_article)
 		//
-		$mx_pub_custom_field = new mx_custom_field(PUB_CUSTOM_TABLE, PUB_CUSTOM_DATA_TABLE);
-		$mx_pub_custom_field->init();
+		$mx_custom_field = new mx_custom_field(PUB_CUSTOM_TABLE, PUB_CUSTOM_DATA_TABLE);
+		$mx_custom_field->init();
 
 		//
 		// wysiwyg
@@ -240,14 +241,14 @@ class publisher_post extends publisher_public
 		//
 		// IF submit then upload the article and update the sql for it
 		//
-		if ( isset( $_POST['submit'] ) && $cat_id )
+		if ($mx_request_vars->is_request('submit') && $cat_id)
 		{
 			if ( !$mx_request_vars->is_request('article_name') || !$mx_request_vars->is_request('article_desc') || !$mx_request_vars->is_request('message') )
 			{
-				$message = $lang['Empty_fields'] . '<br /><br />' . sprintf( $lang['Empty_fields_return'], '<a href="' . mx_append_sid( $this->this_mxurl( 'action=add' ) ) . '">', '</a>' );
+				$message = $lang['Empty_fields'] . '<br /><br />' . sprintf( $lang['Empty_fields_return'], '<a href="' . mx_append_sid($this->this_mxurl('action=add')) . '">', '</a>' );
 				mx_message_die( GENERAL_MESSAGE, $message );
 			}
-
+			
 			//
 			// Encode for db storage
 			//
@@ -264,6 +265,7 @@ class publisher_post extends publisher_public
 			{
 				if ($this->auth_user[$cat_id]['auth_post'] || $this->auth_user[$cat_id]['auth_mod'])
 				{
+
 					//
 					// Approve
 					//
@@ -290,15 +292,17 @@ class publisher_post extends publisher_public
 					//
 					// Update custom fields
 					//
-					$mx_pub_custom_field->file_update_data($article_id);
+					$mx_custom_field->file_update_data($article_id);
 
 					$this->modified(true);
-					$this->_pub();
+					$this->_publisher();
+
 				}
 				else
 				{
 					$message = $lang['Sorry_auth_post'];
 				}
+			
 			}
 			else
 			{
@@ -326,7 +330,7 @@ class publisher_post extends publisher_public
 					//
 					// Update custom fields
 					//
-					$mx_pub_custom_field->file_update_data( $article_id );
+					$mx_custom_field->file_update_data( $article_id );
 
 					$this->modified( true );
 					$this->_kb();
@@ -360,19 +364,18 @@ class publisher_post extends publisher_public
 				$this->update_add_comment('', $article_id, 0, addslashes(trim($mx_pub_notification->topic_title)), addslashes(trim($mx_pub_notification->message)), true, false, false, true );
 			}
 
-			if ( $approve == 1 )
+			if ($approve == 1)
 			{
-		     	$message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . mx_append_sid( $this->this_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf($lang['Click_return_article'], '<a href="' . mx_append_sid($this->this_mxurl("action=article&amp;k=" . $article_id)). '">', '</a>') . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid( $mx_root_path . "index.$phpEx" ) . '">', '</a>' );
+		     	$message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_pub'], '<a href="' . mx_append_sid($this->this_mxurl()) . '">', '</a>' ) . '<br /><br />' . sprintf($lang['Click_return_article'], '<a href="' . mx_append_sid($this->this_mxurl("action=article&amp;k=" . $article_id)) . '">', '</a>') . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid( $mx_root_path . "index.$phpEx" ) . '">', '</a>' );
 			}
 			else
 			{
-				$message = $lang['Article_submitted_Approve'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . mx_append_sid( $this->this_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid( $mx_root_path . "index.$phpEx" ) . '">', '</a>' );
+				$message = $lang['Article_submitted_Approve'] . '<br /><br />' . sprintf( $lang['Click_return_pub'], '<a href="' . mx_append_sid($this->this_mxurl()) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . mx_append_sid($this->this_mxurl()) . '">', '</a>' );
 			}
-			mx_message_die( GENERAL_MESSAGE, $message );
+			mx_message_die(GENERAL_MESSAGE, $message);
 		}
 		else
 		{
-			//$article_id = empty($article_id) ? 1 : 0;
 			// =======================================================
 			// IF not submit then load data MAIN form
 			// =======================================================
@@ -488,7 +491,7 @@ class publisher_post extends publisher_public
 			}
 
 			$pub_action_url = $pub_post_mode == 'add' ? mx_append_sid($this->this_mxurl("action=add&cat=" . $cat_id)) : mx_append_sid($this->this_mxurl('action=edit'));
-			$custom_data = $pub_post_mode == 'add' ? $mx_pub_custom_field->display_edit() : $mx_pub_custom_field->display_edit( $article_id );
+			$custom_data = $pub_post_mode == 'add' ? $mx_custom_field->display_edit() : $mx_custom_field->display_edit( $article_id );
 
 			if ( $custom_data )
 			{
