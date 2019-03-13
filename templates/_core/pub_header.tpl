@@ -78,6 +78,14 @@
 			<br />
 			<!-- IF IS_AUTH_MCP -->
 			{B_MCP_LINK}
+			<!-- IF B_FCP_LINK -->
+			{B_FCP_LINK}
+			<!-- ENDIF -->
+			<!-- ENDIF -->
+			<!-- IF IS_AUTH_UPLOAD -->
+			<!-- IF B_TCP_LINK -->
+			{B_TCP_LINK}
+			<!-- ENDIF -->
 			<!-- ENDIF -->
 		</td>
 	</tr>

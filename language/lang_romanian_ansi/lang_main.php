@@ -355,8 +355,15 @@ $lang['SS_not_found'] = 'The screenshot you specified cannot be found';
 //
 // MCP
 //
+$lang['MCP_short'] = 'ModCP';
 $lang['MCP_title'] = 'Moderator Control Panel';
-$lang['MCP_title_explain'] = 'Here moderators can approve and manage items';
+$lang['MCP_title_explain'] = 'Here moderators can approve and manage articles';
+$lang['FCP_short'] = 'FileCP';
+$lang['FCP_title'] = 'File Control Panel';
+$lang['FCP_title_explain'] = 'Here moderators can approve and manage files';
+$lang['TCP_short'] = 'TransCP';
+$lang['TCP_title'] = 'Translator Control Panel';
+$lang['TCP_title_explain'] = 'Here translators can translate and manage language files and articles';
 
 $lang['View'] = 'View';
 

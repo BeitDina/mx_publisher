@@ -558,9 +558,16 @@ class publisher_functions
 		global $phpbb_root_path, $mx_root_path, $module_root_path, $is_block, $title, $mx_block;
 		global $action;
 		
-		//$print_version = $no_page_header = $mx_request_vars->is_request('print') ? true : false;
+		$publisher->debug('pub_page_header', basename( __FILE__ ));
 		
-		if (!$is_block && ($action != 'download') && ($action != 'category') && !defined('HEADER_INC') && !isset($layouttemplate))
+		if ($action == 'article') 
+		{
+			//$template->set_filenames( array( 'pub_header' => 'pub_header.tpl' ) );
+		}
+
+		//$print_version = $no_page_header = $mx_request_vars->is_request('print') ? true : false;
+
+		if (!$is_block && ($action != 'download') && ($action != 'category') && !defined('HEADER_INC') && !isset($layouttemplate)) 
 		{
 			include_once($mx_root_path . 'includes/page_header.' . $phpEx);
 		}
@@ -568,15 +575,17 @@ class publisher_functions
 		if ( $action == 'category' )
 		{
 			$_REQUEST['cat'] = isset($_REQUEST['cat']) ? $_REQUEST['cat'] : $_REQUEST['cat_id'];
-			
+
 			$upload_url = mx_append_sid($publisher->this_mxurl("action=user_upload&cat_id={$_REQUEST['cat']}"));
-			$upload_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_upload'];
+			$add_article_url = mx_append_sid($publisher->this_mxurl("action=add&cat_id={$_REQUEST['cat']}"));
 			$mcp_url = mx_append_sid( $publisher->this_mxurl( "action=mcp&cat_id={$_REQUEST['cat']}" ) );
+			$fcp_url = mx_append_sid( $publisher->this_mxurl( "action=fcp&cat_id={$_REQUEST['cat']}" ) );
+			$tcp_url = mx_append_sid( $publisher->this_mxurl( "action=tcp&cat_id={$_REQUEST['cat']}" ) );
+			$upload_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_upload'];
 			$mcp_auth = $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_mod'];
-			
+
 			if ($publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_post'] || $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat']]['auth_mod'])
 			{
-				$add_article_url = mx_append_sid($publisher->this_mxurl("action=add&cat=" . $_REQUEST['cat']));
 				$template->assign_block_vars('switch_add_article', array());
 				$template->assign_block_vars('MCP', array());
 			}
@@ -596,44 +605,76 @@ class publisher_functions
 			unset( $cat_list );
 		}
 
+		$search_url = mx_append_sid( $publisher->this_mxurl( "action=search" ) );
+
+		if ( $publisher_config['header_banner'] == 1 )
+		{
+			$temp_url = mx_append_sid( $publisher->this_mxurl() );
+			$block_title = '<td align="center" class="row1"><a href="' . $temp_url . '"><img src="' . $images['pub_title'] . '" width="285" height="45" border="0" alt="' . $title . '"></a></td>';
+		}
+		else
+		{
+			$block_title = MXBB_MODULE ? '' : '<td align="center"><b>' . $lang['PUB_title'] . '</b></td>';
+		}
+
 		$template->assign_vars( array(
 				'L_TITLE' => $title,
+				'L_PUB_TITLE' => $block_title,
+				'L_ADD_ARTICLE' => $lang['Add_article'],
+
+				'IS_ADMIN' => ( $mx_user->data['user_level'] == ADMIN && $mx_user->data['session_logged_in'] ) ? true : 0,
+				'IS_MOD' => $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat_id']]['auth_mod'],
+
+				'IS_AUTH_MCP' => $mcp_auth,
+				'IS_AUTH_UPLOAD' => $upload_auth,
+
 				'IS_AUTH_VIEWALL' => ( $publisher_config['settings_viewall'] ) ? ( ( $publisher->modules[$publisher->module_name]->auth_global['auth_viewall'] ) ? true : false ) : false,
 				'IS_AUTH_SEARCH' => ( $publisher->modules[$publisher->module_name]->auth_global['auth_search'] ) ? true : false,
 				'IS_AUTH_STATS' => ( $publisher->modules[$publisher->module_name]->auth_global['auth_stats'] ) ? true : false,
 				'IS_AUTH_TOPLIST' => ( $publisher->modules[$publisher->module_name]->auth_global['auth_toplist'] ) ? true : false,
 
-				'IS_AUTH_UPLOAD' => $upload_auth,
-				'IS_ADMIN' => ( $mx_user->data['user_level'] == ADMIN && $mx_user->data['session_logged_in'] ) ? true : 0,
-				'IS_MOD' => $publisher->modules[$publisher->module_name]->auth_user[$_REQUEST['cat_id']]['auth_mod'],
-				'IS_AUTH_MCP' => $mcp_auth,
-
 				'L_OPTIONS' => $lang['Options'],
 				'L_SEARCH' => $lang['Search'],
 				'L_STATS' => $lang['Statistics'],
+				'L_STATS_LATEST' 	=> isset($lang['Top_latest']) ? $lang['Top_latest'] : $lang['Stats_Latest'],
 				'L_TOPLIST' => $lang['Toplist'],
+
 				'L_UPLOAD' => $lang['User_upload'],
 				'L_VIEW_ALL' => $lang['Viewall'],
 				'L_ADD_ARTICLE' => $lang['Add_article'],
-			
+				
+				'SPACER_IMG' => $images['mx_spacer'],
 				'SEARCH_IMG' => $images['pub_search'],
 				'STATS_IMG' => $images['pub_stats'],
 				'TOPLIST_IMG' => $images['pub_toplist'],
-				'ADD_ARTICLE_IMG' => $images['pub_post'],
 				'UPLOAD_IMG' => $images['pub_upload'],
 				'VIEW_ALL_IMG' => $images['pub_viewall'],
-				'MCP_IMG' => $images['pub_moderator'],
+
+				'ADD_ARTICLE_IMG' => $images['pub_post'],
+				'U_ADD_ARTICLE' => $add_article_url,
+
 				'MCP_LINK' => $lang['MCP_title'],
+				'MCP_IMG' => $images['pub_moderator'],
+
+				'L_MCP' => $lang['MCP_title'],
+				'U_MCP' => $mcp_url,
+
+				'L_FCP' => $lang['FCP_title'],
+				'U_FCP' => $fcp_url,
+
+				'L_TCP' => $lang['TCP_title'],
+				'U_TCP' => $tcp_url,
 
 				'U_TOPLIST' => mx_append_sid($publisher->this_mxurl("action=toplist")),
 				'U_PASEARCH' => mx_append_sid($publisher->this_mxurl("action=search")),
+				'U_PUBSEARCH' => mx_append_sid($publisher->this_mxurl("action=search")),
+				'U_SEARCH' => $search_url,
+				'U_KBSEARCH' => $search_url,
 				'U_UPLOAD' => $upload_url,
 				'U_VIEW_ALL' => mx_append_sid($publisher->this_mxurl("action=viewall")),
 				'U_VIEW_ALL' => mx_append_sid($publisher->this_mxurl( "&action=stats&sort_method=viewall&sort_order=DESC") ),
 				'U_PASTATS' => mx_append_sid($publisher->this_mxurl("action=stats" )),
 				'U_PUBSTATS' => mx_append_sid($publisher->this_mxurl( "&action=stats") ),
-				'U_ADD_ARTICLE' => $add_article_url,
-				'U_MCP' => $mcp_url,
 
 				'MX_ROOT_PATH' => $mx_root_path,
 				'BLOCK_ID' => $mx_block->block_id,
@@ -645,8 +686,36 @@ class publisher_functions
 				'B_ADD_ARTICLE_IMG' => $this->create_button('pub_post', $lang['Add_article'], $add_article_url),
 				'B_UPLOAD_IMG' => $this->create_button('pub_upload', $lang['User_upload'], $upload_url),
 				'B_VIEW_ALL_IMG' => $this->create_button('pub_viewall', $lang['Viewall'], mx_append_sid($publisher->this_mxurl("action=viewall"))),
-				'B_MCP_LINK' => $this->create_button('pub_moderator', $lang['MCP_title'], $mcp_url),
+				'B_MCP_LINK' => $this->create_button('pub_moderator', $lang['MCP_title'], $mcp_url, false, $lang['MCP_short']),
+				'B_FCP_LINK' => $this->create_button('pub_filecp', $lang['FCP_title'], $fcp_url, false, $lang['FCP_short']),
+				'B_TCP_LINK' => $this->create_button('pub_translator', $lang['TCP_title'], $tcp_url, false, $lang['TCP_short']),
 			));
+			
+		//
+		// Ratings enabled for any category ?
+		//
+		if ( !empty( $publisher->modules[$publisher->module_name]->cat_rowset ) )
+		{
+			foreach( $publisher->modules[$publisher->module_name]->cat_rowset as $cat_id => $cat_row )
+			{
+				if ( $publisher->modules[$publisher->module_name]->ratings[$cat_id]['activated'] )
+				{
+					$template->assign_block_vars('switch_toprated', array() );
+					break;
+				}
+			}
+		}
+
+		if ($publisher_config['stats_list'] == 1)
+		{
+			$this->get_quick_stats($_REQUEST['cat']);
+		}
+
+		if ($action == 'article') 
+		{
+			//$template->pparse('pub_header');
+		}
+
 	}
 
 	/**
@@ -1007,6 +1076,8 @@ class publisher_functions
 	 */
 	function create_button($key, $label, $url, $img = '', $alt = '', $type = 'image')
 	{
+		$alt = !empty($alt) ? $alt : $label;
+		
 		switch($type)
 		{
 			case 'text':
@@ -1033,7 +1104,7 @@ class publisher_functions
 			break;
 
 			case MX_BUTTON_IMAGE:
-				return '<a class="image button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $label . '" title="' . $label . '" border="0"></a>';
+				return '<a class="image button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $alt . '" title="' . $label . '" border="0"></a>';
 			break;
 
 			case MX_BUTTON_GENERIC:
@@ -1041,7 +1112,7 @@ class publisher_functions
 			break;
 
 			default:
-				return '<a class="' . $type . ' button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $label . '" title="' . $label . '" border="0"></a>';
+				return '<a class="' . $type . ' button" href="'. $url .'"><img src = "' . $this->img($key, $label, false, '', 'src') . '" alt="' . $alt . '" title="' . $label . '" border="0"></a>';
 			break;
 		}
 		

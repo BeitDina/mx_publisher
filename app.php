@@ -300,6 +300,7 @@ $actions = array(
 	'user_upload' => 'user_upload',
 	'post_comment' => 'post_comment',
 	'mcp' => 'mcp',
+	'fcp' => 'fcp',
 	'ucp' => 'ucp',
 	'main' => 'main');
 

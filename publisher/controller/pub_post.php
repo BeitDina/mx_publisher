@@ -40,7 +40,7 @@ class publisher_post extends publisher_public
 		// Request vars
 		//
 		$article_id = $mx_request_vars->request('k', MX_TYPE_INT, '');
-		$cat_id = $mx_request_vars->is_request('cat') ? $mx_request_vars->request('cat', MX_TYPE_INT, 0) : $mx_request_vars->request('cat_id', MX_TYPE_INT, 0);
+		$cat_id = $mx_request_vars->is_request('cat_id') ? $mx_request_vars->request('cat_id', MX_TYPE_INT, 0) : $mx_request_vars->request('cat', MX_TYPE_INT, 0);
 
 		$do = ( isset( $_REQUEST['do'] ) ) ? intval( $_REQUEST['do'] ) : '';
 		$pub_post_mode = empty( $article_id ) ? 'add' : 'edit'; //Main mode toggle
@@ -333,7 +333,7 @@ class publisher_post extends publisher_public
 					$mx_custom_field->file_update_data( $article_id );
 
 					$this->modified( true );
-					$this->_kb();
+					$this->_publisher();
 				}
 				else
 				{

@@ -25,6 +25,7 @@
 -->
 </style>
 
+<!-- INCLUDE pub_header.tpl -->
 <table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
 	<tr>
 		<td align="left" class="nav">
@@ -98,7 +99,7 @@
   </tr>
 <!-- END switch_pages -->
   <tr>
-  	  <td class="cat" valign="middle" align="center"><span class="cattitle">&nbsp;{B_EDIT_IMG}&nbsp;{B_DELETE_IMG}</span>&nbsp;</td>
+  	  <td class="cat" valign="middle" align="center"><span class="cattitle">&nbsp;{B_EDIT_IMG}&nbsp;{B_DELETE_IMG}&nbsp;{B_UPLOAD_IMG}</span>&nbsp;</td>
   </tr>
 </table>
 
@@ -125,16 +126,21 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="80%" valign="middle"><span class="genmed"><img src="{use_comments.text.ICON_MINIPOST_IMG}" width="12" height="9" border="0" />&nbsp;<b>{use_comments.text.TITLE}</b> </span><span class="genmed">({use_comments.text.TIME})</span></td>
+				
 					<td align="right">
+				
 					<!-- BEGIN auth_edit -->
 					{use_comments.text.auth_edit.B_EDIT_IMG}
-					<!-- <a href="{use_comments.text.auth_edit.U_COMMENT_EDIT}"><img src="{use_comments.text.auth_edit.EDIT_IMG}" alt="{use_comments.text.auth_edit.L_COMMENT_EDIT}" title="{use_comments.text.auth_edit.L_COMMENT_EDIT}" border="0"></a>-->
+					<a href="{use_comments.text.auth_edit.U_COMMENT_EDIT}"><img src="{use_comments.text.auth_edit.EDIT_IMG}" alt="{use_comments.text.auth_edit.L_COMMENT_EDIT}" title="{use_comments.text.auth_edit.L_COMMENT_EDIT}" border="0"></a>
 					<!-- END auth_edit -->
+				
 					<!-- BEGIN auth_delete -->
 					{use_comments.text.auth_delete.B_DELETE_IMG}
-					<!-- <a href="{use_comments.text.auth_delete.U_COMMENT_DELETE}"><img src="{use_comments.text.auth_delete.DELETE_IMG}" alt="{use_comments.text.auth_delete.L_COMMENT_DELETE}" title="{use_comments.text.auth_delete.L_COMMENT_DELETE}" border="0"></a>-->
+					<a href="{use_comments.text.auth_delete.U_COMMENT_DELETE}"><img src="{use_comments.text.auth_delete.DELETE_IMG}" alt="{use_comments.text.auth_delete.L_COMMENT_DELETE}" title="{use_comments.text.auth_delete.L_COMMENT_DELETE}" border="0"></a>
 					<!-- END auth_delete -->
+				
 					</td>
+				
 				</tr>
 				<tr>
 					<td colspan="2"><hr /></td>
@@ -169,3 +175,5 @@
 <br clear="all" />
 <!-- END auth_post -->
 <!-- END use_comments -->
+
+<!-- INCLUDE pub_footer.tpl -->

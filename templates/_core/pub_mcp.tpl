@@ -99,7 +99,7 @@
 <table width="100%" cellpadding="2" cellspacing="2">
   <tr>
 	<td valign="bottom">
-		<span class="nav"><a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>&nbsp;&raquo;&nbsp;{L_MCP_TITLE}</span>
+		<span class="nav"><a href="{U_ARTICLES}" class="nav">{ARTICLES}</a>&nbsp;&raquo;&nbsp;{L_MCP_TITLE}</span>
 	</td>
   </tr>
 </table>
@@ -121,19 +121,21 @@
   </tr>
    <!-- END row -->
    <!-- ELSE -->
+   <!-- BEGIN no_data -->
   <tr>
 	  <td class="row1" align="center"><span class="gen">{L_NO_ITEMS}</span></td>
   </tr>
+   <!-- END no_data -->
    <!-- ENDIF -->
 </table>
 <br />
 <!-- END mcp_mode -->
 <table width="100%" cellspacing="2" border="0" cellpadding="2">
   <tr>
-	<td align="right" nowrap="nowrap"><span class="nav">{PAGINATION}</span></td>
+	<td align="right"><span class="nav">{PAGINATION}</span></td>
   </tr>
   <tr>
-	<td align="right" nowrap="nowrap"><span class="nav">{PAGE_NUMBER}</span></td>
+	<td align="right"><span class="nav">{PAGE_NUMBER}</span></td>
   </tr>
 </table>
 <table width="100%" cellpadding="3" cellspacing="1" class="forumline">

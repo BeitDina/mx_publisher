@@ -38,6 +38,7 @@ class publisher_article extends publisher_public
 		$view = $mx_request_vars->variable('view', '');
 		
 		$article_id = $mx_request_vars->is_request('k') ? $mx_request_vars->request('k', MX_TYPE_INT, '') : $mx_block->get_parameters('default_article_id');
+		$article_category_id  = $mx_request_vars->is_request('cat_id') ? $mx_request_vars->request('cat_id', MX_TYPE_INT, '') : $mx_block->get_parameters('cat');
 		
 		$page_num = $mx_request_vars->request('page_num', MX_TYPE_INT, 1) - 1;
 		$print_version = $mx_request_vars->is_request('print') ? true : false; 
@@ -90,7 +91,7 @@ class publisher_article extends publisher_public
 		$db->sql_freeresult($result);
 
 		// ===================================================
-		// KB auth for viewing article
+		// PUB auth for viewing article
 		// ===================================================
 		if ((!$this->auth_user[$pub_row['article_category_id']]['auth_view']))
 		{
@@ -276,6 +277,7 @@ class publisher_article extends publisher_public
 				'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $publisher_config['comments_pagination']) + 1), ceil($num_of_replies / $publisher_config['comments_pagination'])),
 				'L_GOTO_PAGE' => $lang['Goto_page'],
 
+				'L_UPLOAD' => $lang['User_upload'],
 				'L_ARTICLE_DESCRIPTION' => $lang['Article_description'],
 				'L_ARTICLE_DATE' => $lang['Date'],
 				'L_ARTICLE_TYPE' => $lang['Article_type'],
@@ -302,6 +304,7 @@ class publisher_article extends publisher_public
 				'ARTICLE_DATE' => $date,
 				'ARTICLE_TYPE' => $article_type,
 
+				'UPLOAD_IMG' => $images['pub_upload'],
 				'EDIT_IMG' => $edit_img,
 				'DELETE_IMG' => $delete_img,
 				'EDIT' => $edit,
@@ -311,8 +314,9 @@ class publisher_article extends publisher_public
 				'T_TH_COLOR1' 	=> '#'.$theme['th_color1'],	// Border Colors (main)
 
 				// Buttons
-				'B_DELETE_IMG' => $mx_user->create_button('pub_icon_delpost', $lang['Delete_article'], "javascript:delete_item('". mx_append_sid($this->this_mxurl("action=edit&amp;do=delete&amp;k=" . $article_id)) . "')"),
-				'B_EDIT_IMG' => $mx_user->create_button('pub_icon_edit', $lang['Edit_article'], mx_append_sid($this->this_mxurl("action=edit&amp;k=" . $article_id))),
+				'B_UPLOAD_IMG' => $publisher_functions->create_button('pub_upload', $lang['User_upload'], mx_append_sid($this->this_mxurl("action=user_upload&amp;cat_id={$cat_id}&amp;k={$article_id}"))),
+				'B_DELETE_IMG' => $publisher_functions->create_button('pub_icon_delpost', $lang['Delete_article'], "javascript:delete_item('". mx_append_sid($this->this_mxurl("action=edit&amp;do=delete&amp;k=" . $article_id)) . "')"),
+				'B_EDIT_IMG' => $publisher_functions->create_button('pub_icon_edit', $lang['Edit_article'], mx_append_sid($this->this_mxurl("action=edit&amp;k=" . $article_id))),
 			 ));
 
 			//
@@ -437,11 +441,12 @@ class publisher_article extends publisher_public
 
 		//
 		// Comments
+		// Note: some settings are category dependent, but may use default config settings
 		//
 		if ( $this->comments[$article_category_id]['activated'] && $this->auth_user[$article_category_id]['auth_view_comment'])
 		{
 			$comments_type = $this->comments[$article_category_id]['internal_comments'] ? 'internal' : 'phpbb';
-
+print_r("Comments");
 			//
 			// Instatiate comments
 			//

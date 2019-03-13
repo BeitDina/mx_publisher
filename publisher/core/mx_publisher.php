@@ -944,7 +944,7 @@ class mx_publisher extends mx_publisher_auth
 					$category_articles = $this->items_in_cat($category_id);
 					$category_details = isset($category['cat_desc']) ? $category['cat_desc'] :  $category['category_details'];
 					$category_name = isset($category['cat_name']) ? $category['cat_name'] : $category['category_name'];
-					$category_url = mx_append_sid($this->this_mxurl("action=cat&cat=$category_id"));
+					$category_url = mx_append_sid($this->this_mxurl("action=category&cat_id=$category_id"));
 
 					$num_of_cats++;
 
@@ -1151,7 +1151,7 @@ class mx_publisher extends mx_publisher_auth
 					$category_details = $subcat_row['category_details'];
 					$category_name = $subcat_row['category_name'];
 					
-					$category_url = mx_append_sid( $this->this_mxurl( "action=cat&cat=$subcat_id" ) );
+					$category_url = mx_append_sid( $this->this_mxurl( "action=category&cat=$subcat_id" ) );
 
 					$num_of_cats++;
 
@@ -2000,7 +2000,7 @@ class mx_publisher extends mx_publisher_auth
 
 		if ( $filelist )
 		{
-			$action = ( empty( $cat_id ) ) ? 'stats' : 'cat&amp;cat=' . $cat_id;
+			$action = (empty($cat_id)) ? 'stats' : 'category&amp;cat=' . $cat_id;
 
 			$sort_method = isset($_REQUEST['sort_method']) ? $_REQUEST['sort_method'] : $publisher_config['sort_method'];
 			$sort_order = isset($_REQUEST['sort_order']) ? $_REQUEST['sort_order'] : $publisher_config['sort_order'];
@@ -3324,8 +3324,10 @@ class publisher_public extends mx_publisher
 
 		$publisher_functions->page_header($page_title);
 
-		$template->set_filenames(array( 'body' => $tpl_name));
+		$template->set_filenames(array('body' => $tpl_name));
+
 		$publisher_functions->page_footer();
 	}
+
 }
 ?>

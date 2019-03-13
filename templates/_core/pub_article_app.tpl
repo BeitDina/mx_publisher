@@ -14,6 +14,7 @@
 	-->
 </script>
 
+<!-- INCLUDE pub_header.tpl -->
 <!-- BEGIN switch_toc -->
 <p><span class="maintitle">{L_TOC}</span><br /><br />
 <span class="nav">
@@ -134,3 +135,4 @@
 	<br clear="all" />
 	<!-- END auth_post -->
 <!-- END use_comments -->
+<!-- INCLUDE pub_footer.tpl -->

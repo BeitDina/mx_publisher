@@ -1,3 +1,4 @@
+
 <table width="{BLOCK_SIZE}" cellpadding="4" cellspacing="1" border="0" class="forumline" style="border-top:none;">
 	<!-- BEGIN no_row -->
 	<tr>

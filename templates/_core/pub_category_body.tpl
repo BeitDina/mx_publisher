@@ -1,3 +1,4 @@
+<link href="{U_PORTAL_ROOT_PATH}modules/mx_publisher/templates/_core/mx_publisher.css" rel="stylesheet" type="text/css" media="screen" />
 <!-- INCLUDE pub_header.tpl -->
 <table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
 	<tr>

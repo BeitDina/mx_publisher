@@ -33,13 +33,6 @@ $lang['Category_not_exsist'] = 'Category doesn\'t exist';
 $lang['Last_article'] = 'Last article';
 $lang['Quick_jump'] = 'Select Category';
 
-
-
-
-
-
-
-
 $lang['Error_no_download'] = 'Den valda filen finns inte';
 $lang['Options'] = 'Alternativ';
 $lang['Click_return'] = 'Klicka %shär%s för att återgå till föregående sida';
@@ -345,8 +338,15 @@ $lang['SS_not_found'] = 'Bilden (screenshot) du valde hittas inte';
 //
 // MCP
 //
+$lang['MCP_short'] = 'ModCP';
 $lang['MCP_title'] = 'Moderator Kontrollpanel';
 $lang['MCP_title_explain'] = 'Här kan admin (eller moderatorer) godkänna filer';
+$lang['FCP_short'] = 'FileCP';
+$lang['FCP_title'] = 'File Control Panel';
+$lang['FCP_title_explain'] = 'Here moderators can approve and manage files';
+$lang['TCP_short'] = 'TransCP';
+$lang['TCP_title'] = 'Translator Control Panel';
+$lang['TCP_title_explain'] = 'Here translators can translate and manage language files and articles';
 
 $lang['View'] = 'Visa';
 
@@ -358,6 +358,7 @@ $lang['No_file'] = 'Det finns inga filer';
 $lang['All_items'] = 'Alla filer';
 $lang['All_files'] = 'Alla filer';
 $lang['Approved_items'] = 'Godkända filer';
+$lang['Approved_files'] = 'Godkända filer';
 $lang['Unapproved_items'] = 'Underkända filer';
 $lang['Unapproved_files'] = 'Underkända filer';
 $lang['Broken_items'] = 'Skadade filer';
