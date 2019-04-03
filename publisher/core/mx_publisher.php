@@ -448,7 +448,7 @@ class mx_publisher extends mx_publisher_auth
 	 * @param unknown_type $cat_id
 	 * @return unknown
 	 */
-	function items_in_cat( $cat_id )
+	function items_in_cat($cat_id)
 	{
 		$this->debug('mx_pub->items_in_cat', basename( __FILE__ ));
 
@@ -537,7 +537,7 @@ class mx_publisher extends mx_publisher_auth
 
 	/**
 	 * Jump menu function.
-	 *
+	 * 
 	 * @param unknown_type $cat_id to handle parent cat_id
 	 * @param unknown_type $depth related to function to generate tree
 	 * @param unknown_type $default the cat you wanted to be selected
@@ -545,20 +545,20 @@ class mx_publisher extends mx_publisher_auth
 	 * @param unknown_type $check_upload if true permission for upload will be checked
 	 * @return unknown
 	 */
-	function generate_jumpbox( $cat_id = 0, $depth = 0, $default = '', $for_file = false, $check_upload = true, $auth = 'auth_view' )
+	function generate_jumpbox($cat_id = 0, $depth = 0, $default = '', $for_file = false, $check_upload = true, $auth = 'auth_view' )
 	{
 		global $page_id;
 		//static $cat_rowset = false;
 
-		if ( !is_array( $cat_rowset ) )
+		if (!is_array($cat_rowset))
 		{
-			if ( $check_upload )
+			if ($check_upload)
 			{
-				if ( !empty( $this->cat_rowset ) )
+				if (!empty($this->cat_rowset))
 				{
-					foreach( $this->cat_rowset as $row )
+					foreach($this->cat_rowset as $row)
 					{
-						if ( $this->auth_user[$row['cat_id']][$auth] )
+						if ($this->auth_user[$row['cat_id']][$auth])
 						{
 							$cat_rowset[$row['cat_id']] = $row;
 						}
@@ -577,15 +577,15 @@ class mx_publisher extends mx_publisher_auth
 
 		$temp_cat_rowset = $cat_rowset;
 
-		if ( !empty( $temp_cat_rowset ) )
+		if (!empty($temp_cat_rowset))
 		{
-			foreach ( $temp_cat_rowset as $temp_cat_id => $cat )
+			foreach ($temp_cat_rowset as $temp_cat_id => $cat)
 			{
-				if ( $cat['cat_parent'] == $cat_id )
+				if ($cat['cat_parent'] == $cat_id)
 				{
-					if ( is_array( $default ) )
+					if (is_array($default))
 					{
-						if ( isset( $default[$cat['cat_id']] ) )
+						if (isset($default[$cat['cat_id']]))
 						{
 							$sel = ' selected="selected"';
 						}
@@ -594,11 +594,45 @@ class mx_publisher extends mx_publisher_auth
 							$sel = '';
 						}
 					}
-					$cat_pre = ( !$cat['cat_allow_file'] ) ? '+ ' : '- ';
-					$sub_cat_id = ( $for_file ) ? ( ( !$cat['cat_allow_file'] ) ? -1 : $cat['cat_id'] ) : $cat['cat_id'];
-					$cat_class = ( !$cat['cat_allow_file'] ) ? 'class="greyed"' : '';
+			
+					global $publisher_config;
+			
+					$start = $this->request->get('start', MX_TYPE_INT, 0);
+					$sort_method = isset($_REQUEST['sort_method']) ? $_REQUEST['sort_method'] : $publisher_config['sort_method'];
+					$sort_order = isset($_REQUEST['sort_order']) ? $_REQUEST['sort_order'] : $publisher_config['sort_order'];
+			
+					$cat_pre = (!$cat['cat_allow_file']) ? '+ ' : '- ';
+					$sub_cat_id = ($for_file) ? ((!$cat['cat_allow_file']) ? -1 : $cat['cat_id']) : $cat['cat_id'];
+					$cat_class = (!$cat['cat_allow_file']) ? 'class="greyed"' : '';
 					$cat_list .= '<option value="' . $sub_cat_id . '"' . $sel . ' ' . $cat_class . ' />' . $pre . $cat_pre . $cat['cat_name'] . '</option>';
-					$cat_list .= $this->generate_jumpbox( $cat['cat_id'], $depth + 1, $default, $for_file, $check_upload );
+					
+					//action=user_upload, edit
+					$action_user_upload = ( $this->request->is_get('action') && ($this->request->request('action', '') == 'user_upload' || $this->request->request('action', '') == 'edit') ) ? true : false; 
+					
+					if ($action_user_upload == true)
+					{
+						$this->init_items($sort_method, $sort_order, $start, $cat['cat_id']);
+				
+						$article_rowset = $this->article_rowset;
+				
+						if (count($article_rowset) > 0)
+						{
+							$articlelist = $filelist = true;
+							for ($i = 1; $i < count($article_rowset); $i++)
+							{
+								$article_id = $article_rowset[$i]['article_id'];
+								$views = $article_rowset[$i]['views'];
+
+								$article_title = $article_rowset[$i]['article_title'];
+								$article_description = $article_rowset[$i]['article_description'] ;
+								$article_cat_id = $article_rowset[$i]['article_category_id'];
+								$article_approved = $article_rowset[$i]['approved'];
+								
+								$cat_list .= ($article_cat_id == $cat['cat_id']) ? '<option value="' . $article_cat_id . '"' . $sel . ' ' . $cat_class . ' />' . $pre . $cat_pre . $article_title . '</option>' : '';
+							}
+						}
+					}
+					$cat_list .= $this->generate_jumpbox($cat['cat_id'], $depth + 1, $default, $for_file, $check_upload);
 				}
 			}
 			return $cat_list;
@@ -682,7 +716,7 @@ class mx_publisher extends mx_publisher_auth
 		if ( $this->cat_rowset[$cat_id]['parents_data'] == '' )
 		{
 			$cat_nav = array();
-			$this->category_nav( $this->cat_rowset[$cat_id]['cat_parent'], $cat_nav );
+			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 
 			$sql = 'UPDATE ' . PUB_CATEGORY_TABLE . "
 				SET parents_data = '" . addslashes( serialize( $cat_nav ) ) . "'
@@ -690,28 +724,28 @@ class mx_publisher extends mx_publisher_auth
 
 			if ( !( $db->sql_query( $sql ) ) )
 			{
-				mx_message_die( GENERAL_ERROR, 'Couldnt Query categories info', '', __LINE__, __FILE__, $sql );
+				mx_message_die(GENERAL_ERROR, 'Couldnt Query categories info', '', __LINE__, __FILE__, $sql);
 			}
 		}
 		else
 		{
-			$cat_nav = unserialize( stripslashes( $this->cat_rowset[$cat_id]['parents_data'] ) );
+			$cat_nav = unserialize(stripslashes($this->cat_rowset[$cat_id]['parents_data']));
 		}
 
 		if ( !empty( $cat_nav ) )
 		{
 			foreach ( $cat_nav as $parent_cat_id => $parent_name )
 			{
-				$template->assign_block_vars( 'navlinks', array(
+				$template->assign_block_vars('navlinks', array(
 					'CAT_NAME' => $parent_name,
-					'U_VIEW_CAT' => mx_append_sid( $this->this_mxurl( 'action=category&cat_id=' . $parent_cat_id ) ) )
+					'U_VIEW_CAT' => mx_append_sid($this->this_mxurl('action=category&cat_id=' . $parent_cat_id)))
 				);
 			}
 		}
 
 		$template->assign_block_vars( 'navlinks', array(
 			'CAT_NAME' => $this->cat_rowset[$cat_id]['cat_name'],
-			'U_VIEW_CAT' => mx_append_sid( $this->this_mxurl( 'action=category&cat_id=' . $this->cat_rowset[$cat_id]['cat_id'] ) ) )
+			'U_VIEW_CAT' => mx_append_sid($this->this_mxurl('action=category&cat_id=' . $this->cat_rowset[$cat_id]['cat_id'])))
 		);
 
 		return;
@@ -1451,11 +1485,11 @@ class mx_publisher extends mx_publisher_auth
 			mx_message_die( GENERAL_ERROR, 'Couldn\'t get number of file', '', __LINE__, __FILE__, $sql );
 		}
 
-		$row = $db->sql_fetchrow( $result );
-		$db->sql_freeresult( $result );
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
 
 		$total_file = $row['total_file'];
-		unset( $row );
+		unset($row);
 
 		//
 		// Ratings
@@ -1661,18 +1695,14 @@ class mx_publisher extends mx_publisher_auth
 	}
 
 	/**
-	 * display items.
+	 * init items.
 	 *
 	 * @param unknown_type $sort_method
 	 * @param unknown_type $sort_order
 	 * @param unknown_type $start
 	 * @param unknown_type $cat_id
-	 * @param unknown_type $show_file_message
-	 * @param unknown_type $sort_options_list
-	 * @param unknown_type $sql_xtra
-	 * @param unknown_type $target_page_id
 	 */
-	function display_items($sort_method, $sort_order, $start, $cat_id = false, $show_file_message = true, $sort_options_list = false, $sql_xtra = '', $target_page_id = false )
+	function init_items($sort_method, $sort_order, $start, $cat_id = false)
 	{
 		global $db, $publisher_config, $template, $board_config;
 		global $images, $lang, $phpEx, $publisher_functions, $phpBB2;
@@ -1748,6 +1778,150 @@ class mx_publisher extends mx_publisher_auth
 		{
 			if ($this->auth_user[$row['article_category_id']]['auth_read'] )
 			{
+				$this->article_rowset[] = $row;
+			}
+		}
+		$db->sql_freeresult($result);
+
+		//
+		// Main query
+		//
+		switch (SQL_LAYER)
+		{
+			case 'oracle':
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username
+					FROM " . PUB_ARTICLES_TABLE . " AS t, " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_CATEGORY_TABLE . " AS cat
+					WHERE t.article_id = r.votes_article(+)
+					AND t.user_id = u.user_id(+)
+					AND t.article_id = c.article_id(+)
+					AND t.article_pin = " . ARTICLE_PINNED . "
+					AND t.approved = 1
+					AND t.article_category_id = cat.cat_id
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+				break;
+
+			default:
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, typ.type
+					FROM " . PUB_ARTICLES_TABLE . " AS t
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON t.article_id = r.votes_article
+						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
+						LEFT JOIN " . USERS_TABLE . " AS u ON t.article_author_id = u.user_id
+						LEFT JOIN " . PUB_FILES_TABLE . " AS f1 ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON t.article_category_id = cat.cat_id
+					WHERE t.article_pin = " . ARTICLE_PINNED . "
+					AND t.approved = 1
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+				break;
+		}
+
+		if ( !( $result = $db->sql_query_limit( $sql, $publisher_config['pagination'], $start ) ) )
+		{
+			mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql );
+		}
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if ( $this->auth_user[$row['file_catid']]['auth_read'] )
+			{
+				$this->article_rowset[] = $row;
+			}
+		}
+		$db->sql_freeresult($result);
+	}
+
+	/**
+	 * display items.
+	 *
+	 * @param unknown_type $sort_method
+	 * @param unknown_type $sort_order
+	 * @param unknown_type $start
+	 * @param unknown_type $cat_id
+	 * @param unknown_type $show_file_message
+	 * @param unknown_type $sort_options_list
+	 * @param unknown_type $sql_xtra
+	 * @param unknown_type $target_page_id
+	 */
+	function display_items($sort_method, $sort_order, $start, $cat_id = false, $show_file_message = true, $sort_options_list = false, $sql_xtra = '', $target_page_id = false )
+	{
+		global $db, $publisher_config, $template, $board_config;
+		global $images, $lang, $phpEx, $publisher_functions, $phpBB2;
+		global $phpbb_root_path, $mx_root_path, $module_root_path, $is_block, $phpEx;
+
+		$articlelist = $filelist = false;
+
+		$article_rowset = array();
+		$total_articles = 0;
+
+		//
+		// Category SQL
+		//
+		
+		/*
+		if (!$cat_id)
+		{
+			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids(PUB_ROOT_CAT) . ")";
+		}
+		else if (is_array($cat_id))
+		{
+			$cat_where = "AND t.article_category_id IN (" . $this->gen_cat_ids( $cat_id['parent'] ) . ")";
+			$cat_id = false;
+		}
+		else
+		{
+			$cat_where = "AND t.article_category_id = $cat_id";
+		}
+
+		//
+		// This first query is needed to find pinned articles
+		//
+		switch (SQL_LAYER)
+		{
+			case 'oracle':
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, AVG(r.rate_point) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.article_id) AS total_comments
+					FROM " . PUB_ARTICLES_TABLE . " AS t, " . PUB_FILES_TABLE . " AS f1, " . PUB_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PUB_COMMENTS_TABLE . " AS c, " . PUB_CATEGORY_TABLE . " AS cat
+					WHERE t.article_id = r.votes_article(+)
+					AND t.user_id = u.user_id(+)
+					AND t.article_id = c.article_id(+)
+					AND t.approved = 1
+					AND t.article_category_id = cat.cat_id
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+			break;
+				
+			default:
+				$sql = "SELECT t.*, f1.*, t.article_id, f1.file_id, t.article_category_id, r.votes_article, IF(COUNT(r.rate_point) > 0, AVG(r.rate_point), 0) AS rating, COUNT(r.votes_article) AS total_votes, u.user_id, u.username, COUNT(c.article_id) AS total_comments, typ.type
+					FROM " . PUB_ARTICLES_TABLE . " AS t
+						LEFT JOIN " . PUB_VOTES_TABLE . " AS r ON t.article_id = r.votes_article
+						LEFT JOIN " . PUB_TYPES_TABLE . " AS typ ON t.article_type = typ.id
+						LEFT JOIN " . USERS_TABLE . " AS u ON t.article_author_id = u.user_id
+						LEFT JOIN " . PUB_FILES_TABLE . " AS f1 ON f1.file_id = r.votes_file
+						LEFT JOIN " . PUB_COMMENTS_TABLE . " AS c ON t.article_id = c.article_id
+						LEFT JOIN " . PUB_CATEGORY_TABLE . " AS cat ON t.article_category_id = cat.cat_id
+					WHERE t.approved = 1
+					$cat_where
+					$sql_xtra
+					GROUP BY t.article_id
+					ORDER BY $sort_method $sort_order";
+			break;
+		}
+
+		if (!( $result = $db->sql_query($sql)))
+		{
+			mx_message_die( GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql );
+		}
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if ($this->auth_user[$row['article_category_id']]['auth_read'] )
+			{
 				$article_rowset[] = $row;
 			}
 		}
@@ -1803,7 +1977,11 @@ class mx_publisher extends mx_publisher_auth
 			}
 		}
 		$db->sql_freeresult($result);
-
+		*/
+		$this->init_items($sort_method, $sort_order, $start, $cat_id);
+		
+		$article_rowset = $this->article_rowset;
+		
 		$sql = "SELECT COUNT(t.article_id) as total_articles
 			FROM " . PUB_ARTICLES_TABLE . " AS t
 			WHERE t.approved='1'
@@ -1813,18 +1991,25 @@ class mx_publisher extends mx_publisher_auth
 		{
 			mx_message_die(GENERAL_ERROR, 'Couldn\'t get number of file', '', __LINE__, __FILE__, $sql);
 		}
-		$row = $db->sql_fetchrow( $result );
-		$db->sql_freeresult( $result );
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
 
 		$total_articles = $row['total_articles'];
-		unset( $row );
+		unset($row);
 
-		if (count($article_rowset ) > 0)
+		if (count($article_rowset) > 0)
 		{
 			$template->assign_block_vars('ARTICLELIST', array() );
 			$articlelist = $filelist = true;
 		}
-		
+		for ( $i = 0; $i < count( $article_rowset ); $i++ )
+		{
+			if ( $this->ratings[$article_rowset[$i]['file_catid']]['activated'] )
+			{
+				$pub_use_ratings = true;
+				break;
+			}
+		}
 		//
 		// Ratings
 		//

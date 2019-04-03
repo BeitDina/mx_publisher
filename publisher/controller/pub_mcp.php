@@ -13,6 +13,7 @@ if (!defined('IN_PORTAL'))
 	die("Hacking attempt");
 }
 
+
 /**
  * Enter description here...
  *
@@ -259,7 +260,7 @@ class publisher_mcp extends publisher_public
 					{
 						if ( $item_info['topic_id'] )
 						{
-							include( $module_root_path . 'publisher/includes/functions_comment.' . $phpEx );
+							include($module_root_path . 'publisher/includes/functions_comment.' . $phpEx);
 							$publisher_comments = new publisher_comments();
 							$publisher_comments->init( $item_info, 'phpbb');
 							$publisher_comments->post('delete_all', $item_info['topic_id']);
@@ -477,17 +478,17 @@ class publisher_mcp extends publisher_public
 				{
 					$i = ( $mode == 'unapproved' || ( count($global_array) > 1 && $data['approval'] == 'unapprove' ) ) ? $start + 1 : '1';
 
-					foreach( $data['row_set'] as $item_data )
+					foreach($data['row_set'] as $item_data)
 					{
 						$approve_mode = ( $item_data['approved'] ) ? 'do_unapprove' : 'do_approve';
-						$template->assign_block_vars( 'mcp_mode.row', array(
+						$template->assign_block_vars('mcp_mode.row', array(
 							'NAME' => $item_data['article_title'],
 							'NUMBER' => $i++,
 							'ID' => $item_data['article_id'],
 							'U_EDIT' => mx_append_sid( $this->this_mxurl( "action=edit&amp;k={$item_data['article_id']}" ) ),
 							'U_DELETE' => mx_append_sid( $this->this_mxurl( "action=mcp&amp;mode_mcp=$mode&amp;do_action=do_delete&amp;id={$item_data['article_id']}" ) ),
 							'U_APPROVE' => mx_append_sid( $this->this_mxurl( "action=mcp&amp;mode_mcp=$mode&amp;do_action=$approve_mode&amp;id={$item_data['article_id']}" ) . ($mode == 'cat' ? "&amp;cat_id=$cat_id" : '') ),
-							'L_APPROVE' => ( $item_data['approved'] ) ? $lang['Unapprove'] : $lang['Approve'] )
+							'L_APPROVE' => ($item_data['approved']) ? $lang['Unapprove'] : $lang['Approve'] )
 						);
 					}
 				}
@@ -504,9 +505,9 @@ class publisher_mcp extends publisher_public
 		$itemId = !empty($id) ? $id : $ids;
 		$this->update_add_item_notify($itemId, $mode_notification);
 
-		$template->assign_vars( array( 'ERROR' => ( sizeof( $this->error ) ) ? implode( '<br />', $this->error ) : '' ) );
+		$template->assign_vars(array('ERROR' => (sizeof($this->error)) ? implode('<br />', $this->error) : '' ));
 
-		$this->display( $lang['MCP'], $template_item );
+		$this->display($lang['MCP'], $template_item);
 		$this->_publisher();
 	}
 }

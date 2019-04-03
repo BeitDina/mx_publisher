@@ -186,7 +186,7 @@ class publisher_user_upload extends publisher_public
 						$message = $lang['Fileadded_not_validated'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . mx_append_sid( $this->this_mxurl( "action=category&cat_id=" . $cat_id ) ) . '">', '</a>' );
 					}
 
-					$this->_pub();
+					$this->_publisher();
 				}
 				else
 				{
@@ -212,7 +212,7 @@ class publisher_user_upload extends publisher_public
 
 					}
 
-					$this->_pub();
+					$this->_publisher();
 				}
 				else
 				{
@@ -259,7 +259,7 @@ class publisher_user_upload extends publisher_public
 				$file_version = '';
 				$file_website = '';
 				$file_posticons = $publisher_functions->post_icons();
-				$file_cat_list = ( !$cat_id ) ? $this->generate_jumpbox( 0, 0, '', true ) : $this->generate_jumpbox( 0, 0, array( $cat_id => 1 ), true, true );
+				$file_cat_list = (!is_numeric($cat_id)) ? $this->generate_jumpbox(0, 0, '', true) : $this->generate_jumpbox(0, 0, array($cat_id => 1), true, true );
 				$file_license = $publisher_functions->license_list();
 				$pin_checked_yes = '';
 				$pin_checked_no = ' checked';
@@ -291,7 +291,7 @@ class publisher_user_upload extends publisher_public
 					$file_version = $file_data['file_version'];
 					$file_website = $file_data['file_docsurl'];
 					$file_posticons = $publisher_functions->post_icons( $file_data['file_posticon'] );
-					$file_cat_list = $this->generate_jumpbox( 0, 0, array( $cat_id => 1 ), true );
+					$file_cat_list = $this->generate_jumpbox(0, 0, array($cat_id => 1), true );
 					$file_license = $publisher_functions->license_list( $file_data['file_license'] );
 					$pin_checked_yes = ( $file_data['file_pin'] ) ? ' checked' : '';
 					$pin_checked_no = ( !$file_data['file_pin'] ) ? ' checked' : '';
